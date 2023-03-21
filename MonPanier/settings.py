@@ -81,6 +81,7 @@ WSGI_APPLICATION = 'MonPanier.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    'default': {},
     'localhost': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -92,6 +93,10 @@ DATABASES = {
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
+        'OPTIONS': {
+          'autocommit': True,
+          'use_pure': True,
+        },
     }
 }
 default_database = os.environ.get('DJANGO_DATABASE', 'localhost')
