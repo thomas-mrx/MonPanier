@@ -10,5 +10,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\thoma\Documents\Web\MonPanier\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="iaws1730_datavores" uuid="b8e2e043-4faa-4bb5-84ed-a105cd13c99e">
+      <driver-ref>mariadb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://datavores.fr:3306/iaws1730_datavores</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

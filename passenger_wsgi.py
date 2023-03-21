@@ -1,0 +1,1 @@
+from MonPanier.wsgi import application
