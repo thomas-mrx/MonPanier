@@ -82,20 +82,17 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    'default': {
-        'ENGINE': 'mysql.connector.django',
+    'remote': {
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
-        'OPTIONS': {
-            'autocommit': True,
-            'use_oure': True,
-            'init_command': "SET foo='bar';",
-        },
     }
 }
+default_database = os.environ.get('DJANGO_DATABASE', 'localhost')
+DATABASES['default'] = DATABASES[default_database]
 
 
 # Password validation
