@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'MonPanier.api.products',
+    'MonPanier.api.carts',
 ]
 
 MIDDLEWARE = [
