@@ -37,12 +37,11 @@ jobs:
         touch tmp/restart.txt
     
     - name: 📂 Sync files
-      uses: airvzxf/ftp-deployment-action@latest
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        user: ${{ secrets.FTP_USERNAME }}
+        server: ftp.iaws1730.odns.fr
+        username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        delete: "false"
   
   
   migrate:
