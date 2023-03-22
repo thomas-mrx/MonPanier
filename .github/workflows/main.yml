@@ -37,14 +37,12 @@ jobs:
         touch tmp/restart.txt
     
     - name: 📂 Sync files
-      uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
+      uses: airvzxf/ftp-deployment-action@latest
       with:
-        ftp_host: ${{ secrets.FTP_SERVER }}
-        ftp_username: ${{ secrets.FTP_USERNAME }}
-        ftp_password: ${{ secrets.FTP_PASSWORD }}
-        local_source_dir: "."
-        dist_target_dir: "."
-        delete: "true"
+        server: ${{ secrets.FTP_SERVER }}
+        user: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        delete: "false"
   
   
   migrate:
