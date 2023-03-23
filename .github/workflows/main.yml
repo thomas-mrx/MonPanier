@@ -19,6 +19,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: 🧰 Setup env. file
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
     - name: 📝 Run Tests
       run: |
         python manage.py test
@@ -30,12 +33,13 @@ jobs:
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
-
+    - name: 🧰 Setup env. file
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
     - name: ⚠️ Add invalidation file
       run: |
         mkdir tmp
         touch tmp/restart.txt
-    
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
@@ -59,9 +63,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: 🧰 Set database env.
+    - name: 🧰 Setup env. file
       run: |
-        echo "todo set env file here"
-    - name: 📝 Run Tests
+        echo "${{ secrets.ENV_FILE }}" > .env
+    - name: 📨 Do migration
       run: |
         python manage.py migrate
