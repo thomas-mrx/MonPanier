@@ -8,6 +8,9 @@ jobs:
   deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
+    environment:
+      name: mon-panier-prod
+      url: https://monpanier.datavores.fr
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v3
