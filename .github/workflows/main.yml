@@ -34,7 +34,7 @@ jobs:
     - name: ⚠️ Add invalidation file
       run: |
         mkdir tmp
-        touch tmp/restart.txt
+        echo $(date -u) > tmp/restart.txt
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
