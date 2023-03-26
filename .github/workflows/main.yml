@@ -41,6 +41,7 @@ jobs:
     - name: 🌐 Collect static files
       run: |
         python manage.py collectstatic --noinput
+        rm -rf dist
     - name: ⚠️ Add invalidation file
       run: |
         mkdir tmp
