@@ -107,8 +107,10 @@ GitHub.sublime-settings
 
 # Visual Studio Code #
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 .history
+
+/MonPanier/app/node_modules/
+/MonPanier/app/webpack-stats.json
+/MonPanier/app/webpack-stats.dev.json
+/MonPanier/app/webpack-stats.prod.json
+/MonPanier/app/package-lock.json

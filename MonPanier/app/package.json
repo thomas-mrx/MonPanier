@@ -1,0 +1,37 @@
+{
+  "name": "mon-panier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint --config .eslintrc.json --ext .js,.jsx,.ts,.tsx --fix src/",
+    "build": "webpack --config bundler/webpack.prod.js",
+    "start": "webpack serve --config bundler/webpack.dev.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.9",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
+    "daisyui": "^2.51.5",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "postcss": "^8.4.21",
+    "postcss-loader": "^7.1.0",
+    "postcss-preset-env": "^8.1.0",
+    "sass": "^1.60.0",
+    "sass-loader": "^13.2.1",
+    "style-loader": "^3.3.2",
+    "tailwindcss": "^3.2.7",
+    "terser-webpack-plugin": "^5.3.7",
+    "ts-loader": "^9.4.2",
+    "webpack": "^5.76.3",
+    "webpack-bundle-tracker": "^1.8.1",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.1",
+    "webpack-merge": "^5.8.0"
+  }
+}

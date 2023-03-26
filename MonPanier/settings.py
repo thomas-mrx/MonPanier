@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'webpack_loader',
     'corsheaders',
     'MonPanier.api.products',
     'MonPanier.api.carts',
@@ -83,6 +84,17 @@ TEMPLATES = [
         },
     },
 ]
+
+WEBPACK_LOADER = {
+  'DEFAULT': {
+    'CACHE': not DEBUG,
+    'BUNDLE_DIR_NAME': '/',
+    'STATS_FILE': Path(__file__).parent / 'app/webpack-stats.json',
+    'POLL_INTERVAL': 0.1,
+    'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
+    'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
+  }
+}
 
 WSGI_APPLICATION = 'MonPanier.wsgi.application'
 
@@ -149,7 +161,7 @@ USE_TZ = True
 
 STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / 'src']
+STATICFILES_DIRS = [BASE_DIR / 'dist']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
