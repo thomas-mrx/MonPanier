@@ -9,6 +9,39 @@
  * ---------------------------------------------------------------
  */
 
+/** ProductSchema */
+export interface ProductSchema {
+  /** Id */
+  id?: number;
+  /**
+   * Title
+   * @maxLength 200
+   */
+  title: string;
+  /**
+   * Summary
+   * Enter a brief description of the product
+   * @maxLength 1000
+   */
+  summary: string;
+  /**
+   * Ean
+   * 13 Character <a href="https://www.ean-search.org/">EAN</a>
+   * @maxLength 13
+   */
+  ean: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
@@ -264,9 +297,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/products/
      */
     getProducts: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<ProductSchema[], any>({
         path: `/api/products/`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags products
+     * @name GetProduct
+     * @summary Get Product
+     * @request GET:/api/products/{product_ean}
+     */
+    getProduct: (productEan: string, params: RequestParams = {}) =>
+      this.request<ProductSchema, any>({
+        path: `/api/products/${productEan}`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags products
+     * @name SearchProduct
+     * @summary Search Product
+     * @request GET:/api/products/search/{product_title}
+     */
+    searchProduct: (productTitle: string, params: RequestParams = {}) =>
+      this.request<ProductSchema[], any>({
+        path: `/api/products/search/${productTitle}`,
+        method: "GET",
+        format: "json",
         ...params,
       }),
 
