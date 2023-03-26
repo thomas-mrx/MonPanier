@@ -57,6 +57,7 @@ jobs:
           **/node_modules/**
           **/dist/**
           MonPanier/app/**
+          !MonPanier/app/webpack-stats.json
     - name: 📊 Do migration
       run: |
         python manage.py migrate --noinput
