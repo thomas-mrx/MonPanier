@@ -2,9 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-$body-color: red;
+$body-color: lighten(#ff0000, 10%);
 
 img {
   @apply w-1/4;
+  @apply px-2;
+  @apply py-4;
   background: $body-color;
 }
