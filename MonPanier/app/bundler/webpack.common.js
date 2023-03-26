@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BundleTracker = require('webpack-bundle-tracker');
 
@@ -30,10 +31,10 @@ module.exports = {
   output: {
     path: path.resolve('../../dist/'),
     publicPath: '/static/',
-    filename: "[name]-[fullhash].js",
-    clean: true
+    filename: "[name]-[fullhash].js"
   },
   plugins: [
+      new CleanWebpackPlugin(),
       new CopyWebpackPlugin({
          patterns: [
             { from: '../assets' }
