@@ -1,18 +1,15 @@
 import './style/style.scss';
-
-import { Api } from './api';
-
-const sum = (a: number, b:number) => a + b;
-
-// eslint-disable-next-line no-console
-console.log(sum(1, 7 + 2));
+import { Api, ProductSchema } from './api';
 
 window.onload = () => {
   document.querySelector('h1').innerHTML = 'hello';
 
   const MonPanier = new Api();
-  MonPanier.api.searchProduct('nu').then((data) => {
-    // eslint-disable-next-line no-console
-    console.log(data);
+  MonPanier.api.searchProduct('nu').then((result) => {
+    if (result.data.length) {
+      const product: ProductSchema = result.data[0];
+      // eslint-disable-next-line no-console
+      console.log(product.ean, product.title);
+    }
   });
 };
