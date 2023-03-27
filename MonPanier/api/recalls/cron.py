@@ -13,7 +13,6 @@ from MonPanier.api.recalls.models import Recall
 class RecallsUpdate(CronJobBase):
     schedule = Schedule(run_every_mins=60 * 24)
     code = 'MonPanier.RecallsUpdate'
-    ALLOW_PARALLEL_RUNS = True
 
     def do(self):
         print("[RecallsUpdate] Starting cron job...")

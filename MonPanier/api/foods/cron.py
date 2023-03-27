@@ -17,7 +17,6 @@ def to_list(line):
 class FoodsUpdate(CronJobBase):
     schedule = Schedule(run_every_mins=60 * 24)
     code = 'MonPanier.FoodsUpdate'
-    ALLOW_PARALLEL_RUNS = True
 
     def do(self):
         print("[FoodsUpdate] Starting cron job...")

@@ -12,7 +12,6 @@ from MonPanier.api.dispensations.models import Dispensation
 class DispensationsUpdate(CronJobBase):
     schedule = Schedule(run_every_mins=60 * 24)
     code = 'MonPanier.DispensationsUpdate'
-    ALLOW_PARALLEL_RUNS = True
 
     def do(self):
         print("[DispensationsUpdate] Starting cron job...")
