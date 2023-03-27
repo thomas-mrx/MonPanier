@@ -45,8 +45,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'corsheaders',
+    'django_cron',
     'MonPanier.api.products',
     'MonPanier.api.carts',
+    'MonPanier.api.foods',
+    'MonPanier.api.recalls',
+    'MonPanier.api.dispensations',
+]
+
+CRON_CLASSES = [
+    "MonPanier.api.recalls.cron.RecallsUpdate",
+    "MonPanier.api.dispensations.cron.DispensationsUpdate",
+    "MonPanier.api.foods.cron.FoodsUpdate",
 ]
 
 MIDDLEWARE = [
@@ -118,6 +128,7 @@ DATABASES = {
         'OPTIONS': {
           'autocommit': True,
           'use_pure': True,
+          'init_command': 'SET innodb_strict_mode=0',
         },
     }
 }
