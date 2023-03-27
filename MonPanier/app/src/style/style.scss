@@ -1,12 +1,63 @@
+@import "./fontawesome/scss/fontawesome.scss";
+@import "./fontawesome/scss/solid.scss";
+@import "./fontawesome/scss/brands.scss";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-$body-color: lighten(#ff00ff, 10%);
+
+$body-color: lighten(#ff0000, 10%);
 
 img {
   @apply w-1/4;
   @apply px-2;
   @apply py-4;
   background: $body-color;
+}
+
+
+.mon-panier-header {
+  @apply bg-white;
+  @apply absolute;
+  @apply bottom-0;
+  @apply w-full;
+  @apply border-t;
+  @apply border-gray-200;
+  @apply flex;
+
+  button {
+    @apply flex;
+    @apply flex-grow;
+    @apply items-end;
+    @apply justify-center;
+    @apply p-2;
+    @apply text-center;
+    @apply text-gray-500;
+    @apply hover:text-lime-500;
+
+    &.active {
+      @apply text-lime-500;
+    }
+
+    span {
+      @apply block;
+      @apply px-1;
+      @apply pt-1;
+      @apply pb-1;
+
+      span {
+        @apply block;
+        @apply text-xs;
+        @apply pb-2;
+      }
+
+      i {
+        @apply text-2xl;
+        @apply pt-1;
+        @apply mb-1;
+        @apply block;
+      }
+    }
+  }
 }

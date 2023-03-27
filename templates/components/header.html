@@ -1,4 +1,30 @@
-<article class="prose lg:prose-xl">
-<h1>Hello world from header.html!</h1>
-</article>
-<a href="api/docs" class="btn">Visit this link to see the SwaggerUI</a>
+<nav class="mon-panier-header">
+    <button x-on:click="activeTab = 0"
+            :class="{ 'active': activeTab === 0 }">
+        <span>
+            <i class="far fa-chart-line"></i>
+            <span>Dashboard</span>
+        </span>
+    </button>
+    <button x-on:click="activeTab = 1"
+            :class="{ 'active': activeTab === 1 }">
+        <span>
+            <i class="far fa-basket-shopping"></i>
+            <span>Paniers</span>
+        </span>
+    </button>
+    <button x-on:click="activeTab = 2"
+            :class="{ 'active': activeTab === 2 }">
+        <span>
+            <i class="far fa-barcode"></i>
+            <span>Scan</span>
+        </span>
+    </button>
+    <button x-on:click="activeTab = 3"
+            :class="{ 'active': activeTab === 3 }">
+        <span>
+            <i class="far fa-cog"></i>
+            <span>Paramètres</span>
+        </span>
+    </button>
+</nav>
