@@ -1,5 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <div class="container">
+        <div :class="{ 'hidden': activeTab !== 0 }">
+            {% include "components/dashboard/dashboard.html" %}
+        </div>
+        <div :class="{ 'hidden': activeTab !== 1 }">
+            {% include "components/carts/carts.html" %}
+        </div>
+        <div :class="{ 'hidden': activeTab !== 2 }">
+            {% include "components/scan/scan.html" %}
+        </div>
+        <div :class="{ 'hidden': activeTab !== 3 }">
+            {% include "components/settings/settings.html" %}
+        </div>
+    </div>
     {% include "components/header.html" %}
 {% endblock %}
