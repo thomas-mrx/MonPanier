@@ -2,8 +2,9 @@ from typing import List
 
 from ninja import Router
 
+from MonPanier.api.error import Error
 from MonPanier.api.products.models import Product
-from MonPanier.api.products.schemas import ProductSchema, Error
+from MonPanier.api.products.schemas import ProductSchema
 
 router = Router(tags=["products"])
 
