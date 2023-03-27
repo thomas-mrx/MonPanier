@@ -128,7 +128,6 @@ DATABASES = {
         'OPTIONS': {
           'autocommit': True,
           'use_pure': True,
-          'init_command': 'SET innodb_strict_mode=0',
         },
     }
 }
