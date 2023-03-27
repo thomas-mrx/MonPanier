@@ -3,7 +3,7 @@ from typing import List
 from ninja import Router
 
 from MonPanier.api.products.models import Product
-from MonPanier.api.products.schemas import ProductSchema
+from MonPanier.api.products.schemas import ProductSchema, Error
 
 router = Router(tags=["products"])
 
@@ -14,11 +14,14 @@ def list_products(request):
     return qs
 
 
-@router.get("/{product_ean}", operation_id="getProduct", response=ProductSchema)
+@router.get("/{product_ean}", operation_id="getProduct", response={200: ProductSchema, 404: Error})
 def get_product(request, product_ean: str):
-    return Product.objects.get(ean=product_ean)
+    try:
+        return Product.objects.get(ean=product_ean)
+    except Product.DoesNotExist:
+        return 404, {"message": "No product found."}
 
 @router.get("/search/{product_title}", operation_id="searchProduct", response=List[ProductSchema])
 def search_product(request, product_title: str):
-    return Product.objects.filter(title__icontains=product_title)
+        return Product.objects.filter(title__icontains=product_title)
     

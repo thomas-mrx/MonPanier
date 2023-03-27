@@ -45,8 +45,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'webpack_loader',
     'corsheaders',
+    'django_cron',
     'MonPanier.api.products',
     'MonPanier.api.carts',
+    'MonPanier.api.foods',
+    'MonPanier.api.recalls',
+]
+
+CRON_CLASSES = [
+    "MonPanier.api.recalls.cron.RecallsUpdate",
 ]
 
 MIDDLEWARE = [
