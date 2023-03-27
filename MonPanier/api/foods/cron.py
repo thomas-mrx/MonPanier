@@ -49,6 +49,5 @@ class FoodsUpdate(CronJobBase):
                 for j, key in enumerate(header):
                     data[key] = list_data[j] if j < len(list_data) else ''
 
-                if data['countries_en'] == 'France':
-                    f = Food(**data)
-                    f.save()
+                f = Food(**data)
+                f.save()
