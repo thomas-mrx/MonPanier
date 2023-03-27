@@ -2,8 +2,6 @@ import './style/style.scss';
 import { Api, ProductSchema } from './api';
 
 window.onload = () => {
-  document.querySelector('h1').innerHTML = 'hello';
-
   const MonPanier = new Api();
   MonPanier.api.searchProduct('nu').then((result) => {
     if (result.data.length) {

@@ -1,6 +1,10 @@
+@import "./fontawesome/scss/fontawesome.scss";
+@import "./fontawesome/scss/solid.scss";
+@import "./fontawesome/scss/brands.scss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 
 $body-color: lighten(#ff0000, 10%);
 
