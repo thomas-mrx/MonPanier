@@ -119,16 +119,14 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     },
     'production': {
-        'ENGINE': 'mysql.connector.django',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),
         'PASSWORD': os.environ.get('DB_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
         'PORT': os.environ.get('DB_PORT'),
         'OPTIONS': {
-          'autocommit': True,
-          'use_pure': True,
-          'init_command': 'SET innodb_strict_mode=0',
+          'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         },
     }
 }
