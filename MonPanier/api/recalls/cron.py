@@ -36,6 +36,7 @@ class RecallsUpdate(CronJobBase):
             data = json.load(json_file)
             references = list(Recall.objects.values_list('reference_fiche', flat=True))
             recalls_to_create = []
+            counter_created = 0
             for recall in data:
                 r = None
                 if recall['categorie_de_produit'] == 'Alimentation' and recall['zone_geographique_de_vente'] == 'France entière':
@@ -51,6 +52,9 @@ class RecallsUpdate(CronJobBase):
 
                 if len(recalls_to_create) >= 5000:
                     Recall.objects.bulk_create(recalls_to_create)
+                    counter_created += len(recalls_to_create)
                     recalls_to_create = []
             if recalls_to_create:
                 Recall.objects.bulk_create(recalls_to_create)
+                counter_created += len(recalls_to_create)
+            print("[RecallsUpdate] Created {} recalls.".format(counter_created))

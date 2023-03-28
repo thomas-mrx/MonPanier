@@ -36,6 +36,7 @@ class DispensationsUpdate(CronJobBase):
             data = json.load(json_file)
             references = list(Dispensation.objects.values_list('hash', flat=True))
             dispensations_to_create = []
+            counter_created = 0
             check_ref = []
             for dispensation in data:
                 d = None
@@ -53,6 +54,9 @@ class DispensationsUpdate(CronJobBase):
 
                 if len(dispensations_to_create) >= 5000:
                     Dispensation.objects.bulk_create(dispensations_to_create)
+                    counter_created += len(dispensations_to_create)
                     dispensations_to_create = []
             if dispensations_to_create:
                 Dispensation.objects.bulk_create(dispensations_to_create)
+                counter_created += len(dispensations_to_create)
+            print("[DispensationsUpdate] Created {} dispensations.".format(counter_created))

@@ -53,6 +53,8 @@ class FoodsUpdate(CronJobBase):
                     header[i] = h.replace('-', '_')
             foods_to_create = []
             foods_to_update = []
+            counter_created = 0
+            counter_updated = 0
             index_countries_en = header.index('countries_en')
             index_countries = header.index('countries')
             index_countries_tags = header.index('countries_tags')
@@ -89,6 +91,7 @@ class FoodsUpdate(CronJobBase):
                     if len(foods_to_create) >= 25000:
                         check_connection()
                         Food.objects.bulk_create(foods_to_create)
+                        counter_created += len(foods_to_create)
                         for code in codes_temp:
                             codes.append(code)
                         codes_temp = []
@@ -96,10 +99,15 @@ class FoodsUpdate(CronJobBase):
                     if len(foods_to_update) >= 5000:
                         check_connection()
                         Food.objects.bulk_update(foods_to_update, fields)
+                        counter_updated += len(foods_to_update)
                         foods_to_update = []
             if foods_to_create:
                 check_connection()
                 Food.objects.bulk_create(foods_to_create)
+                counter_created += len(foods_to_create)
             if foods_to_update:
                 check_connection()
                 Food.objects.bulk_update(foods_to_update, fields)
+                counter_updated += len(foods_to_update)
+            print("[FoodsUpdate] Created {} foods.".format(counter_created))
+            print("[FoodsUpdate] Updated {} foods.".format(counter_updated))
