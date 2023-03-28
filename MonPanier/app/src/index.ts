@@ -1,19 +1,48 @@
 import './style/style.scss';
-import {Api, ProductSchema} from './api';
-import Alpine from 'alpinejs'
+import Alpine from 'alpinejs';
+import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Api, ProductSchema } from './api';
 
+window.onload = async () => {
+  // @ts-ignore
+  window.Alpine = Alpine;
+  Alpine.store('productModal', {
+    on: true,
+    text: 'Hello world',
+    product: {} as ProductSchema,
 
-window.onload = () => {
-    // @ts-ignore
-    window.Alpine = Alpine;
-    Alpine.start();
+    toggle() {
+      this.on = !this.on;
+    },
 
-    const MonPanier = new Api();
-    MonPanier.api.searchProduct('nu').then((result) => {
-        if (result.data.length) {
-            const product: ProductSchema = result.data[0];
-            // eslint-disable-next-line no-console
-            console.log(product.ean, product.title);
-        }
+    update(product: ProductSchema) {
+      this.product = product;
+      this.on = true;
+    },
+  });
+  Alpine.start();
+
+  const MonPanier = new Api();
+  function onScanSuccess(decodedText: any) {
+    // handle the scanned code as you like, for example:
+    MonPanier.api.getProduct(decodedText).then((result) => {
+      if (result.data) {
+        // @ts-ignore
+        Alpine.store('productModal').update(result.data);
+      }
     });
+  }
+
+  function onScanFailure(error: any) {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.warn(`Code scan error = ${error}`);
+  }
+
+  const html5QrcodeScanner = new Html5QrcodeScanner(
+    'reader',
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    /* verbose= */ false,
+  );
+  html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 };

@@ -1,1 +1,11 @@
-<p>Scan works!</p>
+<div id="reader" style="width: 600px; height: 600px"></div>
+<div class="modal" x-data :class="$store.productModal.on && 'modal-open'">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg" x-text="$store.productModal.product.title"></h3>
+        <p class="py-4" x-text="$store.productModal.product.summary"></p>
+        <div class="modal-action">
+            <button class="btn" x-data @click="$store.productModal.toggle()">Close</button>
+        </div>
+    </div>
+</div>
+</div>
