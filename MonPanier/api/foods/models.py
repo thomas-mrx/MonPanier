@@ -2,7 +2,7 @@ from django.db import models
 
 class Food(models.Model):
     """Model representing a food product"""
-    code = models.CharField(max_length=16, unique=True, primary_key=True)
+    code = models.TextField(unique=True, primary_key=True)
     url = models.TextField()
     creator = models.TextField(blank=True, null=True)
     created_t = models.TextField()
