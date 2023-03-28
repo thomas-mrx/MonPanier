@@ -56,22 +56,27 @@ class FoodsUpdate(CronJobBase):
             index_countries_en = header.index('countries_en')
             index_countries = header.index('countries')
             index_countries_tags = header.index('countries_tags')
+            index_code = header.index('code')
+            index_last_modified_t = header.index('last_modified_t')
             for i, line in enumerate(f):
                 list_data = to_list(line)
 
                 if 'France' in list_data[index_countries_en] or 'en:france' in list_data[index_countries_tags] \
                         or 'France' in list_data[index_countries] or 'en:fr' in list_data[index_countries]:
-                    data = {}
-                    for j, key in enumerate(header):
-                        data[key] = list_data[j] if j < len(list_data) else ''
                     try:
-                        index = codes.index(data['code'])
+                        index = codes.index(list_data[index_code])
                     except ValueError:
                         index = None
                     if index is not None:
-                        if data['last_modified_t'] > last_modified[index]:
+                        if list_data[index_last_modified_t] > last_modified[index]:
+                            data = {}
+                            for j, key in enumerate(header):
+                                data[key] = list_data[j] if j < len(list_data) else ''
                             foods_to_update.append(Food(**data))
                     else:
+                        data = {}
+                        for j, key in enumerate(header):
+                            data[key] = list_data[j] if j < len(list_data) else ''
                         if data['code'] in codes_temp:
                             for j, food in enumerate(foods_to_create):
                                 if food.code == data['code']:
