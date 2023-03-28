@@ -16,7 +16,6 @@ module.exports = {
           "css-loader",
           "sass-loader",
           "postcss-loader",
-          "postcss-nested",
         ],
       },
       {
