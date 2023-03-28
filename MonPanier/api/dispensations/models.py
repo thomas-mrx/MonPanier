@@ -12,7 +12,7 @@ class Dispensation(models.Model):
     marque = models.TextField()
     modalites_d_information_des_consommateurs = models.TextField()
     nature_du_decalage_entre_le_produit_et_son_etiquetage = models.TextField()
-    datedepot = models.DateTimeField()
+    datedepot = models.TextField()
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
