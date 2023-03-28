@@ -34,9 +34,23 @@ class RecallsUpdate(CronJobBase):
         with open(file_name, 'r') as json_file:
             print("[RecallsUpdate] Loading file...")
             data = json.load(json_file)
+            references = list(Recall.objects.values_list('reference_fiche', flat=True))
+            recalls_to_create = []
             for recall in data:
+                r = None
                 if recall['categorie_de_produit'] == 'Alimentation' and recall['zone_geographique_de_vente'] == 'France entière':
                     ean = re.findall(r'^(\d{8,14})', recall['identification_des_produits'])
                     recall['ean'] = ean[0] if len(ean) > 0 else None
+                    if recall['ean'] is None:
+                        continue
                     r = Recall(**recall)
-                    r.save()
+                if not r or recall['reference_fiche'] in references:
+                    continue
+
+                recalls_to_create.append(r)
+
+                if len(recalls_to_create) >= 5000:
+                    Recall.objects.bulk_create(recalls_to_create)
+                    recalls_to_create = []
+            if recalls_to_create:
+                Recall.objects.bulk_create(recalls_to_create)

@@ -3,6 +3,7 @@ from django.db import models
 
 class Dispensation(models.Model):
     """Model representing a recall"""
+    hash = models.CharField(max_length=128, unique=True, primary_key=True)
     categorie_du_produit_rayon = models.TextField()
     cause_de_la_demande_de_derogation = models.TextField()
     code_barre_ean_gtin = models.TextField()
