@@ -14,6 +14,11 @@ from MonPanier.api.foods.models import Food
 def to_list(line):
     return line.rstrip().decode("utf-8").split('\t')
 
+def check_connection():
+    try:
+        connection.connection.ping()
+    except:
+        connection.close()
 
 class FoodsUpdate(CronJobBase):
     schedule = Schedule(run_every_mins=60 * 24)
@@ -77,15 +82,19 @@ class FoodsUpdate(CronJobBase):
                             foods_to_create.append(Food(**data))
 
                     if len(foods_to_create) >= 25000:
+                        check_connection()
                         Food.objects.bulk_create(foods_to_create)
                         for code in codes_temp:
                             codes.append(code)
                         codes_temp = []
                         foods_to_create = []
                     if len(foods_to_update) >= 5000:
+                        check_connection()
                         Food.objects.bulk_update(foods_to_update, fields)
                         foods_to_update = []
             if foods_to_create:
+                check_connection()
                 Food.objects.bulk_create(foods_to_create)
             if foods_to_update:
+                check_connection()
                 Food.objects.bulk_update(foods_to_update, fields)
