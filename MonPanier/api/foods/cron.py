@@ -21,7 +21,7 @@ def check_connection():
         connection.close()
 
 class FoodsUpdate(CronJobBase):
-    schedule = Schedule(run_every_mins=60 * 24)
+    schedule = Schedule(run_at_times=['02:00'])
     code = 'MonPanier.FoodsUpdate'
 
     def do(self):

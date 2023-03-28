@@ -11,7 +11,7 @@ from MonPanier.api.recalls.models import Recall
 
 
 class RecallsUpdate(CronJobBase):
-    schedule = Schedule(run_every_mins=60 * 24)
+    schedule = Schedule(run_at_times=['02:00'])
     code = 'MonPanier.RecallsUpdate'
 
     def do(self):
