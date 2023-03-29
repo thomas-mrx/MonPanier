@@ -12,8 +12,9 @@ router = Router(tags=["foods"])
 @router.get("/search", operation_id="searchFood", response={200: List[FoodSchema], 400: Error, 404: Error})
 def search_food(request, category: str = None, name: str = None, limit: int = 10, offset: int = 0):
     try:
-        if category and name :
-            return Food.objects.filter(categories__icontains=category, product_name__icontains=name)[offset: offset + limit]
+        if category and name:
+            return Food.objects.filter(categories__icontains=category, product_name__icontains=name)[
+                   offset: offset + limit]
         elif category:
             return Food.objects.filter(categories__icontains=category)[offset: offset + limit]
         elif name:
