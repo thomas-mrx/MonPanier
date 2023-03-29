@@ -127,3 +127,4 @@ class FoodsUpdate(CronJobBase):
                 print("[FoodsUpdate] Updated {} foods.".format(len(foods_to_update)))
             print("[FoodsUpdate] TOTAL: Created {} foods.".format(counter_created))
             print("[FoodsUpdate] TOTAL: Updated {} foods.".format(counter_updated))
+            ensure_connection()
