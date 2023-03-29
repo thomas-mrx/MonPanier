@@ -7,7 +7,9 @@ from urllib.request import urlopen
 
 from django_cron import CronJobBase, Schedule
 
+from MonPanier.api.foods.models import Food
 from MonPanier.api.recalls.models import Recall
+from MonPanier.api.recallsCounts.models import RecallsCount
 
 
 class RecallsUpdate(CronJobBase):
@@ -36,6 +38,14 @@ class RecallsUpdate(CronJobBase):
             data = json.load(json_file)
             references = list(Recall.objects.values_list('reference_fiche', flat=True))
             recalls_to_create = []
+            count_to_create = []
+            count_to_update = []
+            recalls_count = RecallsCount.objects.values_list('category','recall_count', 'recall_category')
+            count_dict = {}
+            count_dict_temp = {}
+            for c in recalls_count:
+                count_dict[c[0]] = [c[1], c[2]]
+            has_count_updated = False
             counter_created = 0
             for recall in data:
                 r = None
@@ -48,12 +58,49 @@ class RecallsUpdate(CronJobBase):
                 if not r or recall['reference_fiche'] in references:
                     continue
 
+                try:
+                    food = Food.objects.get(code=r.ean)
+                except Food.DoesNotExist:
+                    continue
+
+                categories = [c.strip() for c in food.categories_tags.split(',')] if food.categories_tags is not None and food.categories_tags != '' else []
+                for c in categories:
+                    count_cat = count_dict.get(c, None)
+                    if count_cat is None:
+                        count_cat_temp = count_dict_temp.get(c, None)
+                        if count_cat_temp is None:
+                            count_dict_temp[c] = [1, [r.sous_categorie_de_produit]]
+                        else:
+                            count_dict_temp[c][0] = count_cat_temp[0] + 1
+                            if r.sous_categorie_de_produit not in count_cat_temp[1]:
+                                count_dict_temp[c][1] = count_cat_temp[1] + [r.sous_categorie_de_produit]
+                    else:
+                        has_count_updated = True
+                        count_dict[c][0] = count_cat[0] + 1
+                        if r.sous_categorie_de_produit not in count_cat[1]:
+                            count_dict[c][1] = count_cat[1] + [r.sous_categorie_de_produit]
+
                 recalls_to_create.append(r)
 
                 if len(recalls_to_create) >= 5000:
                     Recall.objects.bulk_create(recalls_to_create)
                     counter_created += len(recalls_to_create)
                     recalls_to_create = []
+
+            print("[RecallsUpdate] Updating recalls count...")
+            if count_dict_temp:
+                for cat, cnt in count_dict_temp.items():
+                    count_to_create.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1]))
+                if count_to_create:
+                    RecallsCount.objects.bulk_create(count_to_create)
+            if count_dict and has_count_updated:
+                for cat, cnt in count_dict.items():
+                    count_to_update.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1]))
+                if count_to_update:
+                    RecallsCount.objects.bulk_update(count_to_update, ['recall_count', 'recall_category'])
+            print("[RecallsUpdate] Created {} recalls count categories.".format(len(count_to_create)))
+            print("[RecallsUpdate] Updated {} recalls count categories.".format(len(count_to_update)))
+
             if recalls_to_create:
                 Recall.objects.bulk_create(recalls_to_create)
                 counter_created += len(recalls_to_create)
