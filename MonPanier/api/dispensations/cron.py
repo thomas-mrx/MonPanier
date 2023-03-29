@@ -38,7 +38,9 @@ class DispensationsUpdate(CronJobBase):
             dispensations_to_create = []
             counter_created = 0
             check_ref = []
-            for dispensation in data:
+            for i, dispensation in enumerate(data):
+                if i % 1000 == 0:
+                    print("[DispensationsUpdate] {} lines processed.".format(i))
                 d = None
                 if dispensation['categorie_du_produit_rayon'] != 'Cosmétiques':
                     hashable = ''.join(['' if v is None else v for v in list(dispensation.values())]).encode('utf-8')

@@ -5,11 +5,25 @@ import shutil
 import time
 from urllib.request import urlopen
 
+from django.db import connection, OperationalError
 from django_cron import CronJobBase, Schedule
 
 from MonPanier.api.foods.models import Food
 from MonPanier.api.recalls.models import Recall
 from MonPanier.api.recallsCounts.models import RecallsCount
+
+
+def ensure_connection():
+    if connection.connection is not None:
+        connection.close()
+    while True:
+        try:
+            connection.ensure_connection()
+        except OperationalError:
+            time.sleep(1)
+        else:
+            connection.close()
+            break
 
 
 class RecallsUpdate(CronJobBase):
@@ -47,7 +61,9 @@ class RecallsUpdate(CronJobBase):
                 count_dict[c[0]] = [c[1], c[2]]
             has_count_updated = False
             counter_created = 0
-            for recall in data:
+            for i, recall in enumerate(data):
+                if i % 1000 == 0:
+                    print("[RecallsUpdate] {} lines processed.".format(i))
                 r = None
                 if recall['categorie_de_produit'] == 'Alimentation' and recall['zone_geographique_de_vente'] == 'France entière':
                     ean = re.findall(r'^(\d{8,14})', recall['identification_des_produits'])
@@ -83,25 +99,31 @@ class RecallsUpdate(CronJobBase):
                 recalls_to_create.append(r)
 
                 if len(recalls_to_create) >= 5000:
+                    ensure_connection()
                     Recall.objects.bulk_create(recalls_to_create)
                     counter_created += len(recalls_to_create)
                     recalls_to_create = []
 
             print("[RecallsUpdate] Updating recalls count...")
+            total_recalls = len(recalls_to_create) + counter_created + len(references)
             if count_dict_temp:
                 for cat, cnt in count_dict_temp.items():
-                    count_to_create.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1]))
+                    count_to_create.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1], recall_rate=round(cnt[0] / total_recalls * 100, 2)))
                 if count_to_create:
+                    ensure_connection()
                     RecallsCount.objects.bulk_create(count_to_create)
             if count_dict and has_count_updated:
                 for cat, cnt in count_dict.items():
-                    count_to_update.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1]))
+                    count_to_update.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1], recall_rate=round(cnt[0] / total_recalls * 100, 2)))
                 if count_to_update:
-                    RecallsCount.objects.bulk_update(count_to_update, ['recall_count', 'recall_category'])
+                    ensure_connection()
+                    RecallsCount.objects.bulk_update(count_to_update, ['recall_count', 'recall_category', 'recall_rate'])
             print("[RecallsUpdate] Created {} recalls count categories.".format(len(count_to_create)))
             print("[RecallsUpdate] Updated {} recalls count categories.".format(len(count_to_update)))
 
             if recalls_to_create:
+                ensure_connection()
                 Recall.objects.bulk_create(recalls_to_create)
                 counter_created += len(recalls_to_create)
             print("[RecallsUpdate] Created {} recalls.".format(counter_created))
+            ensure_connection()
