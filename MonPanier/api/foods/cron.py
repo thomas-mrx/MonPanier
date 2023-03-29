@@ -5,7 +5,7 @@ import shutil
 import time
 from urllib.request import urlopen
 
-from django.db import connection
+from django.db import connection, OperationalError
 from django_cron import CronJobBase, Schedule
 
 from MonPanier.api.foods.models import Food
@@ -14,11 +14,18 @@ from MonPanier.api.foods.models import Food
 def to_list(line):
     return line.rstrip().decode("utf-8").split('\t')
 
-def check_connection():
-    try:
-        connection.connection.ping()
-    except:
+
+def ensure_connection():
+    if connection.connection is not None:
         connection.close()
+    while True:
+        try:
+            connection.ensure_connection()
+        except OperationalError:
+            time.sleep(1)
+        else:
+            connection.close()
+            break
 
 class FoodsUpdate(CronJobBase):
     schedule = Schedule(run_at_times=['02:00'])
@@ -89,7 +96,7 @@ class FoodsUpdate(CronJobBase):
                             foods_to_create.append(Food(**data))
 
                     if len(foods_to_create) >= 25000:
-                        check_connection()
+                        ensure_connection()
                         Food.objects.bulk_create(foods_to_create)
                         counter_created += len(foods_to_create)
                         for code in codes_temp:
@@ -97,16 +104,16 @@ class FoodsUpdate(CronJobBase):
                         codes_temp = []
                         foods_to_create = []
                     if len(foods_to_update) >= 5000:
-                        check_connection()
+                        ensure_connection()
                         Food.objects.bulk_update(foods_to_update, fields)
                         counter_updated += len(foods_to_update)
                         foods_to_update = []
             if foods_to_create:
-                check_connection()
+                ensure_connection()
                 Food.objects.bulk_create(foods_to_create)
                 counter_created += len(foods_to_create)
             if foods_to_update:
-                check_connection()
+                ensure_connection()
                 Food.objects.bulk_update(foods_to_update, fields)
                 counter_updated += len(foods_to_update)
             print("[FoodsUpdate] Created {} foods.".format(counter_created))
