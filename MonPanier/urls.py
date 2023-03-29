@@ -25,4 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
     path('', TemplateView.as_view(template_name="app.html")),
+    path('carts', TemplateView.as_view(template_name="app.html")),
+    path('scan', TemplateView.as_view(template_name="app.html")),
+    path('settings', TemplateView.as_view(template_name="app.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

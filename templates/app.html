@@ -2,16 +2,16 @@
 
 {% block content %}
     <div class="container">
-        <div :class="{ 'hidden': activeTab !== 0 }">
+        <div :class="{ 'hidden': $store.routes.activeTab !== 0 }">
             {% include "components/dashboard/dashboard.html" %}
         </div>
-        <div :class="{ 'hidden': activeTab !== 1 }">
+        <div :class="{ 'hidden': $store.routes.activeTab !== 1 }">
             {% include "components/carts/carts.html" %}
         </div>
-        <div :class="{ 'hidden': activeTab !== 2 }">
+        <div :class="{ 'hidden': $store.routes.activeTab !== 2 }">
             {% include "components/scan/scan.html" %}
         </div>
-        <div :class="{ 'hidden': activeTab !== 3 }">
+        <div :class="{ 'hidden': $store.routes.activeTab !== 3 }">
             {% include "components/settings/settings.html" %}
         </div>
     </div>
