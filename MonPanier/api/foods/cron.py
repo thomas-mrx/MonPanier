@@ -125,5 +125,5 @@ class FoodsUpdate(CronJobBase):
                 Food.objects.bulk_update(foods_to_update, fields)
                 counter_updated += len(foods_to_update)
                 print("[FoodsUpdate] Updated {} foods.".format(len(foods_to_update)))
-            print("[FoodsUpdate] Created {} foods TOTAL.".format(counter_created))
-            print("[FoodsUpdate] Updated {} foods TOTAL.".format(counter_updated))
+            print("[FoodsUpdate] TOTAL: Created {} foods.".format(counter_created))
+            print("[FoodsUpdate] TOTAL: Updated {} foods.".format(counter_updated))
