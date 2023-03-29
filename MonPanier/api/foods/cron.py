@@ -50,19 +50,18 @@ class FoodsUpdate(CronJobBase):
             print("[FoodsUpdate] Using cached file...")
         with gzip.open(file_name, 'rb') as f:
             print("[FoodsUpdate] Loading file...")
-            codes = list(Food.objects.values_list('code', flat=True))
-            codes_dict = {}
-            for i, code in enumerate(codes):
-                codes_dict[code] = i
-            codes_dict_temp = {}
-            last_modified = list(Food.objects.values_list('last_modified_t', flat=True))
+            existing_foods = Food.objects.values_list('code','last_modified_t')
+            foods_dict = {}
+            foods_dict_temp = {}
+            for food in existing_foods:
+                foods_dict[food[0]] = food[1]
             header = to_list(f.readline())
             fields = filter(lambda field: field != "code", header)
             for i, h in enumerate(header):
                 if h.find('-') != -1:
                     header[i] = h.replace('-', '_')
-            foods_to_create = []
-            foods_to_update = []
+            foods_to_create = {}
+            foods_to_update = {}
             counter_created = 0
             counter_updated = 0
             index_countries_en = header.index('countries_en')
@@ -75,54 +74,47 @@ class FoodsUpdate(CronJobBase):
 
                 if 'France' in list_data[index_countries_en] or 'en:france' in list_data[index_countries_tags] \
                         or 'France' in list_data[index_countries] or 'en:fr' in list_data[index_countries]:
-                    index = codes_dict.get(list_data[index_code], None)
-                    if index is None:
+                    last_modified_t = foods_dict.get(list_data[index_code], None)
+                    if last_modified_t is None:
+                        last_modified_t_temp = foods_dict_temp.get(list_data[index_code], None)
+                        if last_modified_t_temp is None or last_modified_t_temp < list_data[index_last_modified_t]:
+                            data = {}
+                            for j, key in enumerate(header):
+                                data[key] = list_data[j] if j < len(list_data) else ''
+
+                            foods_to_create[list_data[index_code]] = Food(**data)
+                            foods_dict_temp[list_data[index_code]] = list_data[index_last_modified_t]
+                    elif last_modified_t < list_data[index_last_modified_t]:
                         data = {}
                         for j, key in enumerate(header):
                             data[key] = list_data[j] if j < len(list_data) else ''
 
-                        old_index = codes_dict_temp.get(list_data[index_code], None)
-                        if old_index:
-                            if last_modified[old_index] < list_data[index_last_modified_t]:
-                                foods_to_create[old_index] = Food(**data)
-                        else:
-                            codes_dict_temp[list_data[index_code]] = len(foods_to_create)
-                            foods_to_create.append(Food(**data))
-                    elif list_data[index_last_modified_t] > last_modified[index]:
-                        data = {}
-                        for j, key in enumerate(header):
-                            data[key] = list_data[j] if j < len(list_data) else ''
-
-                        foods_to_update.append(Food(**data))
+                        foods_to_update[list_data[index_code]] = Food(**data)
 
                     if len(foods_to_create) >= 25000:
                         ensure_connection()
-                        Food.objects.bulk_create(foods_to_create)
+                        Food.objects.bulk_create(foods_to_create.values())
                         counter_created += len(foods_to_create)
-                        j = 0
-                        for code in codes_dict_temp.keys():
-                            codes_dict[code] = len(last_modified)
-                            last_modified.append(foods_to_create[j].last_modified_t)
-                            j += 1
-                        codes_dict_temp = {}
-                        foods_to_create = []
+                        foods_dict |= foods_dict_temp
+                        foods_dict_temp = {}
+                        foods_to_create = {}
                         print("[FoodsUpdate] Created 25000 foods.")
                     if len(foods_to_update) >= 5000:
                         ensure_connection()
-                        Food.objects.bulk_update(foods_to_update, fields)
+                        Food.objects.bulk_update(foods_to_update.values(), fields)
                         counter_updated += len(foods_to_update)
-                        foods_to_update = []
+                        foods_to_update = {}
                         print("[FoodsUpdate] Updated 5000 foods.")
                 if i % 100000 == 0:
                     print("[FoodsUpdate] {} lines processed.".format(i))
             if foods_to_create:
                 ensure_connection()
-                Food.objects.bulk_create(foods_to_create)
+                Food.objects.bulk_create(foods_to_create.values())
                 counter_created += len(foods_to_create)
                 print("[FoodsUpdate] Created {} foods.".format(len(foods_to_create)))
             if foods_to_update:
                 ensure_connection()
-                Food.objects.bulk_update(foods_to_update, fields)
+                Food.objects.bulk_update(foods_to_update.values(), fields)
                 counter_updated += len(foods_to_update)
                 print("[FoodsUpdate] Updated {} foods.".format(len(foods_to_update)))
             print("[FoodsUpdate] TOTAL: Created {} foods.".format(counter_created))
