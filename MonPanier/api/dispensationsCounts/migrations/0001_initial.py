@@ -12,17 +12,17 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='RecallsCount',
+            name='DispensationsCount',
             fields=[
                 ('hash', models.CharField(max_length=128, primary_key=True, serialize=False, unique=True)),
                 ('category', models.CharField(max_length=128)),
-                ('recall_category', models.JSONField(default=list)),
-                ('recall_count', models.IntegerField()),
-                ('recall_rate', models.FloatField(null=True)),
+                ('dispensation_category', models.JSONField(default=list)),
+                ('dispensation_count', models.IntegerField()),
+                ('dispensation_rate', models.FloatField(null=True)),
                 ('created_at', models.DateField(auto_now_add=True, null=True)),
             ],
             options={
-                'ordering': ['-recall_count'],
+                'ordering': ['-dispensation_count'],
             },
         ),
     ]

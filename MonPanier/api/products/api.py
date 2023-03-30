@@ -1,4 +1,5 @@
 import base64
+import datetime
 from urllib.request import urlopen
 
 from typing import List
@@ -8,6 +9,8 @@ from ninja import Router
 from MonPanier.api.error import Error
 from MonPanier.api.foods.models import Food
 from MonPanier.api.products.models import Product
+from MonPanier.api.recalls.models import Recall
+from MonPanier.api.dispensations.models import Dispensation
 from MonPanier.api.products.schemas import ProductSchema
 
 router = Router(tags=["products"])
@@ -30,14 +33,31 @@ def get_product(request, product_ean: str):
         except Product.DoesNotExist:
             product = None
         food_dict = food.__dict__
-        print(food_dict)
+        today = datetime.date.today()
+        last_year = today - datetime.timedelta(days=365.24)
+        total_recalls = Recall.objects.all().filter(date_de_publication__range=[last_year, today]).values('ean').distinct().count()
+        total_dispens = Dispensation.objects.all().filter(datedepot__range=[last_year, today], ).values('code_barre_ean_gtin').distinct().count()
+        total_sanit = total_recalls + total_dispens
+        categories = str_to_array(food.categories)
+
+        mp_sanit_score = {
+            "score": None,
+            "allergens_coeff": 0.1,
+            "allergens_score": 10 * len(str_to_array(food.allergens)),
+            "dispensations_coeff": round(total_dispens / total_sanit, 2) * 0.9,
+            "dispensations_score": 0,
+            "recalls_coeff": round(total_recalls / total_sanit, 2) * 0.9,
+            "recalls_score": 0,
+        }
+        mp_sanit_score["score"] = mp_sanit_score["allergens_score"] * mp_sanit_score["allergens_coeff"] + mp_sanit_score["dispensations_score"] * mp_sanit_score["dispensations_coeff"] + mp_sanit_score["recalls_score"] * mp_sanit_score["recalls_coeff"]
+        print(mp_sanit_score, total_recalls, total_dispens, total_sanit)
         if product is None or product.created_at.timestamp() <= float(food.last_modified_t):
             img_ext = food.image_url.split('.')[-1]
             return Product.objects.create(
                 ean=food.code,
                 title=food.product_name,
                 brands=food.brands,
-                categories=str_to_array(food.categories),
+                categories=categories,
                 image="data:image/"+img_ext+";base64,"+base64.b64encode(urlopen(food.image_url).read()).decode('utf-8') if img_ext in ['png', 'jpg', 'jpeg'] else None,
                 allergens=str_to_array(food.allergens),
                 traces=str_to_array(food.traces),
@@ -54,6 +74,7 @@ def get_product(request, product_ean: str):
                 eco_score=food.ecoscore_score,
                 manufacturing_places=str_to_array(food.manufacturing_places),
                 factories=str_to_array(food.cities_tags),
+                mp_sanit_score=mp_sanit_score
             )
         return product
     except Food.DoesNotExist:

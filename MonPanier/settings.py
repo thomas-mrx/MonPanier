@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'MonPanier.api.recalls',
     'MonPanier.api.recallsCounts',
     'MonPanier.api.dispensations',
+    'MonPanier.api.dispensationsCounts',
 ]
 
 CRON_CLASSES = [

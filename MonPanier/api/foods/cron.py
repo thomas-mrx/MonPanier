@@ -28,7 +28,7 @@ def ensure_connection():
             break
 
 class FoodsUpdate(CronJobBase):
-    schedule = Schedule(run_at_times=['02:00'])
+    schedule = Schedule(run_at_times=['03:00', '15:00'])
     code = 'MonPanier.FoodsUpdate'
 
     def do(self):
@@ -42,7 +42,7 @@ class FoodsUpdate(CronJobBase):
         except FileNotFoundError:
             last_edit_date = 0
             file_size = 0
-        if current_time - last_edit_date >= 60 * 60 * 24 or file_size == 0:
+        if current_time - last_edit_date >= 60 * 60 * 11 or file_size == 0:
             with urlopen(url) as response, open(file_name, 'wb+') as csv_file:
                 print("[FoodsUpdate] Downloading file...")
                 shutil.copyfileobj(response, csv_file)
