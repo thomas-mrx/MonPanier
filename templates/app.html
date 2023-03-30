@@ -1,7 +1,17 @@
 {% extends 'base.html' %}
-
+{% load webpack_static from webpack_loader %}
 {% block content %}
-    <div class="container">
+    <div class="navbar">
+        <div class="navbar-start">
+            <img src="{% webpack_static 'logo.png' %}" class="w-10" alt="logo"/>
+        </div>
+        <div class="navbar-center">
+            <a class="btn btn-ghost normal-case text-xl">Mon Panier</a>
+        </div>
+        <div class="navbar-end">
+        </div>
+    </div>
+    <div class="container mx-auto">
         <div :class="{ 'hidden': $store.routes.activeTab !== 0 }">
             {% include "components/dashboard/dashboard.html" %}
         </div>

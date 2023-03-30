@@ -1,7 +1,7 @@
 import './style/style.scss';
 import Alpine from 'alpinejs';
 import { Html5QrcodeScanner } from 'html5-qrcode';
-import { Api, ProductSchema } from './api';
+import { Api, CartSchema, ProductSchema } from './api';
 
 window.onload = async () => {
   // @ts-ignore
@@ -69,12 +69,27 @@ window.onload = async () => {
       this.on = true;
     },
   });
+  Alpine.store('cart', {
+    carts: [] as CartSchema[],
+
+    update(carts: CartSchema[]) {
+      this.carts = carts;
+    },
+  });
   Alpine.start();
 
   const MonPanier = new Api();
 
   // @ts-ignore
   Alpine.store('routes').detectActiveTab();
+
+  MonPanier.api.getCarts().then((result) => {
+    if (result.data) {
+      console.log(result.data);
+      // @ts-ignore
+      Alpine.store('cart').update(result.data);
+    }
+  });
 
   function onScanSuccess(decodedText: any) {
     // handle the scanned code as you like, for example:
