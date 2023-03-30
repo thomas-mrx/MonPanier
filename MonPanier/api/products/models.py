@@ -36,9 +36,9 @@ class Product(models.Model):
     labels = models.JSONField(null=True)
 
     # Indicateurs MonPanier
-    mp_nutrim_score = models.TextField(null=True) # Composition
-    mp_sanit_score = models.TextField(null=True) # Sanitaire
-    mp_eco_score = models.TextField(null=True) # Provenance/Eco.
+    mp_nutrim_score = models.JSONField(null=True) # Composition
+    mp_sanit_score = models.JSONField(null=True) # Sanitaire
+    mp_eco_score = models.JSONField(null=True) # Provenance/Eco.
 
     created_at = models.DateTimeField(auto_now_add=True)
 
