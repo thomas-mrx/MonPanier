@@ -109,6 +109,11 @@ window.onload = async () => {
         icon: 'fa-search',
         name: 'Recherche',
         link: '/search',
+        onInit: () => {
+          setTimeout(() => {
+            document.getElementById('search').focus();
+          }, 100);
+        },
       },
     },
     // @ts-ignore

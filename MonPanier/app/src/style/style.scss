@@ -12,6 +12,9 @@ html {
 body {
   @apply bg-slate-100;
   @apply h-full;
+  @apply w-full;
+  @apply fixed;
+  @apply top-0;
 }
 
 .navbar {
@@ -33,6 +36,7 @@ body {
 
   .navbar-end {
     @apply mr-6;
+    @apply text-lg;
 
     .active {
       @apply text-lime-500;
