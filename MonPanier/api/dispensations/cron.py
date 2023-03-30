@@ -54,9 +54,12 @@ class DispensationsUpdate(CronJobBase):
             today = datetime.date.today()
             last_year = today - datetime.timedelta(days=365.24)
             ean_dict = {}
-            for code in list(Dispensation.objects.all().filter(datedepot__range=[last_year, today]).values('code_barre_ean_gtin', 'categorie_du_produit_rayon').distinct()):
+            total_dispensations_allergens = 0
+            for code in list(Dispensation.objects.all().filter(datedepot__range=[last_year, today]).values('code_barre_ean_gtin', 'categorie_du_produit_rayon', 'impact_allergenes').distinct()):
                 if code['code_barre_ean_gtin'] is not None:
-                    ean_dict[code['code_barre_ean_gtin']] = {'category': code['categorie_du_produit_rayon'], 'food': None}
+                    ean_dict[code['code_barre_ean_gtin']] = {'category': code['categorie_du_produit_rayon'], 'allergens': code['impact_allergenes'] is not None,'food': None}
+                    if code['impact_allergenes'] is not None:
+                        total_dispensations_allergens += 1
             dispensations_to_create = []
             count_to_create = []
             count_to_update = []
@@ -64,7 +67,7 @@ class DispensationsUpdate(CronJobBase):
             count_dict = {}
             count_dict_temp = {}
             for c in dispensations_count:
-                count_dict[c[0]] = [0, [], c[1]]
+                count_dict[c[0]] = [0, [], c[1], 0]
             counter_created = 0
             check_ref = []
             for i, dispensation in enumerate(data):
@@ -82,7 +85,7 @@ class DispensationsUpdate(CronJobBase):
                     continue
 
                 try:
-                    ean_dict[d.code_barre_ean_gtin] = {"food": Food.objects.get(code=d.code_barre_ean_gtin), "category": d.categorie_du_produit_rayon}
+                    ean_dict[d.code_barre_ean_gtin] = {"food": Food.objects.get(code=d.code_barre_ean_gtin), "category": d.categorie_du_produit_rayon, "allergens": d.impact_allergenes is not None}
                 except Food.DoesNotExist:
                     continue
 
@@ -107,6 +110,7 @@ class DispensationsUpdate(CronJobBase):
                 else:
                     food = v["food"]
                 recall_category = v["category"]
+                recall_allergens = v["allergens"]
 
                 categories = [c.strip() for c in food.categories_tags.split(',')] if food.categories_tags is not None and food.categories_tags != '' else []
                 for c in categories:
@@ -114,15 +118,19 @@ class DispensationsUpdate(CronJobBase):
                     if count_cat is None:
                         count_cat_temp = count_dict_temp.get(c, None)
                         if count_cat_temp is None:
-                            count_dict_temp[c] = [1, [recall_category], hashlib.sha256((str(today)+"-"+c).encode('utf-8')).hexdigest()]
+                            count_dict_temp[c] = [1, [recall_category], hashlib.sha256((str(today)+"-"+c).encode('utf-8')).hexdigest(), 1 if recall_allergens else 0]
                         else:
                             count_dict_temp[c][0] = count_cat_temp[0] + 1
                             if recall_category not in count_cat_temp[1]:
                                 count_dict_temp[c][1] = count_cat_temp[1] + [recall_category]
+                            if recall_allergens:
+                                count_dict_temp[c][3] = count_cat_temp[3] + 1
                     else:
                         count_dict[c][0] = count_cat[0] + 1
                         if recall_category not in count_cat[1]:
                             count_dict[c][1] = count_cat[1] + [recall_category]
+                        if recall_allergens:
+                            count_dict[c][3] = count_cat[3] + 1
 
             total_dispensations = len(ean_dict)
             print("[DispensationsUpdate] Total unique ean dispensations: {}".format(total_dispensations))
@@ -130,6 +138,8 @@ class DispensationsUpdate(CronJobBase):
                 for cat, cnt in count_dict_temp.items():
                     count_to_create.append(DispensationsCount(category=cat, dispensation_count=cnt[0], dispensation_category=cnt[1],
                                                         dispensation_rate=round(cnt[0] / total_dispensations * 100, 2),
+                                                        dispensation_allergens_count=cnt[3],
+                                                        dispensation_allergens_rate=round(cnt[3] / total_dispensations_allergens * 100, 2),
                                                         hash=cnt[2]))
                 if count_to_create:
                     ensure_connection()
@@ -138,11 +148,13 @@ class DispensationsUpdate(CronJobBase):
                 for cat, cnt in count_dict.items():
                     count_to_update.append(DispensationsCount(category=cat, dispensation_count=cnt[0], dispensation_category=cnt[1],
                                                         dispensation_rate=round(cnt[0] / total_dispensations * 100, 2),
+                                                        dispensation_allergens_count=cnt[3],
+                                                        dispensation_allergens_rate=round(cnt[3] / total_dispensations_allergens * 100, 2),
                                                         hash=cnt[2]))
                 if count_to_update:
                     ensure_connection()
                     DispensationsCount.objects.bulk_update(count_to_update,
-                                                     ['dispensation_count', 'dispensation_category', 'dispensation_rate'])
+                                                     ['dispensation_count', 'dispensation_category', 'dispensation_rate', 'dispensation_allergens_count', 'dispensation_allergens_rate'])
             print("[DispensationsUpdate] Created {} dispensations count categories.".format(len(count_to_create)))
             print("[DispensationsUpdate] Updated {} dispensations count categories.".format(len(count_to_update)))
 
