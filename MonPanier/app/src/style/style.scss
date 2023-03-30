@@ -5,15 +5,60 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  @apply h-full;
+}
 
+body {
+  @apply bg-slate-100;
+  @apply h-full;
+}
+
+.navbar {
+  @apply fixed;
+  @apply top-0;
+  @apply w-full;
+  @apply border-b;
+  @apply border-gray-200;
+  @apply flex;
+  @apply bg-white;
+  @apply z-50;
+  @apply min-h-6;
+  @apply h-14;
+  padding-top: env(safe-area-inset-top, 0px);
+
+  .navbar-start {
+    @apply ml-6;
+  }
+
+  .navbar-end {
+    @apply mr-6;
+
+    .active {
+      @apply text-lime-500;
+    }
+  }
+
+  > * {
+    @apply pt-2
+  }
+}
+
+.container {
+  @apply pt-14;
+  @apply pb-20;
+}
 
 .mon-panier-header {
-  @apply absolute;
+  @apply fixed;
   @apply bottom-0;
   @apply w-full;
   @apply border-t;
   @apply border-gray-200;
   @apply flex;
+  @apply bg-white;
+  @apply z-50;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 
   button {
     @apply flex;
@@ -22,7 +67,7 @@
     @apply justify-center;
     @apply text-center;
     @apply text-gray-500;
-    @apply hover:text-lime-500;
+    /*@apply hover:text-lime-500; cause weird effect on mobile */
 
     &.active {
       @apply text-lime-500;

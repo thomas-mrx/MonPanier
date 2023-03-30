@@ -3,12 +3,18 @@
 {% block content %}
     <div class="navbar">
         <div class="navbar-start">
-            <img src="{% webpack_static 'logo.png' %}" class="w-10" alt="logo"/>
+            <img src="{% webpack_static 'logo.png' %}" class="w-8" alt="logo"/>
         </div>
         <div class="navbar-center">
-            <a class="btn btn-ghost normal-case text-xl">Mon Panier</a>
+            <a class="btn btn-ghost normal-case text-xl">MonPanier</a>
         </div>
         <div class="navbar-end">
+            <button @click="$store.settingsModal.toggle()"
+                :class="{ 'active': $store.settingsModal.on }">
+            <span>
+                <i class="far fa-cogs"></i>
+            </span>
+            </button>
         </div>
     </div>
     <div class="container mx-auto">
@@ -22,8 +28,9 @@
             {% include "components/scan/scan.html" %}
         </div>
         <div :class="{ 'hidden': $store.routes.activeTab !== 3 }">
-            {% include "components/settings/settings.html" %}
+            {% include "components/search/search.html" %}
         </div>
     </div>
+    {% include "components/settings/settings.html" %}
     {% include "components/header.html" %}
 {% endblock %}

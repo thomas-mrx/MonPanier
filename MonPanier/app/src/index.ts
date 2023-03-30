@@ -64,13 +64,23 @@ window.onload = async () => {
     },
   });
 
+  // Settings modal component
+  Alpine.store('settingsModal', {
+    on: false,
+    text: 'Paramètres',
+
+    toggle() {
+      this.on = !this.on;
+    },
+  });
+
   // SPA Router
   Alpine.store('routes', {
     tabs: {
       0: {
         id: 0,
         icon: 'fa-chart-line',
-        name: 'Dashboard',
+        name: 'Explorer',
         link: '/',
       },
       1: {
@@ -96,9 +106,9 @@ window.onload = async () => {
       },
       3: {
         id: 3,
-        icon: 'fa-cog',
-        name: 'Paramètres',
-        link: '/settings',
+        icon: 'fa-search',
+        name: 'Recherche',
+        link: '/search',
       },
     },
     // @ts-ignore
@@ -116,7 +126,7 @@ window.onload = async () => {
       // @ts-ignore
       const tabFound = Object.values(this.tabs).find((tab) => tab.link === url);
       // @ts-ignore
-      if (tabFound.id) {
+      if (tabFound && tabFound.id) {
         // @ts-ignore
         this.activeTab = tabFound.id;
         // @ts-ignore

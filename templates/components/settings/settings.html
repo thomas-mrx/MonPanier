@@ -1,1 +1,9 @@
-<p>Settings works!</p>
+<div class="modal" x-data :class="$store.settingsModal.on && 'modal-open'">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg" x-text="$store.settingsModal.text"></h3>
+
+        <div class="modal-action">
+            <button class="btn" x-data @click="$store.settingsModal.toggle()">Close</button>
+        </div>
+    </div>
+</div>

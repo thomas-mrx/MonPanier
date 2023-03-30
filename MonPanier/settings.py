@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from socket import gethostname, gethostbyname
+
 
 load_dotenv()
 
@@ -31,6 +33,8 @@ DEBUG = True if os.environ.get('DEBUG') == '1' else False
 ALLOWED_HOSTS = [
     "monpanier.datavores.fr",
     "127.0.0.1",
+    gethostname(),
+    gethostbyname(gethostname()),
 ]
 
 
