@@ -19,7 +19,7 @@ def mp_sanit_score(food):
     total_recalls = Recall.objects.all().filter(date_de_publication__range=[last_year, today]).values('ean').distinct().count()
     total_dispens = Dispensation.objects.all().filter(datedepot__range=[last_year, today], ).values('code_barre_ean_gtin').distinct().count()
     total_sanit = total_recalls + total_dispens
-    categories = str_to_array(food.categories)
+    categories = str_to_array(food.categories_tags)
     dispensations_score = 0
     recalls_score = 0
     dispensations_count = DispensationsCount.objects.all().filter(category__in=categories, created_at=today).values('dispensation_category', 'dispensation_rate')
