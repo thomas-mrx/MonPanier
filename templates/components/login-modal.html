@@ -1,0 +1,20 @@
+<div class="modal"  :class="$store.loginModal.on && 'modal-open'" >
+    <div class="modal-box">
+        <h3 class="font-bold text-lg">Se connecter</h3>
+        <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Quel est votre nom d'utilisateur.trice ?</span>
+            </label>
+            <input type="text" x-model="$store.loginModal.username"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+        </div>
+         <div class="form-control w-full max-w-xs">
+            <label class="label">
+                <span class="label-text">Quel est votre mot de passe ?</span>
+            </label>
+            <input type="text" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+        </div>
+        <div class="modal-action">
+            <button class="btn" x-on:click="$store.loginModal.login()">Se connecter</button>
+        </div>
+    </div>
+</div>

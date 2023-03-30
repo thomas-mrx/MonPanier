@@ -10,27 +10,30 @@
         </div>
         <div class="navbar-end">
             <button @click="$store.settingsModal.toggle()"
-                :class="{ 'active': $store.settingsModal.on }">
+                    :class="{ 'active': $store.settingsModal.on }">
             <span>
                 <i class="far fa-cogs"></i>
             </span>
             </button>
         </div>
     </div>
-    <div class="container mx-auto">
-        <div :class="{ 'hidden': $store.routes.activeTab !== 0 }">
-            {% include "components/dashboard/dashboard.html" %}
-        </div>
-        <div :class="{ 'hidden': $store.routes.activeTab !== 1 }">
-            {% include "components/carts/carts.html" %}
-        </div>
-        <div :class="{ 'hidden': $store.routes.activeTab !== 2 }">
-            {% include "components/scan/scan.html" %}
-        </div>
-        <div :class="{ 'hidden': $store.routes.activeTab !== 3 }">
-            {% include "components/search/search.html" %}
+    <div class="scrollview">
+        <div class="container mx-auto">
+            <div :class="{ 'hidden': $store.routes.activeTab !== 0 }">
+                {% include "components/dashboard/dashboard.html" %}
+            </div>
+            <div :class="{ 'hidden': $store.routes.activeTab !== 1 }">
+                {% include "components/carts/carts.html" %}
+            </div>
+            <div :class="{ 'hidden': $store.routes.activeTab !== 2 }">
+                {% include "components/scan/scan.html" %}
+            </div>
+            <div :class="{ 'hidden': $store.routes.activeTab !== 3 }">
+                {% include "components/search/search.html" %}
+            </div>
         </div>
     </div>
     {% include "components/settings/settings.html" %}
+    {% include "components/login-modal.html" %}
     {% include "components/header.html" %}
 {% endblock %}

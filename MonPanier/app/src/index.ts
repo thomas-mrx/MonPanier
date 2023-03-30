@@ -5,10 +5,22 @@ import {
   Api, CartSchema, CreateCartSchema, ProductSchema,
 } from './api';
 
+function getCookie(name: string): string | null {
+  const nameLenPlus = (name.length + 1);
+  return document.cookie
+    .split(';')
+    .map((c) => c.trim())
+    .filter((cookie) => cookie.substring(0, nameLenPlus) === `${name}=`)
+    .map((cookie) => decodeURIComponent(cookie.substring(nameLenPlus)))[0] || null;
+}
+
 window.onload = async () => {
   // @ts-ignore
   window.Alpine = Alpine;
   const MonPanier = new Api();
+  const csrftoken = getCookie('csrftoken');
+  const authHeaders = { 'X-CSRFToken': csrftoken };
+  const params = { headers: authHeaders };
 
   // Add cart modal component
   Alpine.store('addCartModal', {
@@ -23,7 +35,7 @@ window.onload = async () => {
     createCart() {
       this.cart.name = this.text;
       this.cart.user_id = 1;
-      MonPanier.api.createCart(this.cart).then((result) => {
+      MonPanier.api.createCart(this.cart, params).then((result) => {
         if (result.data) {
           // @ts-ignore
           Alpine.store('cart').push(result.data);
@@ -74,6 +86,34 @@ window.onload = async () => {
     },
   });
 
+  // Login modal component
+  Alpine.store('loginModal', {
+    on: false,
+    username: undefined,
+    password: undefined,
+
+    toggle() {
+      this.on = !this.on;
+    },
+
+    login() {
+      MonPanier.api.monPanierApiAuthApiLogin({
+        username: this.username,
+        password: this.password,
+      }, params).then((result) => {
+        if (result.status === 200 && result.data) {
+          this.toggle();
+        }
+      }).catch((error) => {
+        if (error.status === 403) {
+          alert('Mauvais identifiants');
+          this.username = undefined;
+          this.password = undefined;
+        }
+      });
+    },
+  });
+
   // SPA Router
   Alpine.store('routes', {
     tabs: {
@@ -90,7 +130,7 @@ window.onload = async () => {
         link: '/carts',
         onInit: () => {
           // @ts-ignore
-          MonPanier.api.getCarts().then((result) => {
+          MonPanier.api.getCarts(params).then((result) => {
             if (result.data) {
               // @ts-ignore
               Alpine.store('cart').update(result.data);
@@ -145,9 +185,19 @@ window.onload = async () => {
   // @ts-ignore
   Alpine.store('routes').detectActiveTab();
 
+  // Authentication
+  MonPanier.api.monPanierApiAuthApiMe(params).then((result) => {
+    console.log(result);
+  }).catch((error) => {
+    if (error.status === 401) {
+      // @ts-ignore
+      Alpine.store('loginModal').toggle();
+    }
+  });
+
   function onScanSuccess(decodedText: any) {
     // handle the scanned code as you like, for example:
-    MonPanier.api.getProduct(decodedText).then((result) => {
+    MonPanier.api.getProduct(decodedText, params).then((result) => {
       if (result.data) {
         // @ts-ignore
         Alpine.store('productModal').update(result.data);

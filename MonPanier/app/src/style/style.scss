@@ -48,9 +48,11 @@ body {
   }
 }
 
-.container {
-  @apply pt-14;
-  @apply pb-20;
+.scrollview {
+  @apply mt-14;
+  @apply mb-20;
+  @apply overflow-y-auto;
+  height:calc(100% - 5rem - 3.5rem);
 }
 
 .mon-panier-header {
