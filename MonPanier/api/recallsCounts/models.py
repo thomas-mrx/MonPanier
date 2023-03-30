@@ -4,7 +4,7 @@ from django.db import models
 class RecallsCount(models.Model):
     """Model representing the recall analysis"""
     hash = models.CharField(max_length=128, unique=True, primary_key=True)
-    category = models.CharField(max_length=128)
+    category = models.TextField()
     recall_category = models.JSONField(default=list)
     recall_count = models.IntegerField()
     recall_rate = models.FloatField(null=True)
