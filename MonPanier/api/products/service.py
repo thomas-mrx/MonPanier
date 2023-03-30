@@ -41,3 +41,15 @@ def mp_sanit_score(food):
         "recalls_coeff": recalls_coeff,
         "recalls_score": recalls_score,
     }
+
+def mp_nutrim_score(food):
+    return {
+        "score": 0,
+        "nutriments": {},
+    }
+
+def mp_eco_score(food):
+    return {
+        "score": 0,
+        "eco": {},
+    }

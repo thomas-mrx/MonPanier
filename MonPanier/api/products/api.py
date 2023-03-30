@@ -1,5 +1,4 @@
 import base64
-import datetime
 from urllib.request import urlopen
 
 from typing import List
@@ -9,7 +8,7 @@ from ninja import Router
 from MonPanier.api.error import Error
 from MonPanier.api.foods.models import Food
 from MonPanier.api.products.models import Product
-from MonPanier.api.products.service import str_to_array, mp_sanit_score
+from MonPanier.api.products.service import str_to_array, mp_sanit_score, mp_nutrim_score, mp_eco_score
 from MonPanier.api.products.schemas import ProductSchema
 
 router = Router(tags=["products"])
@@ -31,6 +30,8 @@ def get_product(request, product_ean: str):
             product = None
         food_dict = food.__dict__
         sanit_score = mp_sanit_score(food)
+        nutrim_score = mp_nutrim_score(food)
+        eco_score = mp_eco_score(food)
         if product is None or product.created_at.timestamp() <= float(food.last_modified_t):
             img_ext = food.image_url.split('.')[-1]
             return Product.objects.create(
@@ -54,7 +55,9 @@ def get_product(request, product_ean: str):
                 eco_score=food.ecoscore_score,
                 manufacturing_places=str_to_array(food.manufacturing_places),
                 factories=str_to_array(food.cities_tags),
-                mp_sanit_score=sanit_score
+                mp_sanit_score=sanit_score,
+                mp_nutrim_score=nutrim_score,
+                mp_eco_score=eco_score,
             )
         return product
     except Food.DoesNotExist:
