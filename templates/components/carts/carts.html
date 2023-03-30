@@ -1,22 +1,26 @@
-<h2 class="text-xl font-medium mx-3 my-2 text-gray-600">Mes paniers</h2>
+<div class="flex justify-between items-center mx-3">
+    <h2 class="text-xl font-medium my-2 text-gray-600">Mes paniers</h2>
+    <button class="btn btn-sm" x-on:click="$store.addCartModal.toggle()">Ajouter</button>
+</div>
 <div class="grid grid-cols-1 mx-3" x-data="$store.cart.carts">
     <template x-for="cart in $store.cart.carts" :key="cart.id">
-        <div class="flex  bg-white shadow-md  rounded-2xl p-2 my-2">
-        <i class="far fa-basket-shopping text-lg text-gray-500"></i>
-        <div class="flex flex-col justify-center w-full px-2 py-1">
-            <div class="flex justify-between items-center ">
-                <div class="flex flex-col">
-                    <h2 class="text-sm font-medium text-gray-500" x-text="cart.name"></h2>
+        <div class="flex  shadow-md  rounded-2xl p-2 my-2">
+            <i class="far fa-basket-shopping text-lg text-gray-500"></i>
+            <div class="flex flex-col justify-center w-full px-2 py-1">
+                <div class="flex justify-between items-center ">
+                    <div class="flex flex-col">
+                        <h2 class="text-sm font-medium text-gray-500" x-text="cart.name"></h2>
+                    </div>
                 </div>
-            </div>
-            <div class="flex pt-2  text-sm text-gray-500">
-                <div class="flex items-center mr-auto">
-                    <span class="badge badge-success badge-sm">Badge</span>
-                </div>
-                <div class="flex items-center font-light text-gray-400" x-text="cart.created_at">
+                <div class="flex pt-2  text-sm text-gray-500">
+                    <div class="flex items-center mr-auto">
+                        <span class="badge badge-success badge-sm">Badge</span>
+                    </div>
+                    <div class="flex items-center font-light text-gray-400" x-text="cart.created_at">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </template>
 </div>
+{% include "components/carts/add-cart-modal.html" %}

@@ -1,11 +1,68 @@
 import './style/style.scss';
 import Alpine from 'alpinejs';
 import { Html5QrcodeScanner } from 'html5-qrcode';
-import { Api, CartSchema, ProductSchema } from './api';
+import {
+  Api, CartSchema, CreateCartSchema, ProductSchema,
+} from './api';
 
 window.onload = async () => {
   // @ts-ignore
   window.Alpine = Alpine;
+  const MonPanier = new Api();
+
+  // Add cart modal component
+  Alpine.store('addCartModal', {
+    on: false,
+    text: undefined,
+    cart: {} as CreateCartSchema,
+
+    toggle() {
+      this.on = !this.on;
+    },
+
+    createCart() {
+      this.cart.name = this.text;
+      this.cart.user_id = 1;
+      MonPanier.api.createCart(this.cart).then((result) => {
+        if (result.data) {
+          // @ts-ignore
+          Alpine.store('cart').push(result.data);
+          this.toggle();
+          this.cart = {};
+        }
+      });
+    },
+
+  });
+
+  // Cart component
+  Alpine.store('cart', {
+    carts: [] as CartSchema[],
+
+    update(carts: CartSchema[]) {
+      this.carts = carts;
+    },
+
+    push(cart: CartSchema) {
+      this.carts.push(cart);
+    },
+  });
+
+  // Product modal component
+  Alpine.store('productModal', {
+    on: true,
+    text: 'Hello world',
+    product: {} as ProductSchema,
+
+    toggle() {
+      this.on = !this.on;
+    },
+
+    update(product: ProductSchema) {
+      this.product = product;
+      this.on = true;
+    },
+  });
 
   // SPA Router
   Alpine.store('routes', {
@@ -21,6 +78,15 @@ window.onload = async () => {
         icon: 'fa-shopping-cart',
         name: 'Panier',
         link: '/carts',
+        onInit: () => {
+          // @ts-ignore
+          MonPanier.api.getCarts().then((result) => {
+            if (result.data) {
+              // @ts-ignore
+              Alpine.store('cart').update(result.data);
+            }
+          });
+        },
       },
       2: {
         id: 2,
@@ -40,6 +106,7 @@ window.onload = async () => {
 
     setActiveTab(id: number) {
       this.activeTab = id;
+      this.tabs[id].onInit?.();
       // eslint-disable-next-line no-restricted-globals
       window.history.replaceState({}, '', this.tabs[id].link);
     },
@@ -52,44 +119,16 @@ window.onload = async () => {
       if (tabFound.id) {
         // @ts-ignore
         this.activeTab = tabFound.id;
+        // @ts-ignore
+        tabFound.onInit?.();
       }
     },
   });
-  Alpine.store('productModal', {
-    on: true,
-    text: 'Hello world',
-    product: {} as ProductSchema,
 
-    toggle() {
-      this.on = !this.on;
-    },
-
-    update(product: ProductSchema) {
-      this.product = product;
-      this.on = true;
-    },
-  });
-  Alpine.store('cart', {
-    carts: [] as CartSchema[],
-
-    update(carts: CartSchema[]) {
-      this.carts = carts;
-    },
-  });
   Alpine.start();
-
-  const MonPanier = new Api();
 
   // @ts-ignore
   Alpine.store('routes').detectActiveTab();
-
-  MonPanier.api.getCarts().then((result) => {
-    if (result.data) {
-      console.log(result.data);
-      // @ts-ignore
-      Alpine.store('cart').update(result.data);
-    }
-  });
 
   function onScanSuccess(decodedText: any) {
     // handle the scanned code as you like, for example:

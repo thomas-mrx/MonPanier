@@ -32,6 +32,17 @@ export interface CartSchema {
   user: number;
 }
 
+/** CreateCartSchema */
+export interface CreateCartSchema {
+  /** User */
+  user_id: number;
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+}
+
 /** ProductSchema */
 export interface ProductSchema {
   /** Id */
@@ -898,6 +909,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<CartSchema[], any>({
         path: `/api/carts/`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags carts
+     * @name CreateCart
+     * @summary Create Cart
+     * @request POST:/api/carts/
+     */
+    createCart: (data: CreateCartSchema, params: RequestParams = {}) =>
+      this.request<CartSchema, any>({
+        path: `/api/carts/`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
