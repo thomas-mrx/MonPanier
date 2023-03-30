@@ -1,15 +1,18 @@
 import base64
+import datetime
 from urllib.request import urlopen
 
 from typing import List
 
 from ninja import Router
 
+from MonPanier.api.dispensations.models import Dispensation
 from MonPanier.api.error import Error
 from MonPanier.api.foods.models import Food
 from MonPanier.api.products.models import Product
 from MonPanier.api.products.service import str_to_array, mp_sanit_score, mp_nutrim_score, mp_eco_score
 from MonPanier.api.products.schemas import ProductSchema
+from MonPanier.api.recalls.models import Recall
 
 router = Router(tags=["products"])
 
@@ -59,7 +62,12 @@ def get_product(request, product_ean: str):
                 mp_nutrim_score=nutrim_score,
                 mp_eco_score=eco_score,
             )
-        return product
+        today = datetime.date.today()
+        last_year = today - datetime.timedelta(days=365.24)
+        p = product.__dict__
+        p["dispensations"] = list(Dispensation.objects.filter(code_barre_ean_gtin=food.code, datedepot__range=[last_year, today]))
+        p["recalls"] = list(Recall.objects.filter(ean=food.code,date_de_publication__range=[last_year, today]))
+        return p
     except Food.DoesNotExist:
         return 404, Error(message="Product not found")
 
