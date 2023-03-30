@@ -100,6 +100,7 @@ class RecallsUpdate(CronJobBase):
                 counter_created += len(recalls_to_create)
             print("[RecallsUpdate] Created {} recalls.".format(counter_created))
 
+            print("[RecallsUpdate] Updating recalls count...")
             for k, v in ean_dict.items():
                 if v["food"] is None:
                     food = Food.objects.get(code=k)
@@ -123,9 +124,8 @@ class RecallsUpdate(CronJobBase):
                         if recall_category not in count_cat[1]:
                             count_dict[c][1] = count_cat[1] + [recall_category]
 
-            print("[RecallsUpdate] Updating recalls count...")
             total_recalls = len(ean_dict)
-            print("[RecallsUpdate] Total recalls: {}".format(total_recalls))
+            print("[RecallsUpdate] Total unique ean recalls: {}".format(total_recalls))
             if count_dict_temp:
                 for cat, cnt in count_dict_temp.items():
                     count_to_create.append(RecallsCount(category=cat, recall_count=cnt[0], recall_category=cnt[1],

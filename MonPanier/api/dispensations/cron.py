@@ -51,15 +51,20 @@ class DispensationsUpdate(CronJobBase):
             print("[DispensationsUpdate] Loading file...")
             data = json.load(json_file)
             references = list(Dispensation.objects.values_list('hash', flat=True))
+            today = datetime.date.today()
+            last_year = today - datetime.timedelta(days=365.24)
+            ean_dict = {}
+            for code in list(Dispensation.objects.all().filter(datedepot__range=[last_year, today]).values('code_barre_ean_gtin', 'categorie_du_produit_rayon').distinct()):
+                if code['code_barre_ean_gtin'] is not None:
+                    ean_dict[code['code_barre_ean_gtin']] = {'category': code['categorie_du_produit_rayon'], 'food': None}
             dispensations_to_create = []
             count_to_create = []
             count_to_update = []
-            dispensations_count = DispensationsCount.objects.values_list('category','dispensation_count', 'dispensation_category')
+            dispensations_count = DispensationsCount.objects.filter(created_at=today).values_list('category', 'hash')
             count_dict = {}
             count_dict_temp = {}
-            existing_ean = {}
             for c in dispensations_count:
-                count_dict[c[0]] = [c[1], c[2]]
+                count_dict[c[0]] = [0, [], c[1]]
             counter_created = 0
             check_ref = []
             for i, dispensation in enumerate(data):
@@ -77,26 +82,9 @@ class DispensationsUpdate(CronJobBase):
                     continue
 
                 try:
-                    food = Food.objects.get(code=d.code_barre_ean_gtin)
+                    ean_dict[d.code_barre_ean_gtin] = {"food": Food.objects.get(code=d.code_barre_ean_gtin), "category": d.categorie_du_produit_rayon}
                 except Food.DoesNotExist:
                     continue
-
-                categories = [c.strip() for c in food.categories_tags.split(',')] if food.categories_tags is not None and food.categories_tags != '' else []
-                for c in categories:
-                    count_cat = count_dict.get(c, None)
-                    if count_cat is None:
-                        count_cat_temp = count_dict_temp.get(c, None)
-                        if count_cat_temp is None:
-                            count_dict_temp[c] = [1, [d.categorie_du_produit_rayon]]
-                        else:
-                            count_dict_temp[c][0] = count_cat_temp[0] + 1
-                            if d.categorie_du_produit_rayon not in count_cat_temp[1]:
-                                count_dict_temp[c][1] = count_cat_temp[1] + [d.categorie_du_produit_rayon]
-                    else:
-                        count_dict[c][0] = count_cat[0] + 1
-                        if d.categorie_du_produit_rayon not in count_cat[1]:
-                            count_dict[c][1] = count_cat[1] + [d.categorie_du_produit_rayon]
-
 
                 dispensations_to_create.append(d)
 
@@ -111,24 +99,51 @@ class DispensationsUpdate(CronJobBase):
                 Dispensation.objects.bulk_create(dispensations_to_create)
                 counter_created += len(dispensations_to_create)
             print("[DispensationsUpdate] Created {} dispensations.".format(counter_created))
+
             print("[DispensationsUpdate] Updating dispensations count...")
-            today = datetime.date.today()
-            last_year = today - datetime.timedelta(days=365.24)
-            total_dispensations = Dispensation.objects.all().filter(datedepot__range=[last_year, today], ).values('code_barre_ean_gtin').distinct().count()
+            for k, v in ean_dict.items():
+                if v["food"] is None:
+                    food = Food.objects.get(code=k)
+                else:
+                    food = v["food"]
+                recall_category = v["category"]
+
+                categories = [c.strip() for c in food.categories_tags.split(',')] if food.categories_tags is not None and food.categories_tags != '' else []
+                for c in categories:
+                    count_cat = count_dict.get(c, None)
+                    if count_cat is None:
+                        count_cat_temp = count_dict_temp.get(c, None)
+                        if count_cat_temp is None:
+                            count_dict_temp[c] = [1, [recall_category], hashlib.sha256((str(today)+"-"+c).encode('utf-8')).hexdigest()]
+                        else:
+                            count_dict_temp[c][0] = count_cat_temp[0] + 1
+                            if recall_category not in count_cat_temp[1]:
+                                count_dict_temp[c][1] = count_cat_temp[1] + [recall_category]
+                    else:
+                        count_dict[c][0] = count_cat[0] + 1
+                        if recall_category not in count_cat[1]:
+                            count_dict[c][1] = count_cat[1] + [recall_category]
+
+            total_dispensations = len(ean_dict)
+            print("[DispensationsUpdate] Total unique ean dispensations: {}".format(total_dispensations))
             if count_dict_temp:
                 for cat, cnt in count_dict_temp.items():
                     count_to_create.append(DispensationsCount(category=cat, dispensation_count=cnt[0], dispensation_category=cnt[1],
-                                                        dispensation_rate=round(cnt[0] / total_dispensations * 100, 2)))
+                                                        dispensation_rate=round(cnt[0] / total_dispensations * 100, 2),
+                                                        hash=cnt[2]))
                 if count_to_create:
                     ensure_connection()
                     DispensationsCount.objects.bulk_create(count_to_create)
             if count_dict:
                 for cat, cnt in count_dict.items():
                     count_to_update.append(DispensationsCount(category=cat, dispensation_count=cnt[0], dispensation_category=cnt[1],
-                                                        dispensation_rate=round(cnt[0] / total_dispensations * 100, 2)))
+                                                        dispensation_rate=round(cnt[0] / total_dispensations * 100, 2),
+                                                        hash=cnt[2]))
                 if count_to_update:
                     ensure_connection()
                     DispensationsCount.objects.bulk_update(count_to_update,
                                                      ['dispensation_count', 'dispensation_category', 'dispensation_rate'])
             print("[DispensationsUpdate] Created {} dispensations count categories.".format(len(count_to_create)))
             print("[DispensationsUpdate] Updated {} dispensations count categories.".format(len(count_to_update)))
+
+            ensure_connection()
