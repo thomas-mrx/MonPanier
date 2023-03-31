@@ -94,10 +94,10 @@ def register(request, data: RegisterIn):
 def me(request):
     return request.user
 
-@router.get('/activate/{uid}/{token}', tags=['auth'], response={200:None, 403:None}, auth=None)
+@router.get('/activate/{uid}/{token}', tags=['auth'], response={200:None}, auth=None)
 def activate(request, uid:str, token:str):
     if request.user and request.user.is_authenticated:
-        return 403, None
+        return redirect('/')
     User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uid))
