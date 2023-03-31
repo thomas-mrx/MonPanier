@@ -1,3 +1,11 @@
+import re
+
+from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from ninja import Router
 from django.conf import settings
 from ninja.security import django_auth
@@ -7,7 +15,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.forms import (
     PasswordResetForm,
     SetPasswordForm,
-    PasswordChangeForm
+    PasswordChangeForm, UserCreationForm
 )
 
 from django.contrib.auth import (
@@ -19,14 +27,16 @@ from django.contrib.auth import (
 from .schema import (
     UserOut,
     LoginIn,
+    RegisterIn,
     RequestPasswordResetIn,
     SetPasswordIn,
     ChangePasswordIn,
-    ErrorsOut
+    ErrorsOut,
 )
 
 router = Router()
 _LOGIN_BACKEND = 'django.contrib.auth.backends.ModelBackend'
+
 
 
 @router.post('/', tags=['auth'], response={200: UserOut, 403: None}, auth=None)
@@ -42,6 +52,41 @@ def login(request, data: LoginIn):
 def logout(request):
     django_logout(request)
     return 204, None
+
+def validate_email_address(email_address):
+   return re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email_address)
+
+@router.post('/register', tags=['auth'], response={200: UserOut, 403: None, 400: ErrorsOut}, auth=None)
+def register(request, data: RegisterIn):
+    if request.user.is_authenticated:
+        return 403, None
+    data = data.dict()
+    email = data.pop('email')
+    form = UserCreationForm(data)
+    if form.is_valid() and validate_email_address(email):
+        print("form is valid")
+        user = form.save(commit=False)
+        user.email = email
+        user.is_active = False
+        user.save()
+        mail_subject = 'Activate your user account.'
+        message = render_to_string('emails/register.html', {
+            'user': user.username,
+            'domain': get_current_site(request).domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': 'test',
+            'protocol': 'https' if request.is_secure() else 'http'
+        })
+        email = EmailMessage(mail_subject, message, to=[user.email])
+        if email.send():
+            messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{user.email}</b> inbox and click on \
+                    received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
+        else:
+            messages.error(request, f'Problem sending confirmation email to {user.email}, check if you typed it correctly.')
+        django_login(request, user, backend=_LOGIN_BACKEND)
+        return user
+    else:
+        return 400, {'errors': form.errors}
 
 
 @router.get('/me', tags=['auth'], response=UserOut, auth=django_auth)

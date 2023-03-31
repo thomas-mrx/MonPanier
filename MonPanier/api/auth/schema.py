@@ -14,6 +14,11 @@ EmailSchemaMixin = create_schema(
     fields=[get_user_model().EMAIL_FIELD]
 )
 
+RegisterSchemaMixin = create_schema(
+    get_user_model(),
+    fields=[get_user_model().EMAIL_FIELD, get_user_model().USERNAME_FIELD]
+)
+
 UserOut = create_schema(
     get_user_model(),
     exclude=['password']
@@ -23,6 +28,10 @@ UserOut = create_schema(
 class LoginIn(UsernameSchemaMixin):
     password: str
 
+
+class RegisterIn(RegisterSchemaMixin):
+    password1: str
+    password2: str
 
 class RequestPasswordResetIn(EmailSchemaMixin):
     pass

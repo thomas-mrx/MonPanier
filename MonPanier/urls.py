@@ -24,6 +24,7 @@ from MonPanier.api import api
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
+    path('activate/<uidb64>/<token>', TemplateView.as_view(template_name="app.html"), name='activate'),
     path('', TemplateView.as_view(template_name="app.html")),
     path('carts', TemplateView.as_view(template_name="app.html")),
     path('scan', TemplateView.as_view(template_name="app.html")),
