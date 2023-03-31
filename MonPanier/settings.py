@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
+
+from django.core import mail
 from dotenv import load_dotenv
 from socket import gethostname, gethostbyname
 
@@ -142,14 +144,16 @@ default_database = os.environ.get('DJANGO_DATABASE', 'localhost')
 DATABASES['default'] = DATABASES[default_database]
 
 # Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_FROM = os.environ.get('EMAIL_ADDRESS')
-EMAIL_HOST_USER = os.environ.get('EMAIL_ADDRESS')
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_FROM = os.environ.get('EMAIL_FROM')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 PASSWORD_RESET_TIMEOUT = 14400
 
