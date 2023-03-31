@@ -11,10 +11,10 @@
             <label class="label">
                 <span class="label-text">Quel est votre mot de passe ?</span>
             </label>
-            <input type="text" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+            <input type="password" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
         </div>
         <div class="modal-action">
-            <button class="btn" x-on:click="$store.loginModal.login()">Se connecter</button>
+            <button class="btn" x-on:click="$store.loginModal.login()" :class="(!$store.loginModal.username || !$store.loginModal.password) && 'btn-disabled'">Se connecter</button>
         </div>
     </div>
 </div>

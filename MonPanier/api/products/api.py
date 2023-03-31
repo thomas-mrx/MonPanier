@@ -40,7 +40,7 @@ def get_product(request, product_ean: str):
         sanit_score = mp_sanit_score(food, dispensations_allergens, recalls)
         nutrim_score = mp_nutrim_score(food)
         eco_score = mp_eco_score(food)
-        if product is None or product.created_at.timestamp() <= float(food.last_modified_t) or True:
+        if product is None or product.created_at.timestamp() <= float(food.last_modified_t):
             img_ext = food.image_url.split('.')[-1]
             product = Product.objects.create(
                 ean=food.code,

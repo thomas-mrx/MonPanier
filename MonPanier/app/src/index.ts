@@ -31,6 +31,19 @@ window.onload = async () => {
   // @ts-ignore
   window.Alpine = Alpine;
   const MonPanier = new Api();
+  const ScrollView: HTMLElement = document.querySelector('.scrollview');
+
+  Alpine.store('main', {
+    scrolled: ScrollView.scrollTop > 24,
+
+    update() {
+      this.scrolled = ScrollView.scrollTop > 24;
+    },
+  });
+  ScrollView.addEventListener('scroll', () => {
+    // @ts-ignore
+    Alpine.store('main').update();
+  });
 
   // Add cart modal component
   Alpine.store('addCartModal', {
@@ -93,6 +106,14 @@ window.onload = async () => {
     toggle() {
       this.on = !this.on;
     },
+
+    logout() {
+      MonPanier.api.monPanierApiAuthApiLogout(getHeaders()).then((result) => {
+        if (result.status === 204) {
+          window.location.reload();
+        }
+      });
+    },
   });
 
   // Login modal component
@@ -112,10 +133,12 @@ window.onload = async () => {
       }, getHeaders()).then((result) => {
         if (result.status === 200 && result.data) {
           this.toggle();
+          // @ts-ignore
+          Alpine.store('routes').detectActiveTab();
         }
       }).catch((error) => {
         if (error.status === 403) {
-          alert('Mauvais identifiants');
+          alert('Compte non-activé ou mauvais identifiants.');
           this.username = undefined;
           this.password = undefined;
         }
