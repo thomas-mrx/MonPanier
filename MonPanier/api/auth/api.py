@@ -107,6 +107,7 @@ def activate(request, uid:str, token:str):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
+        django_login(request, user, backend=_LOGIN_BACKEND)
     return redirect('/')
 
 @router.post('/request_password_reset',
