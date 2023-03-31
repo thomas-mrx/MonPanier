@@ -145,7 +145,7 @@ DATABASES['default'] = DATABASES[default_database]
 # Email configuration
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
-SENDGRID_SANDBOX_MODE_IN_DEBUG = not DEBUG
+SENDGRID_SANDBOX_MODE_IN_DEBUG = DEBUG
 EMAIL_FROM = os.environ.get('EMAIL')
 
 PASSWORD_RESET_TIMEOUT = 14400
