@@ -4,9 +4,9 @@ import re
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage, send_mail
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.shortcuts import redirect
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from ninja import Router
 from django.conf import settings
 from ninja.security import django_auth
@@ -65,23 +65,26 @@ def register(request, data: RegisterIn):
     email = data.pop('email')
     form = UserCreationForm(data)
     if form.is_valid() and validate_email_address(email):
-        print("form is valid")
         user = form.save(commit=False)
         user.email = email
         user.is_active = False
         user.save()
-        mail_subject = 'Activate your user account.'
-        message = render_to_string('emails/register.html', {
-            'user': user.username,
-            'domain': get_current_site(request).domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-            'token': 'test',
-            'protocol': 'https' if request.is_secure() else 'http'
-        })
-        email = EmailMessage(
-            mail_subject, message, to=[email]
+        tup_uid = ''.join(urlsafe_base64_encode(force_bytes(user.pk))),
+        token = default_token_generator.make_token(user)
+        msg = EmailMessage(
+            from_email="MonPanier - Transparence alimentaire <{}>".format(settings.EMAIL_FROM),
+            to=[email],
         )
-        email.send()
+        uid = ''
+        for item in tup_uid:
+            uid = uid + item
+        msg.template_id = "d-4142c327a72444d5b82e1aadee805f2f"
+        msg.dynamic_template_data = {
+            "name": user.username,
+            "verify_url": "https://{}/auth/activate/{}/{}".format(get_current_site(request).domain, uid, token),
+            "main_url": "https://{}".format(get_current_site(request).domain),
+        }
+        msg.send()
         return 201, user
     else:
         return 400, {'errors': form.errors}
@@ -91,6 +94,21 @@ def register(request, data: RegisterIn):
 def me(request):
     return request.user
 
+@router.get('/activate/{uid}/{token}', tags=['auth'], response={200:None, 403:None}, auth=None)
+def activate(request, uid:str, token:str):
+    if request.user and request.user.is_authenticated:
+        return 403, None
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        django_login(request, user, backend=_LOGIN_BACKEND)
+    return redirect('/')
 
 @router.post('/request_password_reset',
              tags=['auth'],
