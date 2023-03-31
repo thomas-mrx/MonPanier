@@ -34,13 +34,179 @@ export interface CartSchema {
 
 /** CreateCartSchema */
 export interface CreateCartSchema {
-  /** User */
-  user_id: number;
   /**
    * Name
    * @maxLength 255
    */
   name: string;
+}
+
+/** DispensationSchema */
+export interface DispensationSchema {
+  /**
+   * Hash
+   * @maxLength 128
+   */
+  hash?: string;
+  /** Categorie Du Produit Rayon */
+  categorie_du_produit_rayon: string;
+  /** Cause De La Demande De Derogation */
+  cause_de_la_demande_de_derogation: string;
+  /** Code Barre Ean Gtin */
+  code_barre_ean_gtin: string;
+  /** Conditionnement */
+  conditionnement: string;
+  /** Denomination Du Produit */
+  denomination_du_produit: string;
+  /** Impact Allergenes */
+  impact_allergenes?: string;
+  /** Marque */
+  marque: string;
+  /** Modalites D Information Des Consommateurs */
+  modalites_d_information_des_consommateurs: string;
+  /** Nature Du Decalage Entre Le Produit Et Son Etiquetage */
+  nature_du_decalage_entre_le_produit_et_son_etiquetage: string;
+  /** Datedepot */
+  datedepot: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at?: string;
+}
+
+/** RecallSchema */
+export interface RecallSchema {
+  /**
+   * Reference Fiche
+   * @maxLength 16
+   */
+  reference_fiche?: string;
+  /**
+   * Ndeg De Version
+   * @maxLength 1
+   */
+  ndeg_de_version?: string;
+  /**
+   * Nature Juridique Du Rappel
+   * @maxLength 64
+   */
+  nature_juridique_du_rappel?: string;
+  /**
+   * Categorie De Produit
+   * @maxLength 64
+   */
+  categorie_de_produit?: string;
+  /**
+   * Sous Categorie De Produit
+   * @maxLength 64
+   */
+  sous_categorie_de_produit?: string;
+  /** Nom De La Marque Du Produit */
+  nom_de_la_marque_du_produit?: string;
+  /** Noms Des Modeles Ou References */
+  noms_des_modeles_ou_references?: string;
+  /** Identification Des Produits */
+  identification_des_produits?: string;
+  /**
+   * Ean
+   * @maxLength 16
+   */
+  ean?: string;
+  /** Conditionnements */
+  conditionnements?: string;
+  /**
+   * Date Debut Fin De Commercialisation
+   * @maxLength 32
+   */
+  date_debut_fin_de_commercialisation?: string;
+  /**
+   * Temperature De Conservation
+   * @maxLength 64
+   */
+  temperature_de_conservation?: string;
+  /** Marque De Salubrite */
+  marque_de_salubrite?: string;
+  /** Informations Complementaires */
+  informations_complementaires?: string;
+  /** Zone Geographique De Vente */
+  zone_geographique_de_vente?: string;
+  /** Distributeurs */
+  distributeurs?: string;
+  /** Motif Du Rappel */
+  motif_du_rappel?: string;
+  /** Risques Encourus Par Le Consommateur */
+  risques_encourus_par_le_consommateur?: string;
+  /** Preconisations Sanitaires */
+  preconisations_sanitaires?: string;
+  /** Description Complementaire Du Risque */
+  description_complementaire_du_risque?: string;
+  /** Conduites A Tenir Par Le Consommateur */
+  conduites_a_tenir_par_le_consommateur?: string;
+  /**
+   * Numero De Contact
+   * @maxLength 16
+   */
+  numero_de_contact?: string;
+  /**
+   * Modalites De Compensation
+   * @maxLength 128
+   */
+  modalites_de_compensation?: string;
+  /**
+   * Date De Fin De La Procedure De Rappel
+   * @maxLength 32
+   */
+  date_de_fin_de_la_procedure_de_rappel?: string;
+  /** Informations Complementaires Publiques */
+  informations_complementaires_publiques?: string;
+  /** Liens Vers Les Images */
+  liens_vers_les_images?: string;
+  /**
+   * Lien Vers La Liste Des Produits
+   * @maxLength 128
+   */
+  lien_vers_la_liste_des_produits?: string;
+  /**
+   * Lien Vers La Liste Des Distributeurs
+   * @maxLength 128
+   */
+  lien_vers_la_liste_des_distributeurs?: string;
+  /**
+   * Lien Vers Affichette Pdf
+   * @maxLength 64
+   */
+  lien_vers_affichette_pdf?: string;
+  /**
+   * Lien Vers La Fiche Rappel
+   * @maxLength 64
+   */
+  lien_vers_la_fiche_rappel?: string;
+  /**
+   * Rappelguid
+   * @maxLength 64
+   */
+  rappelguid?: string;
+  /**
+   * Date De Publication
+   * @maxLength 16
+   */
+  date_de_publication?: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at?: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at?: string;
 }
 
 /** ProductSchema */
@@ -108,12 +274,39 @@ export interface ProductSchema {
    * @format date-time
    */
   created_at: string;
+  /**
+   * Dispensations
+   * @default []
+   */
+  dispensations?: DispensationSchema[];
+  /**
+   * Recalls
+   * @default []
+   */
+  recalls?: RecallSchema[];
 }
 
 /** Error */
 export interface Error {
   /** Message */
   message: string;
+}
+
+/** FoodSchema */
+export interface FoodSchema {
+  /**
+   * Code
+   * @maxLength 128
+   */
+  code?: string;
+  /** Product Name */
+  product_name?: string;
+  /** Brands */
+  brands?: string;
+  /** Categories */
+  categories?: string;
+  /** Image Url */
+  image_url?: string;
 }
 
 /** User3 */
@@ -519,6 +712,41 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       this.request<ProductSchema, Error>({
         path: `/api/products/${productEan}`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags foods
+     * @name SearchFoods
+     * @summary Search Foods
+     * @request GET:/api/foods/search
+     * @secure
+     */
+    searchFoods: (
+      query: {
+        /** Query */
+        query: string;
+        /**
+         * Limit
+         * @default 5
+         */
+        limit?: number;
+        /**
+         * Offset
+         * @default 0
+         */
+        offset?: number;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<FoodSchema[], any>({
+        path: `/api/foods/search`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,
