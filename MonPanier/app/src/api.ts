@@ -41,6 +41,12 @@ export interface CreateCartSchema {
   name: string;
 }
 
+/** Error */
+export interface Error {
+  /** Message */
+  message: string;
+}
+
 /** DispensationSchema */
 export interface DispensationSchema {
   /**
@@ -284,12 +290,6 @@ export interface ProductSchema {
    * @default []
    */
   recalls?: RecallSchema[];
-}
-
-/** Error */
-export interface Error {
-  /** Message */
-  message: string;
 }
 
 /** FoodSchema */
@@ -677,6 +677,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags carts
+     * @name GetCart
+     * @summary Get Cart
+     * @request GET:/api/carts/{cart_id}
+     * @secure
+     */
+    getCart: (cartId: string, params: RequestParams = {}) =>
+      this.request<CartSchema, Error>({
+        path: `/api/carts/${cartId}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
