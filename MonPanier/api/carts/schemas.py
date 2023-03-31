@@ -12,4 +12,4 @@ class CartSchema(ModelSchema):
 class CreateCartSchema(ModelSchema):
     class Config:
         model = Cart
-        model_fields = ["user", "name"]
+        model_fields = ["name"]

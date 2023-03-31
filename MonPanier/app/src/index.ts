@@ -34,7 +34,6 @@ window.onload = async () => {
 
     createCart() {
       this.cart.name = this.text;
-      this.cart.user_id = 1;
       MonPanier.api.createCart(this.cart, params).then((result) => {
         if (result.data) {
           // @ts-ignore
