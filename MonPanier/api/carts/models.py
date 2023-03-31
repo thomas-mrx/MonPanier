@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+from MonPanier.api.products.models import Product
+
 
 # Create your models here.
 
@@ -9,11 +11,7 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Product)
 
     def __str__(self):
         return self.name
-
-
-class ProductInCart(models.Model):
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)

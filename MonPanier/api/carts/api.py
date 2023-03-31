@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from MonPanier.api.carts.models import Cart
-from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema
+from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema, CartProductsSchema
 from MonPanier.api.error import Error
 
 router = Router(tags=["carts"])
@@ -24,9 +24,10 @@ def get_cart(request, cart_id):
     try:
         user = request.user
         cart = Cart.objects.filter(user=user).get(id=cart_id)
+
     except Cart.DoesNotExist:
         return 404, {"message": "No Result"}
-    return cart
+    return 200, cart
 
 
 @router.post("/", operation_id="createCart", response=CartSchema)
