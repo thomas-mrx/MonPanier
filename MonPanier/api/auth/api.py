@@ -1,8 +1,9 @@
+import os
 import re
 
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -56,7 +57,7 @@ def logout(request):
 def validate_email_address(email_address):
    return re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email_address)
 
-@router.post('/register', tags=['auth'], response={200: UserOut, 403: None, 400: ErrorsOut}, auth=None)
+@router.post('/register', tags=['auth'], response={201: UserOut, 403: None, 400: ErrorsOut, 500: None}, auth=None)
 def register(request, data: RegisterIn):
     if request.user.is_authenticated:
         return 403, None
@@ -77,14 +78,11 @@ def register(request, data: RegisterIn):
             'token': 'test',
             'protocol': 'https' if request.is_secure() else 'http'
         })
-        email = EmailMessage(mail_subject, message, to=[user.email])
-        if email.send():
-            messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{user.email}</b> inbox and click on \
-                    received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
-        else:
-            messages.error(request, f'Problem sending confirmation email to {user.email}, check if you typed it correctly.')
-        django_login(request, user, backend=_LOGIN_BACKEND)
-        return user
+        email = EmailMessage(
+            mail_subject, message, to=[email]
+        )
+        email.send()
+        return 201, user
     else:
         return 400, {'errors': form.errors}
 
