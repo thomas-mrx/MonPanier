@@ -24,9 +24,10 @@ def get_cart(request, cart_id):
     try:
         user = request.user
         cart = Cart.objects.filter(user=user).get(id=cart_id)
+
     except Cart.DoesNotExist:
         return 404, {"message": "No Result"}
-    return cart
+    return 200, cart
 
 
 @router.post("/", operation_id="createCart", response=CartSchema)
