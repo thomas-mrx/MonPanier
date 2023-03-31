@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from MonPanier.api.carts.models import Cart
-from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema, CartProductsSchema
+from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema
 from MonPanier.api.error import Error
 
 router = Router(tags=["carts"])
