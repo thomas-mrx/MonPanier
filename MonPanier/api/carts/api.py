@@ -6,6 +6,7 @@ from ninja import Router
 
 from MonPanier.api.carts.models import Cart
 from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema
+from MonPanier.api.error import Error
 
 router = Router(tags=["carts"])
 
@@ -15,6 +16,17 @@ def list_carts(request):
     user = request.user
     qs = Cart.objects.filter(user=user).all()
     return qs
+
+
+@router.get("/{cart_id}", operation_id="getCart", response={
+    200: CartSchema, 404: Error})
+def get_cart(request, cart_id):
+    try:
+        user = request.user
+        cart = Cart.objects.filter(user=user).get(id=cart_id)
+    except Cart.DoesNotExist:
+        return 404, {"message": "No Result"}
+    return cart
 
 
 @router.post("/", operation_id="createCart", response=CartSchema)
