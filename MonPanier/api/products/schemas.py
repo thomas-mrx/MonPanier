@@ -8,7 +8,8 @@ from MonPanier.api.recalls.schemas import RecallSchema
 
 
 class ProductSchema(ModelSchema):
-    dispensations: List[DispensationSchema] = []
+    dispensations_allergens: List[DispensationSchema] = []
+    dispensations_others: List[DispensationSchema] = []
     recalls: List[RecallSchema] = []
 
     class Config:

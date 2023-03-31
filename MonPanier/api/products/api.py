@@ -28,16 +28,21 @@ def get_product(request, product_ean: str):
     try:
         food = Food.objects.get(code=product_ean)
         try:
-            product = Product.objects.get(ean=product_ean)
+            product = Product.objects.filter(ean=product_ean).order_by('-created_at').first()
         except Product.DoesNotExist:
             product = None
         food_dict = food.__dict__
-        sanit_score = mp_sanit_score(food)
+        today = datetime.date.today()
+        last_year = today - datetime.timedelta(days=365.24)
+        dispensations_allergens = list(Dispensation.objects.filter(code_barre_ean_gtin=food.code, datedepot__range=[last_year, today], impact_allergenes__isnull=False))
+        dispensations_others = list(Dispensation.objects.filter(code_barre_ean_gtin=food.code, datedepot__range=[last_year, today], impact_allergenes__isnull=True))
+        recalls = list(Recall.objects.filter(ean=food.code,date_de_publication__range=[last_year, today]))
+        sanit_score = mp_sanit_score(food, dispensations_allergens, recalls)
         nutrim_score = mp_nutrim_score(food)
         eco_score = mp_eco_score(food)
-        if product is None or product.created_at.timestamp() <= float(food.last_modified_t):
+        if product is None or product.created_at.timestamp() <= float(food.last_modified_t) or True:
             img_ext = food.image_url.split('.')[-1]
-            return Product.objects.create(
+            product = Product.objects.create(
                 ean=food.code,
                 title=food.product_name,
                 brands=food.brands,
@@ -62,11 +67,10 @@ def get_product(request, product_ean: str):
                 mp_nutrim_score=nutrim_score,
                 mp_eco_score=eco_score,
             )
-        today = datetime.date.today()
-        last_year = today - datetime.timedelta(days=365.24)
         p = product.__dict__
-        p["dispensations"] = list(Dispensation.objects.filter(code_barre_ean_gtin=food.code, datedepot__range=[last_year, today]))
-        p["recalls"] = list(Recall.objects.filter(ean=food.code,date_de_publication__range=[last_year, today]))
+        p["recalls"] = recalls
+        p["dispensations_allergens"] = dispensations_allergens
+        p["dispensations_others"] = dispensations_others
         return p
     except Food.DoesNotExist:
         return 404, Error(message="Product not found")
