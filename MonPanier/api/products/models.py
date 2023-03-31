@@ -11,8 +11,7 @@ class Product(models.Model):
     brands = models.CharField(max_length=200, null=True)
     categories = models.JSONField(null=True)
     image = models.TextField(null=True)
-    ean = models.CharField('EAN', max_length=13, unique=True,
-                           help_text='13 Character <a href="https://www.ean-search.org/">EAN</a>')
+    ean = models.CharField('EAN', max_length=13, help_text='13 Character <a href="https://www.ean-search.org/">EAN</a>')
 
     # Sanitaire
     allergens = models.JSONField(null=True)
