@@ -81,7 +81,7 @@ def register(request, data: RegisterIn):
         msg.template_id = "d-4142c327a72444d5b82e1aadee805f2f"
         msg.dynamic_template_data = {
             "name": user.username,
-            "verify_url": "https://{}/auth/activate/{}/{}".format(get_current_site(request).domain, uid, token),
+            "verify_url": "https://{}/api/auth/activate/{}/{}".format(get_current_site(request).domain, uid, token),
             "main_url": "https://{}".format(get_current_site(request).domain),
         }
         msg.send()
