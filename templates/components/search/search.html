@@ -1,14 +1,50 @@
 <div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <h1 class="text-xl font-medium my-2 text-gray-600">Recherche</h1>
 </div>
-<div class="form-control w-full px-4">
-  <label class="label">
-    <span class="label-text">What is your name?</span>
-    <span class="label-text-alt">Top Right label</span>
-  </label>
-  <input type="text" placeholder="Type here" class="input input-bordered w-full" id="search" />
-  <label class="label">
-    <span class="label-text-alt">Bottom Left label</span>
-    <span class="label-text-alt">Bottom Right label</span>
-  </label>
+<div class="searchbar mx-4">
+    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Rechercher un
+        produit</label>
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <i class="fa-solid fa-magnifying-glass"></i></div>
+        <input type="search" id="default-search" x-model="$store.search.text"
+               class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+               placeholder="Chercher un produit" required>
+        <button type="submit"
+                class="btn btn-sm absolute right-2.5 bottom-2.5 font-medium"
+                :class="(!$store.search.text || $store.search.isLoading) && 'btn-disabled'"
+                @click="$store.search.search()">
+            Rechercher
+        </button>
+    </div>
+</div>
+<div class="grid grid-cols-1 mx-3" x-data="$store.search.foods">
+    <template x-for="food in $store.search.foods" :key="food.code">
+        <div class="cart border-b border-gray-200 px-0 py-4 bg-white">
+            <div class="px-4 flex">
+                <div class="w-16 rounded-full my-auto mr-2">
+                    <img :src="food.image_url"/>
+                </div>
+                <div class="flex flex-col justify-center px-2 py-1 w-full">
+                    <div class="flex justify-between items-center ">
+                        <div class="flex flex-col">
+                            <h2 class="font-medium text-gray-500" x-text="food.product_name"></h2>
+                        </div>
+                    </div>
+                    <div class="flex pt-2  text-sm text-gray-500">
+                        <div class="flex items-center text-gray-400 mr-auto">
+                            <i class="fa-regular fa-barcode mr-1"></i><span x-text="food.code"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="flex items-center">
+                    <btn class="btn btn-sm  btn-circle btn-outline" @click="$store.cart.add(food)">
+                        <i class="fa-solid fa-cart-plus mr-1"></i>
+                        <span class="sr-only">Ajouter à un panier</span></btn>
+                </div>
+            </div>
+        </div>
+    </template>
 </div>

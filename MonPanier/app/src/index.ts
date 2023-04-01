@@ -3,7 +3,7 @@ import Alpine from 'alpinejs';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import Stats from './scripts/Stats';
 import {
-  Api, CartSchema, CreateCartSchema, ProductSchema,
+  Api, CartSchema, CreateCartSchema, FoodSchema, ProductSchema,
 } from './api';
 
 function getCookie(name: string) {
@@ -170,6 +170,23 @@ window.onload = async () => {
     },
   });
 
+  // Search component
+  Alpine.store('search', {
+    text: undefined,
+    foods: [] as FoodSchema[],
+    isLoading: false,
+
+    search() {
+      this.isLoading = true;
+      MonPanier.api.searchFoods({ query: this.text }, getHeaders()).then((result) => {
+        if (result.data) {
+          this.isLoading = false;
+          this.foods = result.data;
+        }
+      });
+    },
+  });
+
   // SPA Router
   Alpine.store('routes', {
     tabs: {
@@ -206,9 +223,9 @@ window.onload = async () => {
         name: 'Recherche',
         link: '/search',
         onInit: () => {
-          setTimeout(() => {
-            document.getElementById('search').focus();
-          }, 100);
+          // setTimeout(() => {
+          //   document.getElementById('search').focus();
+          // }, 100);
         },
       },
     },
