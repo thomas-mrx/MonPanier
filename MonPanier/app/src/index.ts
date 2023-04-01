@@ -175,15 +175,30 @@ window.onload = async () => {
     text: undefined,
     foods: [] as FoodSchema[],
     isLoading: false,
+    offset: 0,
 
     search() {
       this.isLoading = true;
-      MonPanier.api.searchFoods({ query: this.text }, getHeaders()).then((result) => {
-        if (result.data) {
-          this.isLoading = false;
-          this.foods = result.data;
-        }
-      });
+      MonPanier.api.searchFoods({ query: this.text, offset: 0 }, getHeaders())
+        .then((result) => {
+          if (result.data) {
+            this.isLoading = false;
+            this.foods = result.data;
+            this.offset = result.data.length;
+          }
+        });
+    },
+
+    loadMore() {
+      this.isLoading = true;
+      MonPanier.api.searchFoods({ query: this.text, offset: this.offset }, getHeaders())
+        .then((result) => {
+          if (result.data) {
+            this.isLoading = false;
+            this.foods = this.foods.concat(result.data);
+            this.offset += result.data.length;
+          }
+        });
     },
   });
 
