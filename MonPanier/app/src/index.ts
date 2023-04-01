@@ -1,6 +1,7 @@
 import './style/style.scss';
 import Alpine from 'alpinejs';
 import { Html5QrcodeScanner } from 'html5-qrcode';
+import Stats from './scripts/Stats';
 import {
   Api, CartSchema, CreateCartSchema, ProductSchema,
 } from './api';
@@ -28,9 +29,24 @@ function getHeaders() {
 }
 
 window.onload = async () => {
+  const stats = new Stats();
+  stats.getChartById('bref-chart').resize();
   // @ts-ignore
   window.Alpine = Alpine;
   const MonPanier = new Api();
+  const ScrollView: HTMLElement = document.querySelector('.scrollview');
+
+  Alpine.store('main', {
+    scrolled: ScrollView.scrollTop > 24,
+
+    update() {
+      this.scrolled = ScrollView.scrollTop > 24;
+    },
+  });
+  ScrollView.addEventListener('scroll', () => {
+    // @ts-ignore
+    Alpine.store('main').update();
+  });
 
   // Add cart modal component
   Alpine.store('addCartModal', {
@@ -47,9 +63,10 @@ window.onload = async () => {
       MonPanier.api.createCart(this.cart, getHeaders()).then((result) => {
         if (result.data) {
           // @ts-ignore
-          Alpine.store('cart').push(result.data);
+          Alpine.store('cart').prepend(result.data);
           this.toggle();
           this.cart = {};
+          (document.querySelector('input.cart-input') as HTMLInputElement).value = '';
         }
       });
     },
@@ -64,8 +81,8 @@ window.onload = async () => {
       this.carts = carts;
     },
 
-    push(cart: CartSchema) {
-      this.carts.push(cart);
+    prepend(cart: CartSchema) {
+      this.carts.unshift(cart);
     },
   });
 
@@ -93,6 +110,14 @@ window.onload = async () => {
     toggle() {
       this.on = !this.on;
     },
+
+    logout() {
+      MonPanier.api.monPanierApiAuthApiLogout(getHeaders()).then((result) => {
+        if (result.status === 204) {
+          window.location.reload();
+        }
+      });
+    },
   });
 
   // Login modal component
@@ -100,6 +125,10 @@ window.onload = async () => {
     on: false,
     username: undefined,
     password: undefined,
+    password_confirm: undefined,
+    email: undefined,
+    signin: true,
+    signup: false,
 
     toggle() {
       this.on = !this.on;
@@ -112,13 +141,31 @@ window.onload = async () => {
       }, getHeaders()).then((result) => {
         if (result.status === 200 && result.data) {
           this.toggle();
+          // @ts-ignore
+          Alpine.store('routes').detectActiveTab();
         }
       }).catch((error) => {
         if (error.status === 403) {
-          alert('Mauvais identifiants');
+          alert('Compte non-activé ou mauvais identifiants.');
           this.username = undefined;
           this.password = undefined;
         }
+      });
+    },
+
+    register() {
+      MonPanier.api.monPanierApiAuthApiRegister({
+        username: this.username,
+        password1: this.password,
+        password2: this.password_confirm,
+        email: this.email,
+      }, getHeaders()).then((result) => {
+        if (result.status === 201 && result.data) {
+          alert('Compte créé, vérifiez vos emails pour l\'activer.');
+        }
+      }).catch((error) => {
+        alert('Erreur lors de la création du compte.');
+        console.log(error);
       });
     },
   });

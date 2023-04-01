@@ -14,7 +14,7 @@ router = Router(tags=["carts"])
 @router.get("/", operation_id="getCarts", response=List[CartSchema])
 def list_carts(request):
     user = request.user
-    qs = Cart.objects.filter(user=user).all()
+    qs = Cart.objects.filter(user=user).order_by('-created_at').all()
     return qs
 
 

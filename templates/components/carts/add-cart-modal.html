@@ -1,11 +1,12 @@
 <div class="modal"  :class="$store.addCartModal.on && 'modal-open'" >
     <div class="modal-box">
+    <label @click="$store.addCartModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="far fa-times"></i></label>
         <h3 class="font-bold text-lg">Ajouter un panier</h3>
         <div class="form-control w-full max-w-xs">
             <label class="label">
                 <span class="label-text">Quel est le nom de votre panier?</span>
             </label>
-            <input type="text" x-model="$store.addCartModal.text"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+            <input type="text" x-model="$store.addCartModal.text"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs cart-input"/>
         </div>
         <div class="modal-action">
             <button class="btn" x-on:click="$store.addCartModal.createCart()">Ajouter</button>
