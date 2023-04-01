@@ -9,44 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-/** CartSchema */
-export interface CartSchema {
-  /** Id */
-  id?: number;
-  /**
-   * Name
-   * @maxLength 255
-   */
-  name: string;
-  /**
-   * Created At
-   * @format date-time
-   */
-  created_at: string;
-  /**
-   * Updated At
-   * @format date-time
-   */
-  updated_at: string;
-  /** User */
-  user: number;
-}
-
-/** CreateCartSchema */
-export interface CreateCartSchema {
-  /**
-   * Name
-   * @maxLength 255
-   */
-  name: string;
-}
-
-/** Error */
-export interface Error {
-  /** Message */
-  message: string;
-}
-
 /** DispensationSchema */
 export interface DispensationSchema {
   /**
@@ -295,6 +257,49 @@ export interface ProductSchema {
    * @default []
    */
   recalls?: RecallSchema[];
+}
+
+/** CartSchema */
+export interface CartSchema {
+  /** Id */
+  id?: number;
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+  /** User */
+  user: number;
+  /**
+   * Products
+   * @default []
+   */
+  products?: ProductSchema[];
+}
+
+/** CreateCartSchema */
+export interface CreateCartSchema {
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+}
+
+/** Error */
+export interface Error {
+  /** Message */
+  message: string;
 }
 
 /** FoodSchema */
@@ -726,6 +731,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags carts
+     * @name AddProductToCart
+     * @summary Add Product To Cart
+     * @request POST:/api/carts/{cart_id}/products/{product_id}
+     * @secure
+     */
+    addProductToCart: (cartId: string, productId: string, params: RequestParams = {}) =>
+      this.request<CartSchema, Error>({
+        path: `/api/carts/${cartId}/products/${productId}`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags products
      * @name GetProducts
      * @summary List Products
@@ -874,7 +897,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/api/auth/activate/{uid}/{token}
      */
     monPanierApiAuthApiActivate: (uid: string, token: string, params: RequestParams = {}) =>
-      this.request<void, void>({
+      this.request<void, any>({
         path: `/api/auth/activate/${uid}/${token}`,
         method: "GET",
         ...params,

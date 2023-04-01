@@ -174,6 +174,7 @@ window.onload = async () => {
   Alpine.store('search', {
     text: undefined,
     foods: [] as FoodSchema[],
+    carts: [] as CartSchema[],
     isLoading: false,
     noResults: false,
     offset: 0,
@@ -203,6 +204,38 @@ window.onload = async () => {
             this.offset += result.data.length;
           }
         });
+    },
+
+    add(food: FoodSchema) {
+      const product = MonPanier.api.getProduct(food.code, getHeaders());
+      product.then((productResult) => {
+        if (productResult.data) {
+          // @ts-ignore
+          MonPanier.api.getCarts(getHeaders()).then((cartsResult) => {
+            if (cartsResult.data) {
+              // @ts-ignore
+              this.carts = cartsResult.data;
+              if (this.carts.length === 0) {
+                alert('Vous devez créer un panier avant d\'ajouter des produits.');
+              } else {
+                MonPanier.api
+                  .addProductToCart(this.carts[0].id, String(productResult.data.id), getHeaders())
+                  .then((result) => {
+                    if (result.status === 200) {
+                      alert(`Produit ajouté au panier ${this.carts[0].id}.`);
+                    }
+                  }).catch((error) => {
+                    alert('Erreur lors de l\'ajout du produit.');
+                    console.error(error);
+                  });
+              }
+            }
+          });
+        }
+      }).catch((error) => {
+        alert('Erreur lors de la récupération du produit.');
+        console.error(error);
+      });
     },
   });
 
