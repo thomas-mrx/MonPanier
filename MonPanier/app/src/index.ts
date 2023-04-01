@@ -2,35 +2,20 @@ import './style/style.scss';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import Alpine from 'alpinejs';
 import Stats from './scripts/Stats';
-import type Store from './scripts/Store';
-import MainStore from './stores/Main';
-import AddCartModalStore from './stores/AddCartModal';
-import CartStore from './stores/Cart';
-import LoginModalStore from './stores/LoginModal';
-import ProductModalStore from './stores/ProductModal';
-import SettingsModalStore from './stores/SettingsModal';
-import RoutesStore from './stores/Routes';
 import MonPanierAPI from './scripts/MonPanierAPI';
 
 window.onload = async () => {
-  const stats = new Stats();
-  stats.getChartById('bref-chart').resize();
-
-  const stores: Store[] = [
-    MainStore,
-    AddCartModalStore,
-    CartStore,
-    LoginModalStore,
-    ProductModalStore,
-    SettingsModalStore,
-    RoutesStore,
-  ];
-  // eslint-disable-next-line no-console
-  console.log('Starting stores...', stores.map((store) => store.name()));
+  import('./stores/AddCartModal'); // no need to store it into variable
+  import('./stores/Cart'); // no need to store it into variable
+  import('./stores/SettingsModal'); // no need to store it into variable
+  const MainStore = (await import('./stores/Main')).default;
+  const RoutesStore = (await import('./stores/Routes')).default;
+  const LoginModalStore = (await import('./stores/LoginModal')).default;
+  const ProductModalStore = (await import('./stores/ProductModal')).default;
+  Alpine.start();
 
   // update main store to detect scroll
   MainStore.data().update();
-
   // detect active tab to load data
   RoutesStore.data().detectActiveTab();
 
@@ -47,7 +32,8 @@ window.onload = async () => {
       }
     });
 
-  Alpine.start();
+  const stats = new Stats();
+  stats.getChartById('bref-chart').resize();
 
   function onScanSuccess(decodedText: any) {
     // handle the scanned code as you like, for example:
