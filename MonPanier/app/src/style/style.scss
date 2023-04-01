@@ -20,13 +20,11 @@ body {
   @apply fixed;
   @apply top-0;
   @apply w-full;
-  @apply border-b;
-  @apply border-gray-200;
   @apply flex;
   @apply z-40;
   @apply min-h-6;
   @apply h-14;
-  @apply bg-lime-30;
+  @apply bg-white;
   padding-top: env(safe-area-inset-top, 0px);
 
   .navbar-start {
@@ -45,6 +43,10 @@ body {
   > * {
     @apply pt-2
   }
+}
+.navbar.scrolled {
+  @apply border-b;
+  @apply border-gray-200;
 }
 
 .scrollview {
