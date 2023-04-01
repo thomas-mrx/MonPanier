@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load webpack_static from webpack_loader %}
 {% block content %}
-    <div class="navbar">
+    <div class="navbar" :class="$store.main.scrolled && 'scrolled'">
         <div class="navbar-start">
             <img src="{% webpack_static 'logo.png' %}" class="w-8" alt="logo"/>
         </div>
