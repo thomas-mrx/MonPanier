@@ -180,6 +180,8 @@ window.onload = async () => {
 
     search() {
       this.isLoading = true;
+      this.noResults = false;
+      this.foods = [];
       MonPanier.api.searchFoods({ query: this.text, offset: 0 }, getHeaders())
         .then((result) => {
           if (result.data) {
