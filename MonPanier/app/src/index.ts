@@ -175,6 +175,7 @@ window.onload = async () => {
     text: undefined,
     foods: [] as FoodSchema[],
     isLoading: false,
+    noResults: false,
     offset: 0,
 
     search() {
@@ -183,6 +184,7 @@ window.onload = async () => {
         .then((result) => {
           if (result.data) {
             this.isLoading = false;
+            this.noResults = result.data.length === 0;
             this.foods = result.data;
             this.offset = result.data.length;
           }

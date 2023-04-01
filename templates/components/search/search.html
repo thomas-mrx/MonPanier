@@ -61,3 +61,6 @@
 <div class="flex justify-center items-center mx-3" x-show="$store.search.foods.length > 0 && !$store.search.isLoading">
     <button class="btn btn-sm btn-outline" @click="$store.search.loadMore()">Charger plus</button>
 </div>
+<div class="flex justify-center items-center mx-3" x-show="$store.search.noResults && !$store.search.isLoading">
+    <p class="text-gray-500">Aucun résultat</p>
+</div>
