@@ -6,7 +6,7 @@ const STORE_DATA: {
   on: boolean,
   text: string,
   toggle: () => void,
-  logout: () => void,
+  logout: () => Promise<void>,
 } = {
   on: false,
   text: 'Paramètres',
@@ -23,13 +23,4 @@ const STORE_DATA: {
   },
 };
 
-class SettingsModal extends Store {
-  constructor() {
-    super(STORE_NAME, STORE_DATA);
-  }
-
-  public data(): typeof STORE_DATA {
-    return super.data();
-  }
-}
-export default new SettingsModal();
+export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;

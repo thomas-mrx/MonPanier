@@ -18,13 +18,4 @@ const STORE_DATA: {
   },
 };
 
-class Cart extends Store {
-  constructor() {
-    super(STORE_NAME, STORE_DATA);
-  }
-
-  public data(): typeof STORE_DATA {
-    return super.data();
-  }
-}
-export default new Cart();
+export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;

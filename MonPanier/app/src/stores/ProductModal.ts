@@ -23,13 +23,4 @@ const STORE_DATA: {
   },
 };
 
-class ProductModal extends Store {
-  constructor() {
-    super(STORE_NAME, STORE_DATA);
-  }
-
-  public data(): typeof STORE_DATA {
-    return super.data();
-  }
-}
-export default new ProductModal();
+export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;

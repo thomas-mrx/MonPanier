@@ -6,7 +6,7 @@ import MonPanierAPI from './scripts/MonPanierAPI';
 
 window.onload = async () => {
   import('./stores/AddCartModal'); // no need to store it into variable
-  import('./stores/Cart'); // no need to store it into variable
+  import('./stores/Cart'); // no need to store it into variable */
   import('./stores/SettingsModal'); // no need to store it into variable
   const MainStore = (await import('./stores/Main')).default;
   const RoutesStore = (await import('./stores/Routes')).default;
@@ -15,22 +15,16 @@ window.onload = async () => {
   Alpine.start();
 
   // update main store to detect scroll
-  MainStore.data().update();
+  MainStore.scrollView.addEventListener('scroll', () => { MainStore.update(); });
+  MainStore.scrollView.dispatchEvent(new Event('scroll'));
   // detect active tab to load data
-  RoutesStore.data().detectActiveTab();
+  RoutesStore.detectActiveTab();
 
-  // Authentication
-  MonPanierAPI.getApi().monPanierApiAuthApiMe(MonPanierAPI.getHeaders())
-    .then(
-      (result) => {
-        // eslint-disable-next-line no-console
-        console.log(result);
-      },
-    ).catch((error) => {
-      if (error.status === 401) {
-        LoginModalStore.data().toggle();
-      }
-    });
+  MonPanierAPI.getApi().monPanierApiAuthApiMe(MonPanierAPI.getHeaders()).catch((error) => {
+    if (error.status === 401) {
+      LoginModalStore.toggle();
+    }
+  });
 
   const stats = new Stats();
   stats.getChartById('bref-chart').resize();
@@ -39,7 +33,7 @@ window.onload = async () => {
     // handle the scanned code as you like, for example:
     MonPanierAPI.getApi().getProduct(decodedText, MonPanierAPI.getHeaders()).then((result) => {
       if (result.data) {
-        ProductModalStore.data().update(result.data);
+        ProductModalStore.update(result.data);
       }
     });
   }

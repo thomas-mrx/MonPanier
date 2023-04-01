@@ -21,22 +21,16 @@ const STORE_DATA: {
 
   async createCart() {
     this.cart.name = this.text;
-    const result = await MonPanierAPI.getApi().createCart(this.cart, MonPanierAPI.getHeaders());
-    if (result.data) {
-      cartStore.data().prepend(result.data);
-      this.toggle();
-      this.cart = {};
-      this.text = undefined;
-    }
+    MonPanierAPI.getApi().createCart(this.cart, MonPanierAPI.getHeaders()).then((result) => {
+      if (result.data) {
+        cartStore.prepend(result.data);
+        this.toggle();
+        this.cart = {};
+        this.text = undefined;
+      }
+    }).catch((error) => {
+      console.log(error);
+    });
   },
 };
-class AddCartModal extends Store {
-  constructor() {
-    super(STORE_NAME, STORE_DATA);
-  }
-
-  public data(): typeof STORE_DATA {
-    return super.data();
-  }
-}
-export default new AddCartModal();
+export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;

@@ -34,7 +34,7 @@ const STORE_DATA: {
       onInit: () => {
         MonPanierAPI.getApi().getCarts(MonPanierAPI.getHeaders()).then((result) => {
           if (result.data) {
-            Cart.data().update(result.data);
+            Cart.update(result.data);
           }
         });
       },
@@ -75,13 +75,4 @@ const STORE_DATA: {
   },
 };
 
-class Routes extends Store {
-  constructor() {
-    super(STORE_NAME, STORE_DATA);
-  }
-
-  public data(): typeof STORE_DATA {
-    return super.data();
-  }
-}
-export default new Routes();
+export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
