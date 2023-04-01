@@ -4,7 +4,7 @@ export default class Store {
   private readonly store_name: string;
 
   // eslint-disable-next-line class-methods-use-this
-  protected init():void {}
+  protected init():void { /* can be overriden */ }
 
   constructor(name: string, store: {}) {
     this.store_name = name;
