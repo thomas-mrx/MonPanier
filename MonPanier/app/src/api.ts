@@ -281,10 +281,15 @@ export interface ProductSchema {
    */
   created_at: string;
   /**
-   * Dispensations
+   * Dispensations Allergens
    * @default []
    */
-  dispensations?: DispensationSchema[];
+  dispensations_allergens?: DispensationSchema[];
+  /**
+   * Dispensations Others
+   * @default []
+   */
+  dispensations_others?: DispensationSchema[];
   /**
    * Recalls
    * @default []
@@ -309,8 +314,8 @@ export interface FoodSchema {
   image_url?: string;
 }
 
-/** User3 */
-export interface User3 {
+/** User4 */
+export interface User4 {
   /** Id */
   id?: number;
   /**
@@ -386,6 +391,31 @@ export interface LoginIn {
   password: string;
 }
 
+/** ErrorsOut */
+export interface ErrorsOut {
+  /** Errors */
+  errors: Record<string, string[]>;
+}
+
+/** RegisterIn */
+export interface RegisterIn {
+  /**
+   * Adresse Électronique
+   * @maxLength 254
+   */
+  email?: string;
+  /**
+   * Nom D’Utilisateur
+   * Requis. 150 caractères maximum. Uniquement des lettres, nombres et les caractères « @ », « . », « + », « - » et « _ ».
+   * @maxLength 150
+   */
+  username: string;
+  /** Password1 */
+  password1: string;
+  /** Password2 */
+  password2: string;
+}
+
 /** RequestPasswordResetIn */
 export interface RequestPasswordResetIn {
   /**
@@ -393,12 +423,6 @@ export interface RequestPasswordResetIn {
    * @maxLength 254
    */
   email?: string;
-}
-
-/** ErrorsOut */
-export interface ErrorsOut {
-  /** Errors */
-  errors: Record<string, string[]>;
 }
 
 /** SetPasswordIn */
@@ -779,7 +803,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/auth/
      */
     monPanierApiAuthApiLogin: (data: LoginIn, params: RequestParams = {}) =>
-      this.request<User3, void>({
+      this.request<User4, void>({
         path: `/api/auth/`,
         method: "POST",
         body: data,
@@ -809,17 +833,50 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
+     * @name MonPanierApiAuthApiRegister
+     * @summary Register
+     * @request POST:/api/auth/register
+     */
+    monPanierApiAuthApiRegister: (data: RegisterIn, params: RequestParams = {}) =>
+      this.request<User4, ErrorsOut | void>({
+        path: `/api/auth/register`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
      * @name MonPanierApiAuthApiMe
      * @summary Me
      * @request GET:/api/auth/me
      * @secure
      */
     monPanierApiAuthApiMe: (params: RequestParams = {}) =>
-      this.request<User3, any>({
+      this.request<User4, any>({
         path: `/api/auth/me`,
         method: "GET",
         secure: true,
         format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
+     * @name MonPanierApiAuthApiActivate
+     * @summary Activate
+     * @request GET:/api/auth/activate/{uid}/{token}
+     */
+    monPanierApiAuthApiActivate: (uid: string, token: string, params: RequestParams = {}) =>
+      this.request<void, void>({
+        path: `/api/auth/activate/${uid}/${token}`,
+        method: "GET",
         ...params,
       }),
 
@@ -849,7 +906,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/api/auth/reset_password
      */
     monPanierApiAuthApiResetPassword: (data: SetPasswordIn, params: RequestParams = {}) =>
-      this.request<User3, ErrorsOut | void>({
+      this.request<User4, ErrorsOut | void>({
         path: `/api/auth/reset_password`,
         method: "POST",
         body: data,

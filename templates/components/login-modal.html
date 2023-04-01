@@ -1,20 +1,59 @@
-<div class="modal"  :class="$store.loginModal.on && 'modal-open'" >
-    <div class="modal-box">
-        <h3 class="font-bold text-lg">Se connecter</h3>
-        <div class="form-control w-full max-w-xs">
-            <label class="label">
-                <span class="label-text">Quel est votre nom d'utilisateur.trice ?</span>
-            </label>
-            <input type="text" x-model="$store.loginModal.username"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+{% load webpack_static from webpack_loader %}
+<div class="modal modal-bottom modal-login"  :class="$store.loginModal.on && 'modal-open'" >
+    <div class="modal-box flex flex-col">
+        <img src="{% webpack_static 'logo.png' %}" class="w-16 mx-auto inline-block mb-2 mt-4" alt="logo"/>
+        <h1 class="w-auto mx-auto inline-block mb-6 font-bold text-2xl">MonPanier</h1>
+        <div class="tabs tabs-boxed w-auto mx-auto inline-block mb-4">
+          <a class="tab" :class="$store.loginModal.signin && 'tab-active'" @click="$store.loginModal.signin = true; $store.loginModal.signup = false;">Se connecter</a>
+          <a class="tab" :class="$store.loginModal.signup && 'tab-active'" @click="$store.loginModal.signup = true; $store.loginModal.signin = false;">S'inscrire</a>
         </div>
-         <div class="form-control w-full max-w-xs">
-            <label class="label">
-                <span class="label-text">Quel est votre mot de passe ?</span>
-            </label>
-            <input type="password" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
-        </div>
-        <div class="modal-action">
-            <button class="btn" x-on:click="$store.loginModal.login()" :class="(!$store.loginModal.username || !$store.loginModal.password) && 'btn-disabled'">Se connecter</button>
+        <div class="tabs-content pb-6">
+            <div :class="$store.loginModal.signin && 'show'">
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Quel est votre nom d'utilisateur.trice ?</span>
+                    </label>
+                    <input type="text" x-model="$store.loginModal.username"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Quel est votre mot de passe ?</span>
+                    </label>
+                    <input type="password" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                <div class="modal-action">
+                    <button class="btn" @click="$store.loginModal.login()" :class="(!$store.loginModal.username || !$store.loginModal.password) && 'btn-disabled'">Se connecter</button>
+                </div>
+            </div>
+            <div :class="$store.loginModal.signup && 'show'">
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Quel est votre adresse email ?</span>
+                    </label>
+                    <input type="text" x-model="$store.loginModal.email"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Choisissez votre nom d'utilisateur.trice:</span>
+                    </label>
+                    <input type="text" x-model="$store.loginModal.username"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Choisissez votre mot de passe:</span>
+                    </label>
+                    <input type="password" x-model="$store.loginModal.password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Confirmez votre mot de passe:</span>
+                    </label>
+                    <input type="password" x-model="$store.loginModal.password_confirm"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                <div class="modal-action">
+                    <button class="btn" @click="$store.loginModal.register()" :class="(!$store.loginModal.username || !$store.loginModal.password || !$store.loginModal.password_confirm || !$store.loginModal.email) && 'btn-disabled'">S'inscrire</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

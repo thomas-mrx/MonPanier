@@ -6,7 +6,7 @@
             <label class="label">
                 <span class="label-text">Quel est le nom de votre panier?</span>
             </label>
-            <input type="text" x-model="$store.addCartModal.text"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+            <input type="text" x-model="$store.addCartModal.text"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs cart-input"/>
         </div>
         <div class="modal-action">
             <button class="btn" x-on:click="$store.addCartModal.createCart()">Ajouter</button>
