@@ -7,17 +7,21 @@ class Stats {
     const brefElement = document.getElementById('bref-chart') as HTMLCanvasElement;
     const brefData = {
       labels: [
-        'Red',
-        'Blue',
-        'Yellow',
+        'A',
+        'B',
+        'C',
+        'D',
+        'E',
       ],
       datasets: [{
-        label: 'My First Dataset',
-        data: [300, 50, 100],
+        label: 'Mes paniers',
+        data: [10, 20, 40, 10, 5],
         backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)',
+          '#038141',
+          '#85bb2f',
+          '#fecb02',
+          '#ee8100',
+          '#e63e11',
         ],
         hoverOffset: 4,
       }],
