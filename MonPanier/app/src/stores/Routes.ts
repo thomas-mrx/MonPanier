@@ -4,7 +4,6 @@ import Cart from './Cart';
 import Stats from '../scripts/Stats';
 
 interface Route {
-  url: string,
   pattern: RegExp,
   args: { [key: string]: string },
   onInit?: () => void,
@@ -13,12 +12,13 @@ interface Tab {
   icon: string,
   name: string,
   link: string,
-  routes: Route | Route[],
+  routes: Route[],
 }
 const STORE_NAME = 'routes';
 const STORE_DATA: {
   tabs: Tab[],
   activeTab: number,
+  activeRoute: number,
   loadRoute: (url: string) => void,
 } = {
   tabs: [
@@ -26,46 +26,41 @@ const STORE_DATA: {
       icon: 'fa-chart-line',
       name: 'Explorer',
       link: '/',
-      routes: {
-        url: '/',
+      routes: [{
         pattern: /^$|^\/$/,
         args: {},
         onInit() {
           Stats.getChartById('bref-chart').resize();
         },
-      },
+      }],
     },
     {
       icon: 'fa-shopping-cart',
       name: 'Panier',
       link: '/carts',
       routes: [{
-        url: '/carts',
         pattern: /^\/carts$/,
         args: {},
         onInit() {
-          Backend.getCarts(Backend.headers).then((result) => {
+          Backend.getCarts(Backend.params).then((result) => {
             if (result.data) {
-              Cart.update(result.data);
+              Cart.updateCarts(result.data);
             }
           });
         },
       },
       {
-        url: '/carts/:id',
         pattern: /^\/carts\/(?<id>[0-9]+)$/,
         args: { id: '' },
         onInit() {
-          Backend.getCart(this.args.id, Backend.headers).then((result) => {
+          Backend.getCart(this.args.id, Backend.params).then((result) => {
             if (result.data) {
-              alert(`from API:${JSON.stringify(result.data)}`);
-              console.log(result.data);
+              Cart.updateCart(result.data);
             }
           });
         },
       },
       {
-        url: '/carts/:id/:product',
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
         onInit() {
@@ -77,18 +72,16 @@ const STORE_DATA: {
       icon: 'fa-barcode',
       name: 'Scan',
       link: '/scan',
-      routes: {
-        url: '/scan',
+      routes: [{
         pattern: /^\/scan$/,
         args: {},
-      },
+      }],
     },
     {
       icon: 'fa-search',
       name: 'Recherche',
       link: '/search',
-      routes: {
-        url: '/search',
+      routes: [{
         pattern: /^\/search$/,
         args: {},
         onInit() {
@@ -96,30 +89,25 @@ const STORE_DATA: {
             document.getElementById('search').focus();
           }, 100);
         },
-      },
+      }],
     },
   ],
   activeTab: 0,
+  activeRoute: 0,
 
   loadRoute(url: string) {
-    const matchAndLoad = (route: Route, tabIndex: number) => {
-      const match = route.pattern.exec(url);
-      if (match) {
-        this.activeTab = tabIndex;
-        Object.keys(route.args).forEach((key) => {
-          Object.assign(route.args, { [key]: match.groups?.[key] || '' });
-        });
-        route.onInit?.();
-      }
-    };
     this.tabs.forEach((tab: Tab, index: number) => {
-      if (Array.isArray(tab.routes)) {
-        tab.routes.forEach((route: Route) => {
-          matchAndLoad(route, index);
-        });
-      } else {
-        matchAndLoad(tab.routes, index);
-      }
+      tab.routes.forEach((route: Route, indexRoute:number) => {
+        const match = route.pattern.exec(url);
+        if (match) {
+          this.activeTab = index;
+          this.activeRoute = indexRoute;
+          Object.keys(route.args).forEach((key) => {
+            Object.assign(route.args, { [key]: match.groups?.[key] || '' });
+          });
+          route.onInit?.();
+        }
+      });
     });
     window.history.replaceState({}, '', url);
   },

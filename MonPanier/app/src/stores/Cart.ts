@@ -4,17 +4,24 @@ import { CartSchema } from '../api';
 const STORE_NAME = 'cart';
 const STORE_DATA: {
   carts: CartSchema[],
-  update: (carts: CartSchema[]) => void,
+  cart: CartSchema,
+  updateCarts: (carts: CartSchema[]) => void,
+  updateCart: (cart: CartSchema) => void,
   prepend: (cart: CartSchema) => void,
 } = {
   carts: [] as CartSchema[],
+  cart: {} as CartSchema,
 
-  update(carts: CartSchema[]) {
+  updateCarts(carts: CartSchema[]) {
     this.carts = carts;
   },
 
   prepend(cart: CartSchema) {
     this.carts.unshift(cart);
+  },
+
+  updateCart(cart: CartSchema) {
+    this.cart = cart;
   },
 };
 

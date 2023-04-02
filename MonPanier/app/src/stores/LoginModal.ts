@@ -31,7 +31,7 @@ const STORE_DATA: {
     Backend.login({
       username: this.username,
       password: this.password,
-    }, Backend.headers).then((result) => {
+    }, Backend.params).then((result) => {
       if (result.status === 200 && result.data) {
         this.toggle();
         // @ts-ignore
@@ -52,7 +52,7 @@ const STORE_DATA: {
       password1: this.password,
       password2: this.password_confirm,
       email: this.email,
-    }, Backend.headers).then((result) => {
+    }, Backend.params).then((result) => {
       if (result.status === 201 && result.data) {
         alert('Compte créé, vérifiez vos emails pour l\'activer.');
       }
@@ -63,7 +63,7 @@ const STORE_DATA: {
   },
 
   checkLogin() {
-    Backend.me(Backend.headers).catch((error) => {
+    Backend.me(Backend.params).catch((error) => {
       if (error.status === 401) {
         this.toggle();
       }

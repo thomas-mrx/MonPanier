@@ -19,7 +19,7 @@ class Scanner {
   private onScanSuccess(decodedText: string) {
     this.lastDecodedText = decodedText;
     // handle the scanned code as you like, for example:
-    Backend.getProduct(decodedText, Backend.headers).then((result) => {
+    Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {
         ProductModalStore.update(result.data);
       }

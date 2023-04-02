@@ -21,7 +21,7 @@ const STORE_DATA: {
 
   async createCart() {
     this.cart.name = this.text;
-    Backend.createCart(this.cart, Backend.headers).then((result) => {
+    Backend.createCart(this.cart, Backend.params).then((result) => {
       if (result.data) {
         cartStore.prepend(result.data);
         this.toggle();

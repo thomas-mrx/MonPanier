@@ -20,15 +20,13 @@ const getCookie = (name: string) => {
 const { api } = new Api();
 type ApiType = typeof api;
 interface IBackend extends ApiType {
-  headers: { [key: string]: string };
+  params: { headers: { [key: string]: string } };
 }
 class Backend {
-  headers: IBackend['headers'];
+  params: IBackend['params'] = { headers: {} };
 
   constructor() {
-    this.headers = {
-      'X-CSRFToken': getCookie('csrftoken'),
-    };
+    this.params.headers['X-CSRFToken'] = getCookie('csrftoken');
     Object.assign(this, api);
   }
 }

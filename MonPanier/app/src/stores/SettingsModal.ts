@@ -16,7 +16,7 @@ const STORE_DATA: {
   },
 
   async logout() {
-    const result = await Backend.logout(Backend.headers);
+    const result = await Backend.logout(Backend.params);
     if (result.status === 204) {
       window.location.reload();
     }
