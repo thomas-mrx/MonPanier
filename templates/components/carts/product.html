@@ -1,1 +1,125 @@
-<h1>Produit</h1>
+<div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+    <h1 class="text-xl font-medium my-2 text-gray-600" x-text="$store.product.product.title"></h1>
+
+</div>
+
+<div class="card lg:card-side bg-white shadow-xl mt-6 ml-10 mr-10" x-data="$store.product">
+    <figure><img :src="product.image"
+                 /></figure>
+    <div class="card-body">
+        <h2 class="card-title"><strong x-text="product.title"></strong></h2>
+        <p> Marque : <strong x-text="product.brands"></strong></p>
+        <p> Code-barres: <strong x-text="product.ean"></strong> (EAN / EAN-13)  </p>
+        <p> Catégories :  <template x-for="categorie in product.categories">
+            <strong x-text="categorie"></strong>
+        </template></p>
+        <div class="card-actions justify-start">
+
+            <div class="stats  text-primary-content">
+
+                <div class="stat">
+                    <div class="stat-title">Score Nutritionnel</div>
+                    <div class="stat-value text-black" x-text="product.mp_nutrim_score?.score"></div>
+
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Score Sanitaire</div>
+                    <div class="stat-value text-black" x-text="product.mp_sanit_score?.score"></div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Score Eco</div>
+                    <div class="stat-value text-black" x-text="product.mp_eco_score?.score"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider">Tableau nutrionnel</div>
+
+<div class="card lg:card-side bg-white shadow-xl mt-6 ml-10 mr-10" >
+    <div class="flex flex-col">
+        <div class="overflow-x-auto sm:-mx-6 lg:-mx-8" style="padding: 20px">
+            <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                <div class="overflow-hidden">
+                    <table class="min-w-full text-left text-sm font-light">
+                        <thead class="border-b font-medium dark:border-neutral-500">
+                        <tr>
+                            <th>Tableau nutritionnel</th>
+                            <th>Tel que vendu pour 100 g / 100ml</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>energy_kj_100g</td>
+                            <td x-text="$store.product.product.nutriments?.energy_kj_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>energy_kcal_100g</td>
+                            <td x-text="$store.product.product.nutriments?.energy_kcal_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>energy_100g</td>
+                            <td x-text="$store.product.product.nutriments?.energy_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>fat_100g</td>
+                            <td x-text="$store.product.product.nutriments?.fat_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>saturated_fat_100g</td>
+                            <td x-text="$store.product.product.nutriments?.saturated_fat_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>carbohydrates_100g</td>
+                            <td x-text="$store.product.product.nutriments?.carbohydrates_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>sugars_100g</td>
+                            <td x-text="$store.product.product.nutriments?.sugars_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>proteins_100g</td>
+                            <td x-text="$store.product.product.nutriments?.proteins_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>salt_100g</td>
+                            <td x-text="$store.product.product.nutriments?.salt_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>sodium_100g</td>
+                            <td x-text="$store.product.product.nutriments?.sodium_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>alcohol_100g</td>
+                            <td x-text="$store.product.product.nutriments?.alcohol_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>fruits_legumes_100g</td>
+                            <td x-text="$store.product.product.nutriments?.fruits_vegetables_nuts_estimate_from_ingredients_100g"></td>
+                        </tr>
+
+                        <tr>
+                            <td>nutrition_score_fr_100g</td>
+                            <td x-text="$store.product.product.nutriments?.nutrition_score_fr_100g"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>

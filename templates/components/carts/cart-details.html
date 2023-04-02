@@ -1,1 +1,74 @@
-<h1 x-text="$store.cart.cart.name"></h1>
+<div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+    <h1 class="text-xl font-medium my-2 text-gray-600" x-text="$store.cart.cart.name"></h1>
+
+</div>
+
+<div class="card lg:card-side bg-white shadow-xl mt-6 ml-10 mr-10" x-data="$store.cart">
+    <div class="card-body">
+        <!-- <p> Nombre de produits : <strong x-text="cart.products.length"></strong></p> -->
+        <p> Date de création : <strong x-text="cart.created_at"></strong></p>
+        <p> Date de modification : <strong x-text="cart.updated_at"></strong></p>
+        <div class="card-actions justify-start">
+
+            <div class="stats  text-primary-content">
+
+                <div class="stat">
+                    <div class="stat-title">Score Nutritionnel</div>
+                    <div class="stat-value text-black">8.75</div>
+
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Score Sanitaire</div>
+                    <div class="stat-value text-black">6</div>
+                </div>
+
+                <div class="stat">
+                    <div class="stat-title">Score Eco</div>
+                    <div class="stat-value text-black">3</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divider">Produits</div>
+
+<div class="card lg:card-side mt-6 ml-10 mr-10">
+    <div class="grid md:grid-cols-4 gap-4 sm:grid-cols-2 gap-4">
+        <template x-for="product in $store.cart.cart.products" :key="product.id">
+            <div class="card w-50 bg-base-100 shadow-xl"
+                 @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id+'/'+product.id)">
+                <figure><img :src="product.image"
+                             alt=""/></figure>
+                <div class="card-body">
+                    <h2 class="card-title" x-text="product.title"></h2>
+                    <div class="card-actions justify-start">
+
+                        <div class="stats  text-primary-content">
+
+                            <div class="stat">
+                                <div class="stat-title">Score Nutritionnel</div>
+                                <div class="stat-value text-black" x-text="product.mp_nutrim_score.score"></div>
+
+                            </div>
+
+                            <div class="stat">
+                                <div class="stat-title">Score Sanitaire</div>
+                                <div class="stat-value text-black" x-text="product.mp_sanit_score.score"></div>
+                            </div>
+
+                            <div class="stat">
+                                <div class="stat-title">Score Eco</div>
+                                <div class="stat-value text-black" x-text="product.mp_eco_score.score"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+

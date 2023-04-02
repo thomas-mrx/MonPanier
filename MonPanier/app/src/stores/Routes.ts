@@ -1,20 +1,27 @@
 import Store from '../scripts/Store';
 import Backend from '../scripts/Backend';
 import Cart from './Cart';
+import Product from './Product';
 import Stats from '../scripts/Stats';
+
+import { ProductSchema } from '../api';
+
 import Scanner from '../scripts/Scanner';
+
 
 interface Route {
   pattern: RegExp,
   args: { [key: string]: string },
   onInit?: () => void,
 }
+
 interface Tab {
   icon: string,
   name: string,
   link: string,
   routes: Route[],
 }
+
 const STORE_NAME = 'routes';
 const STORE_DATA: {
   tabs: Tab[],
@@ -65,7 +72,9 @@ const STORE_DATA: {
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
         onInit() {
-          console.log(this.args);
+          const product = JSON.parse(JSON.stringify(Cart.cart.products)).find((p : ProductSchema) => String(p.id) === this.args.product);
+
+          Product.updateProduct(product);
         },
       }],
     },
@@ -105,7 +114,7 @@ const STORE_DATA: {
 
   loadRoute(url: string, updateHistory = true) {
     this.tabs.forEach((tab: Tab, index: number) => {
-      tab.routes.forEach((route: Route, indexRoute:number) => {
+      tab.routes.forEach((route: Route, indexRoute: number) => {
         const match = route.pattern.exec(url);
         if (match) {
           this.activeTab = index;

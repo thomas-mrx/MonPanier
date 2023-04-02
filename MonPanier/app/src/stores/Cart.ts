@@ -8,6 +8,7 @@ const STORE_DATA: {
   updateCarts: (carts: CartSchema[]) => void,
   updateCart: (cart: CartSchema) => void,
   prepend: (cart: CartSchema) => void,
+  countProducts: () => number
 } = {
   carts: [] as CartSchema[],
   cart: {} as CartSchema,
@@ -22,6 +23,10 @@ const STORE_DATA: {
 
   updateCart(cart: CartSchema) {
     this.cart = cart;
+  },
+
+  countProducts() {
+    return (this.cart.products as []).length;
   },
 };
 
