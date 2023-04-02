@@ -3,7 +3,11 @@ import Backend from '../scripts/Backend';
 import Cart from './Cart';
 import Product from './Product';
 import Stats from '../scripts/Stats';
+
 import { ProductSchema } from '../api';
+
+import Scanner from '../scripts/Scanner';
+
 
 interface Route {
   pattern: RegExp,
@@ -81,6 +85,13 @@ const STORE_DATA: {
       routes: [{
         pattern: /^\/scan$/,
         args: {},
+        onInit() {
+          Scanner.start().then((success) => {
+            if (!success) {
+              alert('Impossible de démarrer le scanner. Vérifiez que votre appareil est compatible et que vous autorisez l\'accès à la caméra.');
+            }
+          });
+        },
       }],
     },
     {
@@ -92,7 +103,7 @@ const STORE_DATA: {
         args: {},
         onInit() {
           setTimeout(() => {
-            document.getElementById('search').focus();
+            document.getElementById('default-search').focus();
           }, 100);
         },
       }],
@@ -115,6 +126,12 @@ const STORE_DATA: {
         }
       });
     });
+    if (this.tabs[this.activeTab].routes[this.activeRoute].pattern.exec(url) === null) {
+      this.loadRoute(this.tabs[0].link);
+    }
+    if (this.tabs[this.activeTab].link !== '/scan') {
+      Scanner.stop();
+    }
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }

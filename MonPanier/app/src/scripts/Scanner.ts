@@ -1,37 +1,71 @@
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
 import Backend from './Backend';
 import ProductModalStore from '../stores/ProductModal';
 
 class Scanner {
-  private readonly html5QrcodeScanner: Html5QrcodeScanner;
+  private readonly scanner: Html5Qrcode;
 
   private lastDecodedText: string | undefined;
 
+  private readonly beep: HTMLAudioElement;
+
+  private audioContext: AudioContext;
+
   constructor() {
-    this.html5QrcodeScanner = new Html5QrcodeScanner(
-      'reader',
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      false,
-    );
-    this.html5QrcodeScanner.render(this.onScanSuccess.bind(this), this.onScanFailure.bind(this));
+    this.scanner = new Html5Qrcode('reader');
+    this.audioContext = new AudioContext();
+    this.beep = new Audio('/static/beep.mp3');
+    this.beep.preload = 'auto';
+    const audioSource = this.audioContext.createMediaElementSource(this.beep);
+    audioSource.connect(this.audioContext.destination);
+  }
+
+  public async start() {
+    this.audioContext.resume();
+    return new Promise((resolve) => {
+      const state = this.scanner.getState();
+      if (state === Html5QrcodeScannerState.SCANNING) {
+        resolve(true);
+        return;
+      }
+      this.scanner.start(
+        { facingMode: 'environment' },
+        {
+          fps: 10,
+          qrbox: { width: 256, height: 128 },
+        },
+        this.onScanSuccess.bind(this),
+        () => {},
+      ).then(() => {
+        resolve(true);
+      }).catch((err) => {
+        console.warn(`Unable to start scanning, error = ${err}`);
+        resolve(false);
+      });
+    });
+  }
+
+  public stop() {
+    const state = this.scanner.getState();
+    if (state === Html5QrcodeScannerState.SCANNING) {
+      this.scanner.stop();
+    }
   }
 
   private onScanSuccess(decodedText: string) {
+    if (this.lastDecodedText === decodedText) {
+      return;
+    }
     this.lastDecodedText = decodedText;
-    // handle the scanned code as you like, for example:
+    this.audioContext.resume().then(() => {
+      this.beep.currentTime = 0;
+      this.beep.play();
+    });
     Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {
         ProductModalStore.update(result.data);
       }
     });
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  private onScanFailure(error: any) {
-    // handle scan failure, usually better to ignore and keep scanning.
-    // for example:
-    // eslint-disable-next-line no-console
-    console.warn(`Code scan error = ${error}`);
   }
 }
 
