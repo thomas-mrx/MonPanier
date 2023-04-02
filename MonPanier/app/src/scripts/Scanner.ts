@@ -11,7 +11,7 @@ class Scanner {
 
   constructor() {
     this.scanner = new Html5Qrcode('reader');
-    this.beep = new Audio('beep.mp3');
+    this.beep = new Audio('/static/beep.mp3');
     this.beep.preload = 'auto';
     this.beep.load();
   }
