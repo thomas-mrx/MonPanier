@@ -7,16 +7,21 @@ class Scanner {
 
   private lastDecodedText: string | undefined;
 
-  private beep: HTMLAudioElement;
+  private readonly beep: HTMLAudioElement;
+
+  private audioContext: AudioContext;
 
   constructor() {
     this.scanner = new Html5Qrcode('reader');
+    this.audioContext = new AudioContext();
     this.beep = new Audio('/static/beep.mp3');
     this.beep.preload = 'auto';
-    this.beep.load();
+    const audioSource = this.audioContext.createMediaElementSource(this.beep);
+    audioSource.connect(this.audioContext.destination);
   }
 
   public async start() {
+    this.audioContext.resume();
     return new Promise((resolve) => {
       const state = this.scanner.getState();
       if (state === Html5QrcodeScannerState.SCANNING) {
@@ -52,8 +57,10 @@ class Scanner {
       return;
     }
     this.lastDecodedText = decodedText;
-    this.beep.currentTime = 0;
-    this.beep.play();
+    this.audioContext.resume().then(() => {
+      this.beep.currentTime = 0;
+      this.beep.play();
+    });
     Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {
         ProductModalStore.update(result.data);
