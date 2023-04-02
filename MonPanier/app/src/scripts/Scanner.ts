@@ -7,8 +7,13 @@ class Scanner {
 
   private lastDecodedText: string | undefined;
 
+  private beep: HTMLAudioElement;
+
   constructor() {
     this.scanner = new Html5Qrcode('reader');
+    this.beep = new Audio('beep.mp3');
+    this.beep.preload = 'auto';
+    this.beep.load();
   }
 
   public async start() {
@@ -47,6 +52,8 @@ class Scanner {
       return;
     }
     this.lastDecodedText = decodedText;
+    this.beep.currentTime = 0;
+    this.beep.play();
     Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {
         ProductModalStore.update(result.data);
