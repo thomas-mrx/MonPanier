@@ -4,13 +4,11 @@ import { ProductSchema } from '../api';
 const STORE_NAME = 'productModal';
 const STORE_DATA: {
   on: boolean,
-  text: string,
   product: ProductSchema,
   toggle: () => void,
   update: (product: ProductSchema) => void,
 } = {
   on: true,
-  text: 'Hello world',
   product: {} as ProductSchema,
 
   toggle() {

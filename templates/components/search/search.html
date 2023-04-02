@@ -1,17 +1,17 @@
 <div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <h1 class="text-xl font-medium my-2 text-gray-600">Recherche</h1>
 </div>
-<div class="searchbar mx-4">
+<div class="searchbar mx-4 mt-3">
     <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only">Rechercher un
         produit</label>
     <div class="relative">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <i class="fa-solid fa-magnifying-glass"></i></div>
         <input type="search" id="default-search" x-model="$store.search.text"
-               class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50"
+               class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-[12px] bg-gray-50"
                placeholder="Chercher un produit" required>
         <button type="submit"
-                class="btn btn-sm absolute right-2.5 bottom-2.5 font-medium"
+                class="btn btn-sm absolute right-2.5 bottom-2.5 font-medium mb-[1px]"
                 :class="(!$store.search.text || $store.search.isLoading) && 'btn-disabled'"
                 @click="$store.search.search()">
             Rechercher
