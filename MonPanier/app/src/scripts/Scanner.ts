@@ -43,6 +43,9 @@ class Scanner {
   }
 
   private onScanSuccess(decodedText: string) {
+    if (this.lastDecodedText === decodedText) {
+      return;
+    }
     this.lastDecodedText = decodedText;
     Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {

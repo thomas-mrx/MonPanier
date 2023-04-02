@@ -8,7 +8,7 @@ const STORE_DATA: {
   toggle: () => void,
   update: (product: ProductSchema) => void,
 } = {
-  on: true,
+  on: false,
   product: {} as ProductSchema,
 
   toggle() {
