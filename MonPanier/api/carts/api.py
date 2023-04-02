@@ -30,6 +30,19 @@ def get_cart(request, cart_id):
     return 200, cart
 
 
+@router.post("/{cart_id}/products/{product_id}", operation_id="addProductToCart", response={
+    200: CartSchema, 404: Error})
+def add_product_to_cart(request, cart_id, product_id):
+    try:
+        user = request.user
+        cart = Cart.objects.filter(user=user).get(id=cart_id)
+        cart.products.add(product_id)
+        cart.save()
+    except Cart.DoesNotExist:
+        return 404, {"message": "No Result"}
+    return 200, cart
+
+
 @router.post("/", operation_id="createCart", response=CartSchema)
 def create_cart(request, payload: CreateCartSchema):
     user = request.user

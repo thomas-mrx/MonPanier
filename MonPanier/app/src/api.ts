@@ -731,6 +731,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags carts
+     * @name AddProductToCart
+     * @summary Add Product To Cart
+     * @request POST:/api/carts/{cart_id}/products/{product_id}
+     * @secure
+     */
+    addProductToCart: (cartId: string, productId: string, params: RequestParams = {}) =>
+      this.request<CartSchema, Error>({
+        path: `/api/carts/${cartId}/products/${productId}`,
+        method: "POST",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags products
      * @name GetProducts
      * @summary List Products

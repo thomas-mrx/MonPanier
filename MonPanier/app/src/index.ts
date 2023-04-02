@@ -6,6 +6,7 @@ window.onload = async () => {
   await import('./stores/Cart');
   await import('./stores/SettingsModal');
   await import('./stores/ProductModal');
+  await import('./stores/Search');
   const MainStore = (await import('./stores/Main')).default;
   const RoutesStore = (await import('./stores/Routes')).default;
   const LoginModalStore = (await import('./stores/LoginModal')).default;
