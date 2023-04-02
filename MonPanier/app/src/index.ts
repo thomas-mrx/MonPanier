@@ -14,4 +14,8 @@ window.onload = async () => {
   MainStore.initScroll();
   RoutesStore.loadRoute(window.location.pathname);
   LoginModalStore.checkLogin();
+
+  window.onpopstate = () => {
+    RoutesStore.loadRoute(window.location.pathname, false);
+  };
 };

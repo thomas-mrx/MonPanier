@@ -19,7 +19,7 @@ const STORE_DATA: {
   tabs: Tab[],
   activeTab: number,
   activeRoute: number,
-  loadRoute: (url: string) => void,
+  loadRoute: (url: string, updateHistory?: boolean) => void,
 } = {
   tabs: [
     {
@@ -95,7 +95,7 @@ const STORE_DATA: {
   activeTab: 0,
   activeRoute: 0,
 
-  loadRoute(url: string) {
+  loadRoute(url: string, updateHistory = true) {
     this.tabs.forEach((tab: Tab, index: number) => {
       tab.routes.forEach((route: Route, indexRoute:number) => {
         const match = route.pattern.exec(url);
@@ -109,7 +109,9 @@ const STORE_DATA: {
         }
       });
     });
-    window.history.pushState({}, '', url);
+    if (updateHistory) {
+      window.history.pushState({}, '', url);
+    }
   },
 };
 
