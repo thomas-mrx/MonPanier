@@ -173,6 +173,10 @@ body {
     .cart:last-of-type {
       @apply border-0;
     }
+
+    .cart:active, .cart:hover {
+      @apply bg-lime-30;
+    }
   }
 
   .stats {

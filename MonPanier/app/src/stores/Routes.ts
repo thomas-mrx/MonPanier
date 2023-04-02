@@ -30,7 +30,7 @@ const STORE_DATA: {
         url: '/',
         pattern: /^$|^\/$/,
         args: {},
-        onInit: () => {
+        onInit() {
           Stats.getChartById('bref-chart').resize();
         },
       },
@@ -43,7 +43,7 @@ const STORE_DATA: {
         url: '/carts',
         pattern: /^\/carts$/,
         args: {},
-        onInit: () => {
+        onInit() {
           Backend.getCarts(Backend.headers).then((result) => {
             if (result.data) {
               Cart.update(result.data);
@@ -55,11 +55,22 @@ const STORE_DATA: {
         url: '/carts/:id',
         pattern: /^\/carts\/(?<id>[0-9]+)$/,
         args: { id: '' },
+        onInit() {
+          Backend.getCart(this.args.id, Backend.headers).then((result) => {
+            if (result.data) {
+              alert(`from API:${JSON.stringify(result.data)}`);
+              console.log(result.data);
+            }
+          });
+        },
       },
       {
         url: '/carts/:id/:product',
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
+        onInit() {
+          console.log(this.args);
+        },
       }],
     },
     {
@@ -80,7 +91,7 @@ const STORE_DATA: {
         url: '/search',
         pattern: /^\/search$/,
         args: {},
-        onInit: () => {
+        onInit() {
           setTimeout(() => {
             document.getElementById('search').focus();
           }, 100);
