@@ -86,7 +86,7 @@ const STORE_DATA: {
         args: {},
         onInit() {
           setTimeout(() => {
-            document.getElementById('search').focus();
+            document.getElementById('default-search').focus();
           }, 100);
         },
       }],
