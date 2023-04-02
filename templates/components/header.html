@@ -1,7 +1,7 @@
 <nav class="mon-panier-header" x-data="{tabs: $store.routes.tabs}">
-    <template x-for="[id, value] in Object.entries(tabs)" :key="id">
-        <button x-on:click="$store.routes.setActiveTab(value.id)"
-                :class="{ 'active': $store.routes.activeTab === value.id }">
+    <template x-for="(value, id) in tabs">
+        <button x-on:click="$store.routes.loadRoute(value.link)"
+                :class="{ 'active': $store.routes.activeTab === id }">
         <span>
             <i class="far" :class="value.icon"></i>
             <span x-text="value.name"></span>

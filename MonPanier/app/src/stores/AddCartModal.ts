@@ -1,6 +1,6 @@
 import Store from '../scripts/Store';
 import { CreateCartSchema } from '../api';
-import MonPanierAPI from '../scripts/MonPanierAPI';
+import Backend from '../scripts/Backend';
 import cartStore from './Cart';
 
 const STORE_NAME = 'addCartModal';
@@ -21,7 +21,7 @@ const STORE_DATA: {
 
   async createCart() {
     this.cart.name = this.text;
-    MonPanierAPI.getApi().createCart(this.cart, MonPanierAPI.getHeaders()).then((result) => {
+    Backend.createCart(this.cart, Backend.headers).then((result) => {
       if (result.data) {
         cartStore.prepend(result.data);
         this.toggle();

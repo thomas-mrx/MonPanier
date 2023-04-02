@@ -1,4 +1,5 @@
 import { Api } from '../api';
+import * as all from '../api';
 
 const getCookie = (name: string) => {
   let cookieValue = null;
@@ -16,25 +17,19 @@ const getCookie = (name: string) => {
   return cookieValue;
 };
 
-class MonPanierAPI {
-  private readonly headers: { [key: string]: string } = {};
-
-  private readonly api;
+const { api } = new Api();
+type ApiType = typeof api;
+interface IBackend extends ApiType {
+  headers: { [key: string]: string };
+}
+class Backend {
+  headers: IBackend['headers'];
 
   constructor() {
-    this.headers['X-CSRFToken'] = getCookie('csrftoken');
-    this.api = new Api().api;
-  }
-
-  public getApi() {
-    return this.api;
-  }
-
-  public getHeaders() {
-    return {
-      headers: this.headers,
+    this.headers = {
+      'X-CSRFToken': getCookie('csrftoken'),
     };
+    Object.assign(this, api);
   }
 }
-
-export default new MonPanierAPI();
+export default new Backend() as IBackend;

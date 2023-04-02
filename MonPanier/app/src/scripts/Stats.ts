@@ -1,6 +1,6 @@
 import { Chart, ChartConfiguration } from 'chart.js/auto';
 
-export default class Stats {
+class Stats {
   private readonly charts: Chart[] = [];
 
   constructor() {
@@ -32,3 +32,5 @@ export default class Stats {
     return this.charts.find((chart) => chart.canvas.id === elementId);
   }
 }
+
+export default new Stats();

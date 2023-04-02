@@ -40,7 +40,7 @@ _LOGIN_BACKEND = 'django.contrib.auth.backends.ModelBackend'
 
 
 
-@router.post('/', tags=['auth'], response={200: UserOut, 403: None}, auth=None)
+@router.post('/', operation_id="login", tags=['auth'], response={200: UserOut, 403: None}, auth=None)
 def login(request, data: LoginIn):
     user = authenticate(backend=_LOGIN_BACKEND, **data.dict())
     if user is not None and user.is_active:
@@ -49,7 +49,7 @@ def login(request, data: LoginIn):
     return 403, None
 
 
-@router.delete('/', tags=['auth'], response={204: None}, auth=django_auth)
+@router.delete('/', operation_id="logout", tags=['auth'], response={204: None}, auth=django_auth)
 def logout(request):
     django_logout(request)
     return 204, None
@@ -57,7 +57,7 @@ def logout(request):
 def validate_email_address(email_address):
    return re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email_address)
 
-@router.post('/register', tags=['auth'], response={201: UserOut, 403: None, 400: ErrorsOut, 500: None}, auth=None)
+@router.post('/register', operation_id="register", tags=['auth'], response={201: UserOut, 403: None, 400: ErrorsOut, 500: None}, auth=None)
 def register(request, data: RegisterIn):
     if request.user.is_authenticated:
         return 403, None
@@ -90,11 +90,11 @@ def register(request, data: RegisterIn):
         return 400, {'errors': form.errors}
 
 
-@router.get('/me', tags=['auth'], response=UserOut, auth=django_auth)
+@router.get('/me', operation_id="me", tags=['auth'], response=UserOut, auth=django_auth)
 def me(request):
     return request.user
 
-@router.get('/activate/{uid}/{token}', tags=['auth'], response={200:None}, auth=None)
+@router.get('/activate/{uid}/{token}', operation_id="activate", tags=['auth'], response={200:None}, auth=None)
 def activate(request, uid:str, token:str):
     if request.user and request.user.is_authenticated:
         return redirect('/')
@@ -110,7 +110,7 @@ def activate(request, uid:str, token:str):
         django_login(request, user, backend=_LOGIN_BACKEND)
     return redirect('/')
 
-@router.post('/request_password_reset',
+@router.post('/request_password_reset', operation_id="requestPasswordReset",
              tags=['auth'],
              response={204: None},
              auth=None)
@@ -127,7 +127,7 @@ def request_password_reset(request, data: RequestPasswordResetIn):
     return 204, None
 
 
-@router.post('/reset_password',
+@router.post('/reset_password', operation_id="resetPassword",
              tags=['auth'],
              response={200: UserOut, 403: ErrorsOut, 422: None},
              auth=None)
@@ -148,7 +148,7 @@ def reset_password(request, data: SetPasswordIn):
     return 422, None
 
 
-@router.post('/change_password',
+@router.post('/change_password', operation_id="changePassword",
              tags=['auth'],
              response={200: None, 403: ErrorsOut},
              auth=django_auth)

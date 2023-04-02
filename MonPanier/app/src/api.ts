@@ -9,44 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-/** CartSchema */
-export interface CartSchema {
-  /** Id */
-  id?: number;
-  /**
-   * Name
-   * @maxLength 255
-   */
-  name: string;
-  /**
-   * Created At
-   * @format date-time
-   */
-  created_at: string;
-  /**
-   * Updated At
-   * @format date-time
-   */
-  updated_at: string;
-  /** User */
-  user: number;
-}
-
-/** CreateCartSchema */
-export interface CreateCartSchema {
-  /**
-   * Name
-   * @maxLength 255
-   */
-  name: string;
-}
-
-/** Error */
-export interface Error {
-  /** Message */
-  message: string;
-}
-
 /** DispensationSchema */
 export interface DispensationSchema {
   /**
@@ -295,6 +257,49 @@ export interface ProductSchema {
    * @default []
    */
   recalls?: RecallSchema[];
+}
+
+/** CartSchema */
+export interface CartSchema {
+  /** Id */
+  id?: number;
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+  /** User */
+  user: number;
+  /**
+   * Products
+   * @default []
+   */
+  products?: ProductSchema[];
+}
+
+/** CreateCartSchema */
+export interface CreateCartSchema {
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+}
+
+/** Error */
+export interface Error {
+  /** Message */
+  message: string;
 }
 
 /** FoodSchema */
@@ -798,11 +803,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiLogin
+     * @name Login
      * @summary Login
      * @request POST:/api/auth/
      */
-    monPanierApiAuthApiLogin: (data: LoginIn, params: RequestParams = {}) =>
+    login: (data: LoginIn, params: RequestParams = {}) =>
       this.request<User4, void>({
         path: `/api/auth/`,
         method: "POST",
@@ -816,12 +821,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiLogout
+     * @name Logout
      * @summary Logout
      * @request DELETE:/api/auth/
      * @secure
      */
-    monPanierApiAuthApiLogout: (params: RequestParams = {}) =>
+    logout: (params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/auth/`,
         method: "DELETE",
@@ -833,11 +838,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiRegister
+     * @name Register
      * @summary Register
      * @request POST:/api/auth/register
      */
-    monPanierApiAuthApiRegister: (data: RegisterIn, params: RequestParams = {}) =>
+    register: (data: RegisterIn, params: RequestParams = {}) =>
       this.request<User4, ErrorsOut | void>({
         path: `/api/auth/register`,
         method: "POST",
@@ -851,12 +856,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiMe
+     * @name Me
      * @summary Me
      * @request GET:/api/auth/me
      * @secure
      */
-    monPanierApiAuthApiMe: (params: RequestParams = {}) =>
+    me: (params: RequestParams = {}) =>
       this.request<User4, any>({
         path: `/api/auth/me`,
         method: "GET",
@@ -869,12 +874,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiActivate
+     * @name Activate
      * @summary Activate
      * @request GET:/api/auth/activate/{uid}/{token}
      */
-    monPanierApiAuthApiActivate: (uid: string, token: string, params: RequestParams = {}) =>
-      this.request<void, void>({
+    activate: (uid: string, token: string, params: RequestParams = {}) =>
+      this.request<void, any>({
         path: `/api/auth/activate/${uid}/${token}`,
         method: "GET",
         ...params,
@@ -884,11 +889,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiRequestPasswordReset
+     * @name RequestPasswordReset
      * @summary Request Password Reset
      * @request POST:/api/auth/request_password_reset
      */
-    monPanierApiAuthApiRequestPasswordReset: (data: RequestPasswordResetIn, params: RequestParams = {}) =>
+    requestPasswordReset: (data: RequestPasswordResetIn, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/api/auth/request_password_reset`,
         method: "POST",
@@ -901,11 +906,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiResetPassword
+     * @name ResetPassword
      * @summary Reset Password
      * @request POST:/api/auth/reset_password
      */
-    monPanierApiAuthApiResetPassword: (data: SetPasswordIn, params: RequestParams = {}) =>
+    resetPassword: (data: SetPasswordIn, params: RequestParams = {}) =>
       this.request<User4, ErrorsOut | void>({
         path: `/api/auth/reset_password`,
         method: "POST",
@@ -919,12 +924,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name MonPanierApiAuthApiChangePassword
+     * @name ChangePassword
      * @summary Change Password
      * @request POST:/api/auth/change_password
      * @secure
      */
-    monPanierApiAuthApiChangePassword: (data: ChangePasswordIn, params: RequestParams = {}) =>
+    changePassword: (data: ChangePasswordIn, params: RequestParams = {}) =>
       this.request<void, ErrorsOut>({
         path: `/api/auth/change_password`,
         method: "POST",

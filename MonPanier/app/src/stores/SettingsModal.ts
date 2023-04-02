@@ -1,5 +1,5 @@
 import Store from '../scripts/Store';
-import MonPanierAPI from '../scripts/MonPanierAPI';
+import Backend from '../scripts/Backend';
 
 const STORE_NAME = 'settingsModal';
 const STORE_DATA: {
@@ -16,11 +16,10 @@ const STORE_DATA: {
   },
 
   async logout() {
-    const result = await MonPanierAPI.getApi().monPanierApiAuthApiLogout(MonPanierAPI.getHeaders());
+    const result = await Backend.logout(Backend.headers);
     if (result.status === 204) {
       window.location.reload();
     }
   },
 };
-
 export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;

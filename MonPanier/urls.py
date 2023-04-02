@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/', api.urls),
     path('', TemplateView.as_view(template_name="app.html")),
     path('carts', TemplateView.as_view(template_name="app.html")),
+    re_path(r'^carts/(?P<id>\d+)$', TemplateView.as_view(template_name="app.html")),
+    re_path(r'^carts/(?P<id>\d+)/(?P<product>\d+)$', TemplateView.as_view(template_name="app.html")),
     path('scan', TemplateView.as_view(template_name="app.html")),
     path('search', TemplateView.as_view(template_name="app.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
