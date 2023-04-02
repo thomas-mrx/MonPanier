@@ -4,6 +4,8 @@
 <div id="reader"></div>
 <div class="modal modal-bottom"  :class="$store.productModal.on && 'modal-open'" >
     <div class="modal-box flex flex-col">
+        <label @click="$store.productModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="far fa-times"></i></label>
         <h1 class="w-auto mx-auto inline-block mb-6 font-bold text-2xl" x-text="$store.productModal.product.title"></h1>
+        <img class="w-1/2 mx-auto" :src="$store.productModal.product.image" alt="">
     </div>
 </div>
