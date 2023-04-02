@@ -19,12 +19,12 @@
     </div>
     <div class="scrollview">
         <div class="container mx-auto">
-            <div :class="{ 'hidden': $store.routes.activeTab !== 0 }">
+            <div :class="{ 'hidden': $store.routes.activeTab !== 0 }" class="content-dashboard">
                 <div :class="{ 'hidden': $store.routes.activeTab !== 0 || $store.routes.activeRoute !== 0 }">
                     {% include "components/dashboard/dashboard.html" %}
                 </div>
             </div>
-            <div :class="{ 'hidden': $store.routes.activeTab !== 1 }">
+            <div :class="{ 'hidden': $store.routes.activeTab !== 1 }" class="content-carts">
                 <div :class="{ 'hidden': $store.routes.activeTab !== 1 || $store.routes.activeRoute !== 0 }">
                     {% include "components/carts/carts.html" %}
                 </div>
@@ -35,10 +35,10 @@
                     {% include "components/carts/product.html" %}
                 </div>
             </div>
-            <div :class="{ 'hidden': $store.routes.activeTab !== 2 }">
+            <div :class="{ 'hidden': $store.routes.activeTab !== 2 }" class="content-scan">
                 {% include "components/scan/scan.html" %}
             </div>
-            <div :class="{ 'hidden': $store.routes.activeTab !== 3 }">
+            <div :class="{ 'hidden': $store.routes.activeTab !== 3 }" class="content-search">
                 {% include "components/search/search.html" %}
             </div>
         </div>

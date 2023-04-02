@@ -1,10 +1,9 @@
-<div id="reader" class="mx-auto" style="width: 600px; height: 600px"></div>
-<div class="modal" x-data :class="$store.productModal.on && 'modal-open'">
-    <div class="modal-box">
-        <h3 class="font-bold text-lg" x-text="$store.productModal.product.title"></h3>
-        <p class="py-4" x-text="$store.productModal.product.summary"></p>
-        <div class="modal-action">
-            <button class="btn" x-data @click="$store.productModal.toggle()">Close</button>
-        </div>
+<div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+    <h1 class="text-xl font-medium my-2 text-gray-600">Scannez un produit</h1>
+</div>
+<div id="reader"></div>
+<div class="modal modal-bottom"  :class="$store.productModal.on && 'modal-open'" >
+    <div class="modal-box flex flex-col">
+        <h1 class="w-auto mx-auto inline-block mb-6 font-bold text-2xl" x-text="$store.productModal.product.title"></h1>
     </div>
 </div>
