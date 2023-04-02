@@ -109,7 +109,7 @@ const STORE_DATA: {
         }
       });
     });
-    window.history.replaceState({}, '', url);
+    window.history.pushState({}, '', url);
   },
 };
 
