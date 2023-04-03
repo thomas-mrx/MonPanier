@@ -1,0 +1,27 @@
+<div class="modal py-10" :class="$store.dashboard.recallsEvolutionModalOn && 'modal-open'">
+    <div class="modal-box relative max-h-none h-full">
+        <label x-on:click="$store.dashboard.toggleRecallsEvolutionModal()"
+               class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="far fa-times"></i></label>
+        <h3 class="font-bold text-lg">Rappels</h3>
+        <h4 class="font-bold">Qu'est ce qu'un rappel ?</h4>
+        <p class="my-1">Un rappel de produit, ou simplement rappel produit, est une opération au cours de laquelle un
+            fabricant ou un
+            distributeur demande à ses clients de lui rapporter contre dédommagement une marchandise déjà acquise qui
+            est défectueuse ou présente un risque.</p>
+        <p class="my-1 mb-4">Les rappels de produits sont souvent effectués par les fabricants ou les distributeurs
+            eux-mêmes, mais ils peuvent
+            également être effectués par les autorités sanitaires ou les autorités de réglementation.</p>
+
+        <div class="stats shadow w-full">
+            <div class="stat">
+                <div class="stat-title">Évolution du nombre de rappels</div>
+                <canvas id="recalls-evolution-chart"></canvas>
+                <div class="stat-desc mt-2">Source: RappelConso</div>
+            </div>
+        </div>
+        <div class="modal-action">
+            <button class="btn absolute bottom-8" x-on:click="$store.dashboard.toggleRecallsEvolutionModal()">Retour</button>
+        </div>
+    </div>
+</div>

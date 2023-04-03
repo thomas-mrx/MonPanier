@@ -30,6 +30,35 @@ class Stats {
       type: 'doughnut',
       data: brefData,
     } as ChartConfiguration));
+
+    const recallsEvolutionElement = document.getElementById('recalls-evolution-chart') as HTMLCanvasElement;
+    const recallsEvolutionData = {
+      labels: [
+        'Janvier',
+        'Février',
+        'Mars',
+        'Avril',
+        'Mai',
+        'Juin',
+        'Juillet',
+        'Août',
+        'Septembre',
+        'Octobre',
+        'Novembre',
+        'Décembre',
+      ],
+      datasets: [{
+        label: 'Recalls',
+        data: [10, 20, 40, 10, 5, 10, 20, 40, 10, 5, 10, 20],
+        backgroundColor: '#e63e11',
+        hoverOffset: 4,
+
+      }],
+    };
+    this.charts.push(new Chart(recallsEvolutionElement, {
+      type: 'line',
+      data: recallsEvolutionData,
+    } as ChartConfiguration));
   }
 
   getChartById(elementId: string) {

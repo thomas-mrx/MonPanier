@@ -32,6 +32,7 @@ const STORE_DATA: {
         args: {},
         onInit() {
           Stats.getChartById('bref-chart').resize();
+          Stats.getChartById('recalls-evolution-chart').resize();
         },
       }],
     },
