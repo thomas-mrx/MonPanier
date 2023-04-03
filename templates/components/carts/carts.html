@@ -8,9 +8,8 @@
 <div class="grid grid-cols-1 mx-3" x-data="$store.cart.carts">
     <template x-for="cart in $store.cart.carts" :key="cart.id">
         <div class="cart border-b border-gray-200 px-0 py-4 bg-white" @click="$store.routes.loadRoute('/carts/'+cart.id)">
-            <div class="px-4 flex">
-                <i class="far fa-basket-shopping text-lg text-gray-500"></i>
-                <div class="flex flex-col justify-center px-2 py-1 w-full">
+            <div class="px-3 flex">
+                <div class="flex flex-col justify-center py-1 w-full">
                     <div class="flex justify-between items-center ">
                         <div class="flex flex-col">
                             <h2 class="font-bold text-gray-800 text-lg" x-text="cart.name"></h2>
