@@ -44,7 +44,7 @@ class Scanner {
       }
       Html5Qrcode.getCameras().then((devices) => {
         if (devices && devices.length) {
-          this.cameraId = devices.length > 2 ? devices[2].id : devices[0].id;
+          this.cameraId = devices.length > 2 ? devices[devices.length - 1].id : devices[0].id;
           this.scanner.start(
             this.cameraId,
             {
