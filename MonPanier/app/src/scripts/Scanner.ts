@@ -10,6 +10,8 @@ class Scanner {
 
   private lastProduct: ProductSchema | undefined;
 
+  private cameraId: string | undefined;
+
   private readonly beep: HTMLAudioElement;
 
   private audioContext: AudioContext;
@@ -40,18 +42,27 @@ class Scanner {
         resolve(true);
         return;
       }
-      this.scanner.start(
-        { facingMode: 'environment' },
-        {
-          fps: 10,
-          qrbox: { width: 256, height: 128 },
-        },
-        this.onScanSuccess.bind(this),
-        () => {},
-      ).then(() => {
-        resolve(true);
+      Html5Qrcode.getCameras().then((devices) => {
+        if (devices && devices.length) {
+          alert(`debug purposes, will delete this alert later: ${JSON.stringify(devices)}`);
+          this.cameraId = devices.length === 1 ? devices[0].id : devices[1].id;
+          this.scanner.start(
+            this.cameraId,
+            {
+              fps: 10,
+              qrbox: { width: 256, height: 128 },
+            },
+            this.onScanSuccess.bind(this),
+            () => {},
+          ).then(() => {
+            resolve(true);
+          }).catch((err) => {
+            console.warn(`Unable to start scanning, error = ${err}`);
+            resolve(false);
+          });
+        }
       }).catch((err) => {
-        console.warn(`Unable to start scanning, error = ${err}`);
+        console.warn(`Unable to query supported devices, error = ${err}`);
         resolve(false);
       });
     });
