@@ -60,6 +60,26 @@ class Stats {
       data: recallsEvolutionData,
     } as ChartConfiguration));
 
+    const recallsCategoriesElement = document.getElementById('recalls-categories-chart') as HTMLCanvasElement;
+    const recallsCategoriesData = {
+      labels: [
+        'Viandes',
+        'Laitages',
+        'Fruits et légumes',
+      ],
+      datasets: [{
+        label: 'Rappels par catégorie',
+        data: [10, 20, 40],
+        backgroundColor: '#84cc16',
+        hoverOffset: 4,
+
+      }],
+    };
+    this.charts.push(new Chart(recallsCategoriesElement, {
+      type: 'doughnut',
+      data: recallsCategoriesData,
+    } as ChartConfiguration));
+
     const dispensationsEvolutionElement = document.getElementById('dispensations-evolution-chart') as HTMLCanvasElement;
     const dispensationsEvolutionData = {
       labels: [

@@ -1,0 +1,15 @@
+<div class="modal py-10" :class="$store.dashboard.recallsCategoriesModalOn && 'modal-open'">
+    <div class="modal-box relative">
+     <h3 class="font-bold text-lg">Rappels</h3>
+        <div class="stats shadow w-full">
+            <div class="stat">
+                <div class="stat-title">Dérogations par catégories</div>
+                <canvas id="dispensations-categories-chart"></canvas>
+                <div class="stat-desc mt-2">Source: DérogConso</div>
+            </div>
+        </div>
+        <div class="modal-action">
+            <button class="btn" x-on:click="$store.dashboard.toggleRecallsCategoriesModal()">Retour</button>
+        </div>
+    </div>
+</div>

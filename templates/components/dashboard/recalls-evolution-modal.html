@@ -1,8 +1,5 @@
 <div class="modal py-10" :class="$store.dashboard.recallsEvolutionModalOn && 'modal-open'">
-    <div class="modal-box relative max-h-none h-full">
-        <label x-on:click="$store.dashboard.toggleRecallsEvolutionModal()"
-               class="btn btn-sm btn-circle absolute right-2 top-2"><i
-                class="far fa-times"></i></label>
+    <div class="modal-box relative">
         <h3 class="font-bold text-lg">Rappels</h3>
         <h4 class="font-bold">Qu'est ce qu'un rappel ?</h4>
         <p class="my-1">Un rappel de produit, ou simplement rappel produit, est une opération au cours de laquelle un
@@ -21,7 +18,7 @@
             </div>
         </div>
         <div class="modal-action">
-            <button class="btn absolute bottom-8" x-on:click="$store.dashboard.toggleRecallsEvolutionModal()">Retour</button>
+            <button class="btn" x-on:click="$store.dashboard.toggleRecallsEvolutionModal()">Retour</button>
         </div>
     </div>
 </div>

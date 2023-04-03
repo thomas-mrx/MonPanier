@@ -29,7 +29,7 @@
                 <div class="stat-value">350</div>
             </div>
         </div>
-        <div class="stats shadow w-full">
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
             <div class="stat">
                 <div class="stat-figure text-lime-500">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -72,7 +72,7 @@
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers:</h2>
+    <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers (30 derniers jours)</h2>
     <div class="grid grid-cols-2 gap-4">
         <div class="stats shadow w-full">
             <div class="stat">
@@ -102,7 +102,8 @@
 </div>
 
 {% include "components/dashboard/recalls-evolution-modal.html" %}
-{% include "components/dashboard/dispensiations-evolution-modal.html" %}
+{% include "components/dashboard/recalls-categories-modal.html" %}
+{% include "components/dashboard/dispensations-evolution-modal.html" %}
 {#<div class="stats-container mx-4 w-auto mt-4">#}
 {#    <h2>Nutrition</h2>#}
 {#    <div class="stats shadow w-full">#}
