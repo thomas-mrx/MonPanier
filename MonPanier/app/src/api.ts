@@ -205,16 +205,12 @@ export interface ProductSchema {
   allergens?: object;
   /** Vitamins */
   vitamins?: object;
-  /** Nutri Score */
-  nutri_score?: string;
   /** Manufacturing Places */
   manufacturing_places?: object;
   /** Factories */
   factories?: object;
   /** Packaging */
   packaging?: object;
-  /** Eco Score */
-  eco_score?: string;
   /** Ingredients */
   ingredients?: object;
   /** Vegan */
@@ -227,8 +223,6 @@ export interface ProductSchema {
   nutriments?: object;
   /** Traces */
   traces?: object;
-  /** Nova Group */
-  nova_group?: string;
   /** Labels */
   labels?: object;
   /** Mp Nutrim Score */
@@ -280,6 +274,14 @@ export interface CartSchema {
   updated_at: string;
   /** User */
   user: number;
+  /** Mp Nutrim Score */
+  mp_nutrim_score?: number;
+  /** Mp Sanit Score */
+  mp_sanit_score?: number;
+  /** Mp Eco Score */
+  mp_eco_score?: number;
+  /** Mp Global Score */
+  mp_global_score?: number;
   /**
    * Products
    * @default []

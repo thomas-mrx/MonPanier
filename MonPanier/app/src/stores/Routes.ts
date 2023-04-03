@@ -7,6 +7,7 @@ import Stats from '../scripts/Stats';
 import { ProductSchema } from '../api';
 
 import Scanner from '../scripts/Scanner';
+import Main from './Main';
 
 interface Route {
   pattern: RegExp,
@@ -141,6 +142,11 @@ const STORE_DATA: {
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }
+    Main.scrollView.scrollTo({
+      top: 0,
+      left: 0,
+      /* behavior: 'smooth', */
+    });
   },
 };
 

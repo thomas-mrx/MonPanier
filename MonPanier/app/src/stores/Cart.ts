@@ -11,7 +11,7 @@ const STORE_DATA: {
   prepend: (cart: CartSchema) => void,
   products: ProductSchema[],
   getDate: (key: string, format: string, id?: string | undefined) => string,
-  getScore: () => string,
+  getGradeFromScore: (score: number) => string,
   getProduct: (id: string) => ProductSchema | undefined,
 } = {
   carts: [] as CartSchema[],
@@ -46,8 +46,11 @@ const STORE_DATA: {
     return date.format(format);
   },
 
-  getScore() {
-    return 'a';
+  getGradeFromScore(score: number) {
+    const maxScore = 100;
+    const grades = ['a', 'b', 'c', 'd', 'e'];
+    const s = Math.min(score, maxScore);
+    return s === 0 ? 'na' : grades[Math.floor(s / (maxScore / grades.length))];
   },
 
   getProduct(id: string) {

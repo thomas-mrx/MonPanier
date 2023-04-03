@@ -6,7 +6,7 @@
 
     <div class="w-auto grid grid-cols-2 gap-0 place-content-center mx-4">
 
-      <div class="stat">
+      <div class="stat border-r border-gray-200 py-2 my-2">
         <div class="stat-figure text-gray-400">
             <i class="far fa-cart-plus text-2xl"></i>
         </div>
@@ -15,7 +15,7 @@
         <div class="stat-desc" x-text="$store.cart.getDate('created_at', 'Y')"></div>
       </div>
 
-      <div class="stat">
+      <div class="stat py-2 my-2">
         <div class="stat-figure text-gray-400">
             <i class="far fa-cart-arrow-down text-2xl"></i>
         </div>
@@ -25,49 +25,47 @@
       </div>
 
     </div>
-<div class="shadow mx-6 rounded-md py-3">
+<div class="shadow mx-6 rounded-md py-3 bg-lime-30" x-data="$store.cart">
     <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score du panier</h2>
-    {% include '../score.html' with score="$store.cart.getScore()" class='h-16 mx-auto' %}
-    <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-4">
+    {% include '../score.html' with score="getGradeFromScore(cart.mp_global_score)" class='h-16 mx-auto' %}
+    <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
         <div>
-            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Nutritionnel</h2>
-            {% include '../score.html' with score="'c'" class='h-8 mx-auto' %}
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+            {% include '../score.html' with score="getGradeFromScore(cart.mp_nutrim_score)" class='h-8 mx-auto' %}
         </div>
         <div>
-            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Sanitaire</h2>
-            {% include '../score.html' with score="'d'" class='h-8 mx-auto' %}
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+            {% include '../score.html' with score="getGradeFromScore(cart.mp_sanit_score)" class='h-8 mx-auto' %}
         </div>
         <div>
-            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Écologique</h2>
-            {% include '../score.html' with score="'b'" class='h-8 mx-auto' %}
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+            {% include '../score.html' with score="getGradeFromScore(cart.mp_eco_score)" class='h-8 mx-auto' %}
         </div>
     </div>
 </div>
-<h2 class="text-2xl mx-auto px-6 mt-6 font-bold">Produits du panier</h2>
+<div class="divider mt-8 mb-4"></div>
+<h2 class="text-xl mx-auto px-6 font-bold flex text-gray-600">Produits du panier<span class="ml-auto text-gray-400 text-lg" x-text="$store.cart.products.length"></span></h2>
 <div class="grid grid-cols-1 mx-3">
     <template x-for="product in $store.cart.cart.products" :key="product.id">
         <div class="cart border-b border-gray-200 px-0 py-4 bg-white" @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id+'/'+product.id)">
-            <div class="px-4 flex">
-                <div class="w-8 rounded-full my-auto mr-4">
-                    <img :src="product.image"/>
-                </div>
-                <div class="flex flex-col justify-center px-2 py-1 w-full">
-                    <div class="flex justify-between items-center ">
-                        <div class="flex flex-col">
-                            <h2 class="font-medium text-gray-800 text-lg" x-text="product.title+(product.brands ? ' - '+product.brands.split(',')[0] : '')"></h2>
-                        </div>
-                    </div>
+            <div class="px-3 flex flex-row justify-between">
+                <div class="flex justify-between flex-col mr-2">
+                    <h2 class="font-medium text-gray-800 text-lg text-ellipsis overflow-hidden" x-text="product.title+(product.brands ? ' - '+product.brands.split(',')[0] : '')"></h2>
                     <div class="flex pt-2  text-sm text-gray-500">
-                        <div class="flex items-center text-gray-400 mr-auto">
-                            <i class="fa-regular fa-barcode mr-1"></i><span x-text="product.ean"></span>
-                        </div>
                         <div class="flex flex-col">
                         <div class="flex flex-row items-center"><span class="mr-1">Nutritionnel</span>{% include '../score.html' with score="product.mp_nutrim_score.grade" class='w-16 h-8 ml-auto' %}</div>
                         <div class="flex flex-row items-center"><span class="mr-1">Sanitaire</span>{% include '../score.html' with score="product.mp_sanit_score.grade" class='w-16 h-8 ml-auto' %}</div>
                         <div class="flex flex-row items-center"><span class="mr-1">Écologique</span>{% include '../score.html' with score="product.mp_eco_score.grade" class='w-16 h-8 ml-auto' %}</div>
                         </div>
                     </div>
-
+                </div>
+                <div class="flex flex-col justify-center w-full mr-0 ml-auto" style="max-width: 64px;">
+                    <div class="flex justify-center h-32 w-full">
+                        <img :src="product.image" class="w-auto object-contain object-center"/>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center ml-4 w-2">
+                    <i class="far fa-angle-right text-gray-400"></i>
                 </div>
             </div>
         </div>
