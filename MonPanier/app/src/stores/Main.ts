@@ -1,4 +1,4 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 
 const STORE_NAME = 'main';
 const STORE_DATA: {
@@ -19,4 +19,4 @@ const STORE_DATA: {
     this.update();
   },
 };
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;

@@ -1,4 +1,4 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 import { CartSchema, FoodSchema } from '../api';
 import Backend from '../scripts/Backend';
 
@@ -61,7 +61,7 @@ const STORE_DATA: {
                 .addProductToCart(this.carts[0].id, String(productResult.data.id), Backend.params)
                 .then((result) => {
                   if (result.status === 200) {
-                    alert(`Produit ajouté au panier ${this.carts[0].id}.`);
+                    alert(`Produit ajouté au panier "${this.carts[0].name}".`);
                   }
                 }).catch((error) => {
                   alert('Erreur lors de l\'ajout du produit.');
@@ -76,4 +76,4 @@ const STORE_DATA: {
 
 };
 
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;

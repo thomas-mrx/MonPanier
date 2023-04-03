@@ -1,5 +1,6 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 import Backend from '../scripts/Backend';
+import { User4 } from '../api';
 
 const STORE_NAME = 'loginModal';
 const STORE_DATA: {
@@ -8,18 +9,22 @@ const STORE_DATA: {
   password: string | undefined,
   password_confirm: string | undefined,
   email: string | undefined,
+  user: User4 | undefined,
   signin: boolean,
   signup: boolean,
   toggle: () => void,
   login: () => void,
   register: () => void,
   checkLogin: () => void;
+  getUsername: () => string | undefined,
+  getEmail: () => string | undefined,
 } = {
   on: false,
   username: undefined,
   password: undefined,
   password_confirm: undefined,
   email: undefined,
+  user: undefined,
   signin: true,
   signup: false,
 
@@ -63,11 +68,23 @@ const STORE_DATA: {
   },
 
   checkLogin() {
-    Backend.me(Backend.params).catch((error) => {
+    Backend.me(Backend.params).then((result) => {
+      if (result.data) {
+        this.user = result.data;
+      }
+    }).catch((error) => {
       if (error.status === 401) {
         this.toggle();
       }
     });
   },
+
+  getUsername() {
+    return this.user?.username ?? 'Visiteur';
+  },
+
+  getEmail() {
+    return this.user?.email ?? 'Visiteur';
+  },
 };
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;

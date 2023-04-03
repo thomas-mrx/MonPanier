@@ -215,11 +215,11 @@ body {
     @apply p-0;
     @apply w-full;
     @apply h-full;
-    @apply overflow-y-auto;
+    @apply overflow-hidden;
     @apply bg-lime-30;
     @apply border-0;
     width: 90vw;
-    min-height: 30vh;
+    max-height: 60vh;
     border-radius: 12px;
 
     video {

@@ -15,3 +15,5 @@ export default class Store {
     });
   }
 }
+
+export type IStore<DataType> = Store & DataType;

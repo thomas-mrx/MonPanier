@@ -1,4 +1,4 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 import Backend from '../scripts/Backend';
 
 const STORE_NAME = 'settingsModal';
@@ -22,4 +22,4 @@ const STORE_DATA: {
     }
   },
 };
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;
