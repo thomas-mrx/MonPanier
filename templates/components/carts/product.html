@@ -1,4 +1,5 @@
-<div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+<div class="sticky-header flex items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+    <i class="fa fa-angle-left text-xl mr-4" @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id)"></i>
     <h1 class="text-xl font-medium my-2 text-gray-600" x-text="$store.product.product.title"></h1>
 
 </div>

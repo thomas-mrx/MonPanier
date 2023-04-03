@@ -1,5 +1,6 @@
+import * as moment from 'moment';
 import Store, { IStore } from '../scripts/Store';
-import { CartSchema } from '../api';
+import { CartSchema, ProductSchema } from '../api';
 
 const STORE_NAME = 'cart';
 const STORE_DATA: {
@@ -8,10 +9,14 @@ const STORE_DATA: {
   updateCarts: (carts: CartSchema[]) => void,
   updateCart: (cart: CartSchema) => void,
   prepend: (cart: CartSchema) => void,
-  countProducts: () => number
+  products: ProductSchema[],
+  getDate: (key: string, format: string, id?: string | undefined) => string,
+  getScore: () => string,
+  getProduct: (id: string) => ProductSchema | undefined,
 } = {
   carts: [] as CartSchema[],
   cart: {} as CartSchema,
+  products: [] as ProductSchema[],
 
   updateCarts(carts: CartSchema[]) {
     this.carts = carts;
@@ -23,10 +28,31 @@ const STORE_DATA: {
 
   updateCart(cart: CartSchema) {
     this.cart = cart;
+    this.products = cart.products;
   },
 
-  countProducts() {
-    return (this.cart.products as []).length;
+  getDate(key: string, format: string, id: string | undefined = undefined) {
+    let { cart } = this;
+    if (id) {
+      cart = this.carts[id];
+    }
+    if (!cart || !(key in cart)) {
+      return '';
+    }
+    const date = moment(cart[key]);
+    if (!date.isValid()) {
+      return '';
+    }
+    return date.format(format);
+  },
+
+  getScore() {
+    return 'a';
+  },
+
+  getProduct(id: string) {
+    return JSON.parse(JSON.stringify(this.cart.products))
+      .find((p : ProductSchema) => String(p.id) === id);
   },
 };
 

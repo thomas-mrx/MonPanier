@@ -218,19 +218,36 @@ body {
     @apply overflow-hidden;
     @apply bg-lime-30;
     @apply border-0;
-    width: 90vw;
-    max-height: 60vh;
+    max-width: 90vw;
+    max-height: 50vh;
+    min-height: 50vh;
     border-radius: 12px;
 
     video {
       @apply !w-full;
       @apply !h-full;
       @apply object-cover;
+      @apply object-center;
+      @apply absolute;
+      @apply !flex;
+      @apply justify-center;
+      @apply items-center;
       @apply m-auto;
     }
 
     #qr-shaded-region {
-      border-width: max(calc(5px + 8px), calc((100% - 108px - 52px) / 2)) max(calc(5px + 8px), calc((100% - 256px) / 2))!important;
+      @apply m-auto;
+      border-color: transparent!important;
+      border-width: 5px!important;
+      aspect-ratio: 31.35 / 22.85;
+      max-width: 80%;
+      width: 256px;
     }
   }
+}
+.score {
+  @apply bg-contain;
+  @apply bg-no-repeat;
+  @apply bg-center;
+
 }

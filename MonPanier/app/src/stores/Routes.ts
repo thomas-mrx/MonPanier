@@ -71,9 +71,16 @@ const STORE_DATA: {
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
         onInit() {
-          const product = JSON.parse(JSON.stringify(Cart.cart.products)).find((p : ProductSchema) => String(p.id) === this.args.product);
-
-          Product.updateProduct(product);
+          if (!('cart' in Cart) || !('products' in Cart.cart)) {
+            Backend.getCart(this.args.id, Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCart(result.data);
+                Product.updateProduct(Cart.getProduct(this.args.product));
+              }
+            });
+          } else {
+            Product.updateProduct(Cart.getProduct(this.args.product));
+          }
         },
       }],
     },

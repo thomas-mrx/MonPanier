@@ -18,9 +18,11 @@
                     </div>
                     <div class="flex pt-2  text-sm text-gray-500">
                         <div class="flex items-center mr-auto">
-                            <span class="badge badge-success badge-sm">Badge</span>
+                            {% include '../score.html' with score="'b'" class='w-16 h-8 mx-auto' %}
                         </div>
                         <div class="flex items-center font-light text-gray-400" x-text="cart.created_at">
+                        </div>
+                        <div class="flex items-center font-light text-gray-400" x-text="cart.updated_at">
                         </div>
                     </div>
                 </div>

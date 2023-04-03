@@ -1,74 +1,75 @@
-<div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+<div class="sticky-header flex items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
+    <i class="fa fa-angle-left text-xl mr-4" @click="$store.routes.loadRoute('/carts')"></i>
     <h1 class="text-xl font-medium my-2 text-gray-600" x-text="$store.cart.cart.name"></h1>
-
+    <p class="ml-auto"><strong x-text="$store.cart.products.length"></strong> produit<span x-text="$store.cart.products.length > 1 ? 's' : ''"></span></p>
 </div>
 
-<div class="card lg:card-side bg-white shadow-xl mt-6 ml-10 mr-10" x-data="$store.cart">
-    <div class="card-body">
-        <!-- <p> Nombre de produits : <strong x-text="cart.products.length"></strong></p> -->
-        <p> Date de création : <strong x-text="cart.created_at"></strong></p>
-        <p> Date de modification : <strong x-text="cart.updated_at"></strong></p>
-        <div class="card-actions justify-start">
+    <div class="w-auto grid grid-cols-2 gap-0 place-content-center mx-4">
 
-            <div class="stats  text-primary-content">
+      <div class="stat">
+        <div class="stat-figure text-gray-400">
+            <i class="far fa-cart-plus text-2xl"></i>
+        </div>
+        <div class="stat-title">Créé le</div>
+        <div class="stat-value text-2xl" x-text="$store.cart.getDate('created_at', 'DD/MM')"></div>
+        <div class="stat-desc" x-text="$store.cart.getDate('created_at', 'Y')"></div>
+      </div>
 
-                <div class="stat">
-                    <div class="stat-title">Score Nutritionnel</div>
-                    <div class="stat-value text-black">8.75</div>
+      <div class="stat">
+        <div class="stat-figure text-gray-400">
+            <i class="far fa-cart-arrow-down text-2xl"></i>
+        </div>
+        <div class="stat-title">Modifié le</div>
+        <div class="stat-value text-2xl" x-text="$store.cart.getDate('updated_at', 'DD/MM')"></div>
+        <div class="stat-desc" x-text="$store.cart.getDate('updated_at', 'Y')"></div>
+      </div>
 
-                </div>
-
-                <div class="stat">
-                    <div class="stat-title">Score Sanitaire</div>
-                    <div class="stat-value text-black">6</div>
-                </div>
-
-                <div class="stat">
-                    <div class="stat-title">Score Eco</div>
-                    <div class="stat-value text-black">3</div>
-                </div>
-
-            </div>
+    </div>
+<div class="shadow mx-6 rounded-md py-3">
+    <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score du panier</h2>
+    {% include '../score.html' with score="$store.cart.getScore()" class='h-16 mx-auto' %}
+    <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-4">
+        <div>
+            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Nutritionnel</h2>
+            {% include '../score.html' with score="'c'" class='h-8 mx-auto' %}
+        </div>
+        <div>
+            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Sanitaire</h2>
+            {% include '../score.html' with score="'d'" class='h-8 mx-auto' %}
+        </div>
+        <div>
+            <h2 class="mx-auto px-2 text-center mb-2 text-lg font-bold">Écologique</h2>
+            {% include '../score.html' with score="'b'" class='h-8 mx-auto' %}
         </div>
     </div>
 </div>
-
-<div class="divider">Produits</div>
-
-<div class="card lg:card-side mt-6 ml-10 mr-10">
-    <div class="grid md:grid-cols-4 gap-4 sm:grid-cols-2 gap-4">
-        <template x-for="product in $store.cart.cart.products" :key="product.id">
-            <div class="card w-50 bg-base-100 shadow-xl"
-                 @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id+'/'+product.id)">
-                <figure><img :src="product.image"
-                             alt=""/></figure>
-                <div class="card-body">
-                    <h2 class="card-title" x-text="product.title"></h2>
-                    <div class="card-actions justify-start">
-
-                        <div class="stats  text-primary-content">
-
-                            <div class="stat">
-                                <div class="stat-title">Score Nutritionnel</div>
-                                <div class="stat-value text-black" x-text="product.mp_nutrim_score.score"></div>
-
-                            </div>
-
-                            <div class="stat">
-                                <div class="stat-title">Score Sanitaire</div>
-                                <div class="stat-value text-black" x-text="product.mp_sanit_score.score"></div>
-                            </div>
-
-                            <div class="stat">
-                                <div class="stat-title">Score Eco</div>
-                                <div class="stat-value text-black" x-text="product.mp_eco_score.score"></div>
-                            </div>
-
+<h2 class="text-2xl mx-auto px-6 mt-6 font-bold">Produits du panier</h2>
+<div class="grid grid-cols-1 mx-3">
+    <template x-for="product in $store.cart.cart.products" :key="product.id">
+        <div class="cart border-b border-gray-200 px-0 py-4 bg-white" @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id+'/'+product.id)">
+            <div class="px-4 flex">
+                <div class="w-8 rounded-full my-auto mr-4">
+                    <img :src="product.image"/>
+                </div>
+                <div class="flex flex-col justify-center px-2 py-1 w-full">
+                    <div class="flex justify-between items-center ">
+                        <div class="flex flex-col">
+                            <h2 class="font-medium text-gray-800 text-lg" x-text="product.title+(product.brands ? ' - '+product.brands.split(',')[0] : '')"></h2>
                         </div>
                     </div>
+                    <div class="flex pt-2  text-sm text-gray-500">
+                        <div class="flex items-center text-gray-400 mr-auto">
+                            <i class="fa-regular fa-barcode mr-1"></i><span x-text="product.ean"></span>
+                        </div>
+                        <div class="flex flex-col">
+                        <div class="flex flex-row items-center"><span class="mr-1">Nutritionnel</span>{% include '../score.html' with score="product.mp_nutrim_score.grade" class='w-16 h-8 ml-auto' %}</div>
+                        <div class="flex flex-row items-center"><span class="mr-1">Sanitaire</span>{% include '../score.html' with score="product.mp_sanit_score.grade" class='w-16 h-8 ml-auto' %}</div>
+                        <div class="flex flex-row items-center"><span class="mr-1">Écologique</span>{% include '../score.html' with score="product.mp_eco_score.grade" class='w-16 h-8 ml-auto' %}</div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-        </template>
-    </div>
+        </div>
+    </template>
 </div>
-
