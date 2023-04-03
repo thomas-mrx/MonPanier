@@ -46,13 +46,19 @@ def mp_sanit_score(food, dispensations_allergens, recalls):
     }
 
 def mp_nutrim_score(food):
-    nutriscore = ['a', 'b', 'c', 'd', 'e']
-    nutri_score = (nutriscore.index(food.nutriscore_grade) if food.nutriscore_grade else MAX_SCORE / 2) * (MAX_SCORE / len(nutriscore))
-    novascore = ['1', '2', '3', '4']
-    nova_score = (novascore.index(food.nova_group) if food.nova_group else MAX_SCORE / 2) * (MAX_SCORE / len(novascore))
-    score = nutri_score * NUTRI_COEFFICIENT + nova_score * NOVA_COEFFICIENT
-    step = MAX_SCORE // len(GRADES)
-    grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    if food.nutriscore_grade and food.nova_group:
+        nutriscore = ['a', 'b', 'c', 'd', 'e']
+        nutri_score = (nutriscore.index(food.nutriscore_grade)) * (MAX_SCORE / len(nutriscore))
+        novascore = ['1', '2', '3', '4']
+        nova_score = (novascore.index(food.nova_group)) * (MAX_SCORE / len(novascore))
+        score = nutri_score * NUTRI_COEFFICIENT + nova_score * NOVA_COEFFICIENT
+        step = MAX_SCORE // len(GRADES)
+        grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    else:
+        nutri_score = None
+        nova_score = None
+        score = None
+        grade = None
     return {
         "grade": grade,
         "score": score,
@@ -64,10 +70,15 @@ def mp_nutrim_score(food):
     }
 
 def mp_eco_score(food):
-    ecoscore_score = MAX_SCORE - min(MAX_SCORE, int(food.ecoscore_score if food.ecoscore_score else MAX_SCORE / 2))
-    score = ecoscore_score * ECO_COEFFICIENT
-    step = MAX_SCORE // len(GRADES)
-    grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    if food.ecoscore_score:
+        ecoscore_score = MAX_SCORE - min(MAX_SCORE, int(food.ecoscore_score))
+        score = ecoscore_score * ECO_COEFFICIENT
+        step = MAX_SCORE // len(GRADES)
+        grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    else:
+        ecoscore_score = None
+        score = None
+        grade = None
     return {
         "grade": grade,
         "score": score,
