@@ -16,13 +16,11 @@ class Product(models.Model):
     # Sanitaire
     allergens = models.JSONField(null=True)
     vitamins = models.JSONField(null=True)
-    nutri_score = models.TextField(null=True)
 
     # Provenance/Eco.
     manufacturing_places = models.JSONField(null=True)
     factories = models.JSONField(null=True)
     packaging = models.JSONField(null=True)
-    eco_score = models.TextField(null=True)
 
     # Composition
     ingredients = models.JSONField(null=True)
@@ -31,7 +29,6 @@ class Product(models.Model):
     additives = models.JSONField(null=True)
     nutriments = models.JSONField(null=True)
     traces = models.JSONField(null=True)
-    nova_group = models.TextField(null=True)
     labels = models.JSONField(null=True)
 
     # Indicateurs MonPanier
