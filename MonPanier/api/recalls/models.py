@@ -34,7 +34,7 @@ class Recall(models.Model):
     lien_vers_affichette_pdf = models.CharField(max_length=64, blank=True, null=True)
     lien_vers_la_fiche_rappel = models.CharField(max_length=64, blank=True, null=True)
     rappelguid = models.CharField(max_length=64, blank=True, null=True)
-    date_de_publication = models.CharField(max_length=16, blank=True, null=True)
+    date_de_publication = models.DateField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
