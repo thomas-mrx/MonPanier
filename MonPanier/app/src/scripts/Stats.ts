@@ -50,7 +50,7 @@ class Stats {
       datasets: [{
         label: 'Recalls',
         data: [10, 20, 40, 10, 5, 10, 20, 40, 10, 5, 10, 20],
-        backgroundColor: '#e63e11',
+        backgroundColor: '#84cc16',
         hoverOffset: 4,
 
       }],
@@ -58,6 +58,35 @@ class Stats {
     this.charts.push(new Chart(recallsEvolutionElement, {
       type: 'line',
       data: recallsEvolutionData,
+    } as ChartConfiguration));
+
+    const dispensationsEvolutionElement = document.getElementById('dispensations-evolution-chart') as HTMLCanvasElement;
+    const dispensationsEvolutionData = {
+      labels: [
+        'Janvier',
+        'Février',
+        'Mars',
+        'Avril',
+        'Mai',
+        'Juin',
+        'Juillet',
+        'Août',
+        'Septembre',
+        'Octobre',
+        'Novembre',
+        'Décembre',
+      ],
+      datasets: [{
+        label: 'Dispensations',
+        data: [10, 20, 40, 10, 5, 10, 20, 40, 10, 5, 10, 20],
+        backgroundColor: '#84cc16',
+        hoverOffset: 4,
+
+      }],
+    };
+    this.charts.push(new Chart(dispensationsEvolutionElement, {
+      type: 'line',
+      data: dispensationsEvolutionData,
     } as ChartConfiguration));
   }
 

@@ -4,19 +4,19 @@ import Backend from '../scripts/Backend';
 const STORE_NAME = 'dashboard';
 const STORE_DATA: {
   recallsEvolutionModalOn: boolean,
-  dispensationsModalOn: boolean,
+  dispensationsEvolutionModalOn: boolean,
   toggleRecallsEvolutionModal: () => void,
-  toggleDispensationsModal: () => void,
+  toggleDispensationsEvolutionModal: () => void,
 } = {
-  recallsEvolutionModalOn: true,
-  dispensationsModalOn: false,
+  recallsEvolutionModalOn: false,
+  dispensationsEvolutionModalOn: false,
 
   toggleRecallsEvolutionModal() {
     this.recallsEvolutionModalOn = !this.recallsEvolutionModalOn;
   },
 
-  toggleDispensationsModal() {
-    this.dispensiationModalOn = !this.dispensiationModalOn;
+  toggleDispensationsEvolutionModal() {
+    this.dispensationsEvolutionModalOn = !this.dispensationsEvolutionModalOn;
   },
 };
 
