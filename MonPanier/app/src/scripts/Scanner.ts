@@ -59,8 +59,9 @@ class Scanner {
             console.warn(`Unable to start scanning, error = ${err}`);
             resolve(false);
           });
+        } else {
+          resolve(false);
         }
-        resolve(false);
       }).catch((err) => {
         console.warn(`Unable to query supported devices, error = ${err}`);
         resolve(false);
