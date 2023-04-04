@@ -24,8 +24,7 @@
                             {% include '../score.html' with score="$store.main.getGradeFromScore(cart.mp_global_score)" class='w-16 h-8 mx-2' %}
                         </div>
                         <div class="flex items-center text-gray-400">
-                            <div><span class="mx-1" x-text="cart.created_at.split('T')[0].split('-').reverse().slice(0,2).join('/')"></span><i class="far fa-cart-plus text-lg ml-0.5 text-gray-600"></i></div>
-                            <div class="ml-2"><span class="mx-1" x-text="cart.updated_at.split('T')[0].split('-').reverse().slice(0,2).join('/')"></span><i class="far fa-cart-arrow-down text-lg ml-0.5 text-gray-600"></i></div>
+                            <div class="ml-2">Modifié le<span class="mx-1" x-text="cart.updated_at.split('T')[0].split('-').reverse().slice(0,2).join('/')"></span><i class="far fa-cart-arrow-down text-sm ml-0.5 text-gray-400"></i></div>
                         </div>
                     </div>
                 </div>

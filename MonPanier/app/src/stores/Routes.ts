@@ -94,6 +94,13 @@ const STORE_DATA: {
         pattern: /^\/scan$/,
         args: {},
         onInit() {
+          if (Cart.carts.length === 0) {
+            Backend.getCarts(Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCarts(result.data);
+              }
+            });
+          }
           Scanner.start().then((success) => {
             if (!success) {
               alert('Impossible de démarrer le scanner. Vérifiez que votre appareil est compatible et que vous autorisez l\'accès à la caméra.');
