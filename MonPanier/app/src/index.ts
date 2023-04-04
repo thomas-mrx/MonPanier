@@ -31,7 +31,7 @@ window.onload = async () => {
       return this.$store.accordion.tab === this.idx ? 'rotate-180' : '';
     },
     handleToggle() {
-      return this.$store.accordion.tab === this.idx ? `max-height: ${this.$refs.tab.scrollHeight}px; border-bottom-left-radius: 1rem;` : '';
+      return this.$store.accordion.tab === this.idx ? `max-height: ${this.$refs.tab.scrollHeight}px; border-bottom-left-radius: 0.375rem;` : '';
     },
   }));
   Alpine.start();

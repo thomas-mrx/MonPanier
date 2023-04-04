@@ -84,8 +84,26 @@
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
     <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers</h2>
+    <div class="shadow rounded-md py-3 bg-lime-30">
+        <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score des paniers</h2>
+        {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_global_score__avg)" class='h-16 mx-auto' %}
+        <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_nutrim_score__avg)" class='h-8 mx-auto' %}
+            </div>
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_sanit_score__avg)" class='h-8 mx-auto' %}
+            </div>
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_eco_score__avg)" class='h-8 mx-auto' %}
+            </div>
+        </div>
+    </div>
     <ul class="flex flex-col">
-        <li class="bg-white my-2 shadow rounded-2xl" x-data="accordion(1)">
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(1)">
             <h3
                     @click="handleClick()"
                     class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
@@ -111,7 +129,7 @@
                 </p>
             </div>
         </li>
-        <li class="bg-white my-2 shadow rounded-2xl" x-data="accordion(2)">
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(2)">
             <h3
                     @click="handleClick()"
                     class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
@@ -137,7 +155,7 @@
                 </p>
             </div>
         </li>
-        <li class="bg-white my-2 shadow rounded-2xl" x-data="accordion(3)">
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(3)">
             <h3
                     @click="handleClick()"
                     class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
@@ -164,32 +182,6 @@
             </div>
         </li>
     </ul>
-</div>
-<div class="grid grid-cols-2 gap-4">
-    <div class="stats shadow w-full">
-        <div class="stat">
-            <div class="stat-title">Score moyen</div>
-            <div class="stat-value">
-                <img class="h-24" src="{% webpack_static 'score/flag-c.svg' %}" alt="flag c"/></div>
-        </div>
-    </div>
-    <div class="stats shadow w-full">
-        <div class="stat">
-            <div class="stat-title">Pilier à améliorer</div>
-            <div class="stat-value">
-                <span class="text-lg"><i class="fa-solid fa-carrot"></i> Nutritionnel</span></div>
-        </div>
-    </div>
-</div>
-
-<div class="stats shadow w-full">
-
-    <div class="stat">
-        <div class="stat-title">Mon alimentation</div>
-        <canvas id="bref-chart"></canvas>
-        <div class="stat-desc mt-2">*données exprimées en % sur une année glissante</div>
-    </div>
-
 </div>
 
 

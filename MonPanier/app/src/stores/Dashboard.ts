@@ -34,6 +34,8 @@ const STORE_DATA: {
   dispensationsCategoriesModalOn: false,
   isLastYearAnalysis: true,
   stats: {
+    carts_scores: {
+    },
     recalls: {
       data: [],
       last_month: 0,
