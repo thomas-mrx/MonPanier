@@ -1,4 +1,4 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 import { CartSchema, FoodSchema } from '../api';
 import Backend from '../scripts/Backend';
 
@@ -12,7 +12,6 @@ const STORE_DATA: {
   offset: number,
   search: () => void,
   loadMore: () => void,
-  add: (food: FoodSchema) => void,
 } = {
   text: undefined,
   foods: [] as FoodSchema[],
@@ -48,32 +47,6 @@ const STORE_DATA: {
       });
   },
 
-  add(food: FoodSchema) {
-    Backend.getProduct(food.code, Backend.params).then((productResult) => {
-      if (productResult.data) {
-        Backend.getCarts(Backend.params).then((cartsResult) => {
-          if (cartsResult.data) {
-            this.carts = cartsResult.data;
-            if (this.carts.length === 0) {
-              alert('Vous devez créer un panier avant d\'ajouter des produits.');
-            } else {
-              Backend
-                .addProductToCart(this.carts[0].id, String(productResult.data.id), Backend.params)
-                .then((result) => {
-                  if (result.status === 200) {
-                    alert(`Produit ajouté au panier ${this.carts[0].id}.`);
-                  }
-                }).catch((error) => {
-                  alert('Erreur lors de l\'ajout du produit.');
-                  console.error(error);
-                });
-            }
-          }
-        });
-      }
-    });
-  },
-
 };
 
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;

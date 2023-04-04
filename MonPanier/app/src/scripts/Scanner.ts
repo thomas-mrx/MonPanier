@@ -1,18 +1,32 @@
-import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
+import { Html5Qrcode, Html5QrcodeScannerState, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import Backend from './Backend';
 import ProductModalStore from '../stores/ProductModal';
+import { ProductSchema } from '../api';
 
 class Scanner {
   private readonly scanner: Html5Qrcode;
 
   private lastDecodedText: string | undefined;
 
+  private lastProduct: ProductSchema | undefined;
+
   private readonly beep: HTMLAudioElement;
 
   private audioContext: AudioContext;
 
+  private camera: string | undefined;
+
   constructor() {
-    this.scanner = new Html5Qrcode('reader');
+    this.scanner = new Html5Qrcode('reader', {
+      experimentalFeatures: undefined,
+      useBarCodeDetectorIfSupported: true,
+      verbose: false,
+      formatsToSupport: [
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+        Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+      ],
+    });
     this.audioContext = new AudioContext();
     this.beep = new Audio('/static/beep.mp3');
     this.beep.preload = 'auto';
@@ -28,18 +42,29 @@ class Scanner {
         resolve(true);
         return;
       }
-      this.scanner.start(
-        { facingMode: 'environment' },
-        {
-          fps: 10,
-          qrbox: { width: 256, height: 128 },
-        },
-        this.onScanSuccess.bind(this),
-        () => {},
-      ).then(() => {
-        resolve(true);
+      Html5Qrcode.getCameras().then((devices) => {
+        if (devices && devices.length) {
+          alert(`will be removed later, debug info: ${JSON.stringify(devices)}`);
+          this.camera = devices.find((d) => d.label === 'Caméra arrière' || d.label === 'Rear camera')?.id ?? devices[0].id;
+          this.scanner.start(
+            this.camera,
+            {
+              fps: 10,
+              qrbox: { width: 256, height: 128 },
+            },
+            this.onScanSuccess.bind(this),
+            () => {},
+          ).then(() => {
+            resolve(true);
+          }).catch((err) => {
+            console.warn(`Unable to start scanning, error = ${err}`);
+            resolve(false);
+          });
+        } else {
+          resolve(false);
+        }
       }).catch((err) => {
-        console.warn(`Unable to start scanning, error = ${err}`);
+        console.warn(`Unable to query supported devices, error = ${err}`);
         resolve(false);
       });
     });
@@ -53,16 +78,18 @@ class Scanner {
   }
 
   private onScanSuccess(decodedText: string) {
-    if (this.lastDecodedText === decodedText) {
-      return;
-    }
-    this.lastDecodedText = decodedText;
     this.audioContext.resume().then(() => {
       this.beep.currentTime = 0;
       this.beep.play();
     });
+    if (this.lastDecodedText === decodedText && this.lastProduct) {
+      ProductModalStore.update(this.lastProduct);
+      return;
+    }
+    this.lastDecodedText = decodedText;
     Backend.getProduct(decodedText, Backend.params).then((result) => {
       if (result.data) {
+        this.lastProduct = result.data;
         ProductModalStore.update(result.data);
       }
     });

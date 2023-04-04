@@ -1,21 +1,26 @@
-import Store from '../scripts/Store';
+import Store, { IStore } from '../scripts/Store';
 import Backend from '../scripts/Backend';
 import Cart from './Cart';
+import Product from './Product';
 import Stats from '../scripts/Stats';
+
 import Scanner from '../scripts/Scanner';
 import Dashboard from './Dashboard';
+import Main from './Main';
 
 interface Route {
   pattern: RegExp,
   args: { [key: string]: string },
   onInit?: () => void,
 }
+
 interface Tab {
   icon: string,
   name: string,
   link: string,
   routes: Route[],
 }
+
 const STORE_NAME = 'routes';
 const STORE_DATA: {
   tabs: Tab[],
@@ -40,7 +45,7 @@ const STORE_DATA: {
     },
     {
       icon: 'fa-shopping-cart',
-      name: 'Panier',
+      name: 'Mes paniers',
       link: '/carts',
       routes: [{
         pattern: /^\/carts$/,
@@ -68,7 +73,16 @@ const STORE_DATA: {
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
         onInit() {
-          console.log(this.args);
+          if (!('cart' in Cart) || !('products' in Cart.cart)) {
+            Backend.getCart(this.args.id, Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCart(result.data);
+                Product.updateProduct(Cart.getProduct(this.args.product));
+              }
+            });
+          } else {
+            Product.updateProduct(Cart.getProduct(this.args.product));
+          }
         },
       }],
     },
@@ -96,6 +110,14 @@ const STORE_DATA: {
         pattern: /^\/search$/,
         args: {},
         onInit() {
+          if (Cart.carts.length === 0) {
+            Backend.getCarts(Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCarts(result.data);
+              }
+            });
+          }
+
           setTimeout(() => {
             document.getElementById('default-search').focus();
           }, 100);
@@ -108,7 +130,7 @@ const STORE_DATA: {
 
   loadRoute(url: string, updateHistory = true) {
     this.tabs.forEach((tab: Tab, index: number) => {
-      tab.routes.forEach((route: Route, indexRoute:number) => {
+      tab.routes.forEach((route: Route, indexRoute: number) => {
         const match = route.pattern.exec(url);
         if (match) {
           this.activeTab = index;
@@ -129,7 +151,12 @@ const STORE_DATA: {
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }
+    Main.scrollView.scrollTo({
+      top: 0,
+      left: 0,
+      /* behavior: 'smooth', */
+    });
   },
 };
 
-export default new Store(STORE_NAME, STORE_DATA) as unknown as typeof STORE_DATA;
+export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;

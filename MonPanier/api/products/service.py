@@ -6,6 +6,9 @@ def str_to_array(line):
 
 ALLERGENS_COEFFICIENT = 0.1
 RECALLS_COEFFICIENT = 0.9
+NUTRI_COEFFICIENT = 0.5
+NOVA_COEFFICIENT = 0.5
+ECO_COEFFICIENT = 1
 MAX_SCORE = 100
 GRADES = ['a', 'b', 'c', 'd', 'e']
 def mp_sanit_score(food, dispensations_allergens, recalls):
@@ -43,13 +46,43 @@ def mp_sanit_score(food, dispensations_allergens, recalls):
     }
 
 def mp_nutrim_score(food):
+    if food.nutriscore_grade and food.nova_group:
+        nutriscore = ['a', 'b', 'c', 'd', 'e']
+        nutri_score = (nutriscore.index(food.nutriscore_grade)) * (MAX_SCORE / len(nutriscore))
+        novascore = ['1', '2', '3', '4']
+        nova_score = (novascore.index(food.nova_group)) * (MAX_SCORE / len(novascore))
+        score = nutri_score * NUTRI_COEFFICIENT + nova_score * NOVA_COEFFICIENT
+        step = MAX_SCORE // len(GRADES)
+        grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    else:
+        nutri_score = None
+        nova_score = None
+        score = None
+        grade = None
     return {
-        "score": 0,
-        "nutriments": {},
+        "grade": grade,
+        "score": score,
+        "max_score": round(MAX_SCORE, 2),
+        "nutri_coeff": NUTRI_COEFFICIENT,
+        "nutri_score": nutri_score,
+        "nova_coeff": NOVA_COEFFICIENT,
+        "nova_score": nova_score,
     }
 
 def mp_eco_score(food):
+    if food.ecoscore_score:
+        ecoscore_score = MAX_SCORE - min(MAX_SCORE, int(food.ecoscore_score))
+        score = ecoscore_score * ECO_COEFFICIENT
+        step = MAX_SCORE // len(GRADES)
+        grade = GRADES[min(int(score // step), len(GRADES)-1)]
+    else:
+        ecoscore_score = None
+        score = None
+        grade = None
     return {
-        "score": 0,
-        "eco": {},
+        "grade": grade,
+        "score": score,
+        "max_score": round(MAX_SCORE, 2),
+        "ecoscore_coeff": ECO_COEFFICIENT,
+        "ecoscore_score": ecoscore_score,
     }

@@ -2,7 +2,33 @@
     <div class="modal-box">
         <label @click="$store.settingsModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="far fa-times"></i></label>
         <h3 class="font-bold text-lg" x-text="$store.settingsModal.text"></h3>
-
+        <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
+            <input type="checkbox" checked="checked" />
+          <div class="collapse-title text-xl font-medium">
+            Mes informations
+          </div>
+          <div class="collapse-content">
+            <p>Connecté en tant que <b x-text="$store.loginModal.getUsername()"></b> avec l'adresse email <b x-text="$store.loginModal.getEmail()"></b>.</p>
+          </div>
+        </div>
+        <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-4">
+            <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium">
+            Modifier mon mot de passe
+          </div>
+          <div class="collapse-content">
+            <p>Oh non... Cette fonctionnalité n'est pas encore disponible 😢.</p>
+          </div>
+        </div>
+        <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-4">
+            <input type="checkbox" />
+          <div class="collapse-title text-xl font-medium">
+            À propos
+          </div>
+          <div class="collapse-content">
+              <p><b>MonPanier</b> a été réalisée par des étudiants de l'EPITA dans le cadre de leur projet de fin d'études et vise à apporter plus de transparence vis-à-vis de l'industrie agro-alimentaire. <br><b>Crédits:</b> Thomas MOREAUX CHASSÉ, Romain GAUVREAU, Victor TRUONG, César MILESI. <br><b>Remerciements:</b> Merci à Laurent BRUN et Claire LEROUX pour leur suivi et accompagnement tout au long de ce projet.</p>
+          </div>
+        </div>
         <div class="modal-action">
             <button class="btn btn-error" @click="$store.settingsModal.logout()">Se déconnecter</button>
         </div>

@@ -7,9 +7,8 @@
     <div class="relative">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <i class="fa-solid fa-magnifying-glass"></i></div>
-        <input type="search" id="default-search" x-model="$store.search.text"
-               class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 bg-gray-50"
-               placeholder="Chercher un produit" required>
+        <input type="search" id="default-search" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 bg-gray-50 outline-0 appearance-none rounded-[12px]"
+               placeholder="Chercher un produit" x-model="$store.search.text" required>
         <button type="submit"
                 class="btn btn-sm absolute right-2.5 bottom-2.5 font-medium mb-[1px]"
                 :class="(!$store.search.text || $store.search.isLoading) && 'btn-disabled'"
@@ -22,13 +21,13 @@
     <template x-for="food in $store.search.foods" :key="food.code">
         <div class="cart border-b border-gray-200 px-0 py-4 bg-white">
             <div class="px-4 flex">
-                <div class="w-16 rounded-full my-auto mr-2">
-                    <img :src="food.image_url"/>
+                <div class="w-16 h-24 rounded-full my-auto mr-2 flex justify-center align-middle">
+                    <img :src="food.image_url" class="max-h-full m-auto"/>
                 </div>
                 <div class="flex flex-col justify-center px-2 py-1 w-full">
                     <div class="flex justify-between items-center ">
                         <div class="flex flex-col">
-                            <h2 class="font-medium text-gray-500" x-text="food.product_name"></h2>
+                            <h2 class="font-medium text-gray-500" x-text="food.product_name+(food.brands ? ' - '+food.brands.split(',')[0] : '')"></h2>
                         </div>
                     </div>
                     <div class="flex pt-2  text-sm text-gray-500">
@@ -40,9 +39,9 @@
 
                 </div>
                 <div class="flex items-center">
-                    <btn class="btn btn-sm  btn-circle btn-outline" @click="$store.search.add(food)">
+                    <button class="btn btn-sm  btn-circle btn-outline" x-on:click="$store.addProductToCartModal.toggle(food)">
                         <i class="fa-solid fa-cart-plus mr-0.5"></i>
-                        <span class="sr-only">Ajouter à un panier</span></btn>
+                        <span class="sr-only">Ajouter à un panier</span></button>
                 </div>
             </div>
         </div>
@@ -58,9 +57,10 @@
     >
     </div>
 </div>
-<div class="flex justify-center items-center mx-3" x-show="$store.search.foods.length > 0 && !$store.search.isLoading">
+<div class="flex justify-center items-center mx-3 mb-3" x-show="$store.search.foods.length > 0 && !$store.search.isLoading">
     <button class="btn btn-sm btn-outline" @click="$store.search.loadMore()">Charger plus</button>
 </div>
 <div class="flex justify-center items-center mx-3" x-show="$store.search.noResults && !$store.search.isLoading">
     <p class="text-gray-500">Aucun résultat</p>
 </div>
+{% include "components/search/add-product-cart-modal.html" %}

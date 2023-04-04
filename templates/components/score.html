@@ -1,0 +1,3 @@
+{% load webpack_static from webpack_loader %}
+
+<div class="score {{ class }}" :style="'--bg-flag:url(/static/flag-'+({{ score|default:"'na'" }} ?? 'na')+'.svg);background-image:var(--bg-flag);'"></div>
