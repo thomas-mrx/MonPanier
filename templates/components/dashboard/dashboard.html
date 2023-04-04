@@ -8,13 +8,20 @@
         </label>
         <ul tabindex="0"
             class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-56 mt-4 bg-lime-30/80 backdrop-blur">
-            <li><a class="font-bold">Les 30 derniers jours</a></li>
-            <li><a>L'année dernière</a></li>
+            <li><a :class="!$store.dashboard.isLastYearAnalysis && 'font-bold'"
+                   @click="$store.dashboard.toggleLastYearAnalysis(false)">Depuis 30 jours</a></li>
+            <li><a :class="$store.dashboard.isLastYearAnalysis && 'font-bold'"
+                   @click="$store.dashboard.toggleLastYearAnalysis(true)">Depuis 1 an</a></li>
         </ul>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600">En bref (depuis 1 an)</h2>
+    <h2 class="text-lg font-medium my-2 text-gray-600">En bref <span class="text-gray-500"
+                                                                     x-text="$store.dashboard.isLastYearAnalysis ? '(depuis 1 an)' : '(depuis 30 jours)'"></span>
+    </h2>
+    <p class="mx-2">Mon panier est une application web permettant d'évaluer le risque sanitaire, la provenance et la
+        qualité
+        nutritionnelle des produits alimentaires achetés en France. </p>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center">
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsEvolutionModal()">
             <div class="stat">
@@ -26,7 +33,8 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de produits rappelés</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.recalls.last_year"></div>
+                <div class="stat-value"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.last_year : $store.dashboard.stats.recalls.last_month"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
@@ -39,7 +47,10 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
-                <div class="stat-value text-lg" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
+
+                <div class="stat-value text-lg"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit : $store.dashboard.stats.recalls.categories.last_month_data[0].sous_categorie_de_produit"></div>
+
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
@@ -52,10 +63,11 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de dérogations</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.last_year"></div>
+                <div class="stat-value"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.last_year : $store.dashboard.stats.dispensations.last_month"></div>
             </div>
         </div>
-        <div class="stats shadow w-full cursor-pointer"  @click="$store.dashboard.toggleDispensationsCategoriesModal()">
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsCategoriesModal()">
 
             <div class="stat">
                 <div class="stat-figure text-lime-500">
@@ -66,40 +78,114 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus dérogée</div>
-                <div class="stat-value text-lg" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
+                <div class="stat-value text-lg"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon : $store.dashboard.stats.dispensations.categories.last_month_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
     <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers</h2>
-    <div class="grid grid-cols-2 gap-4">
-        <div class="stats shadow w-full">
-            <div class="stat">
-                <div class="stat-title">Score moyen</div>
-                <div class="stat-value">
-                    <img class="h-24" src="{% webpack_static 'score/flag-c.svg' %}" alt="flag c"/></div>
+    <div class="shadow rounded-md py-3 bg-lime-30">
+        <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score des paniers</h2>
+        {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_global_score__avg)" class='h-16 mx-auto' %}
+        <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_nutrim_score__avg)" class='h-8 mx-auto' %}
             </div>
-        </div>
-        <div class="stats shadow w-full">
-            <div class="stat">
-                <div class="stat-title">Pilier à améliorer</div>
-                <div class="stat-value">
-                    <span class="text-lg"><i class="fa-solid fa-carrot"></i> Nutritionnel</span></div>
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_sanit_score__avg)" class='h-8 mx-auto' %}
+            </div>
+            <div>
+                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+                {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_eco_score__avg)" class='h-8 mx-auto' %}
             </div>
         </div>
     </div>
-
-    <div class="stats shadow w-full">
-
-        <div class="stat">
-            <div class="stat-title">Mon alimentation</div>
-            <canvas id="bref-chart"></canvas>
-            <div class="stat-desc mt-2">*données exprimées en % sur une année glissante</div>
-        </div>
-
-    </div>
+    <ul class="flex flex-col">
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(1)">
+            <h3
+                    @click="handleClick()"
+                    class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
+            >
+                <span>Comment le pilier nutritionnel est-il calculé&nbsp;?</span>
+                <svg
+                        :class="handleRotate()"
+                        class="fill-current text-lime-500 h-6 w-6 transform transition-transform duration-500"
+                        viewBox="0 0 20 20"
+                >
+                    <path d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"></path>
+                </svg>
+            </h3>
+            <div
+                    x-ref="tab"
+                    :style="handleToggle()"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+            >
+                <p class="p-3 text-gray-900">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                </p>
+            </div>
+        </li>
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(2)">
+            <h3
+                    @click="handleClick()"
+                    class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
+            >
+                <span>Comment le pilier sanitaire est-il calculé&nbsp;?</span>
+                <svg
+                        :class="handleRotate()"
+                        class="fill-current text-lime-500 h-6 w-6 transform transition-transform duration-500"
+                        viewBox="0 0 20 20"
+                >
+                    <path d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"></path>
+                </svg>
+            </h3>
+            <div
+                    x-ref="tab"
+                    :style="handleToggle()"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+            >
+                <p class="p-3 text-gray-900">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                </p>
+            </div>
+        </li>
+        <li class="bg-white my-2 shadow rounded-md" x-data="accordion(3)">
+            <h3
+                    @click="handleClick()"
+                    class="flex flex-row justify-between items-center font-semibold p-3 cursor-pointer"
+            >
+                <span>Comment le pilier écologique est-il calculé ?</span>
+                <svg
+                        :class="handleRotate()"
+                        class="fill-current text-lime-500 h-6 w-6 transform transition-transform duration-500"
+                        viewBox="0 0 20 20"
+                >
+                    <path d="M13.962,8.885l-3.736,3.739c-0.086,0.086-0.201,0.13-0.314,0.13S9.686,12.71,9.6,12.624l-3.562-3.56C5.863,8.892,5.863,8.611,6.036,8.438c0.175-0.173,0.454-0.173,0.626,0l3.25,3.247l3.426-3.424c0.173-0.172,0.451-0.172,0.624,0C14.137,8.434,14.137,8.712,13.962,8.885 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.148,17.521,17.521,14.147,17.521,10"></path>
+                </svg>
+            </h3>
+            <div
+                    x-ref="tab"
+                    :style="handleToggle()"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+            >
+                <p class="p-3 text-gray-900">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat.</p>
+                </p>
+            </div>
+        </li>
+    </ul>
 </div>
+
 
 {% include "components/dashboard/recalls-evolution-modal.html" %}
 {% include "components/dashboard/recalls-categories-modal.html" %}

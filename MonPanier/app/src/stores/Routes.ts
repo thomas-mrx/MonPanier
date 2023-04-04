@@ -37,8 +37,6 @@ const STORE_DATA: {
         pattern: /^$|^\/$/,
         args: {},
         onInit() {
-          Stats.getChartById('bref-chart').resize();
-          Stats.getChartById('recalls-evolution-chart').resize();
           Dashboard.updateStats();
         },
       }],

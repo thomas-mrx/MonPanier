@@ -1,6 +1,6 @@
 <div class="modal py-10" :class="$store.dashboard.dispensationsCategoriesModalOn && 'modal-open'">
     <div class="modal-box relative">
-     <h3 class="font-bold text-lg">Catégories les plus déroguées</h3>
+     <h3 class="font-bold text-lg">Catégories les plus dérogées <span class="text-gray-500" x-text="$store.dashboard.isLastYearAnalysis ? '(depuis 1 an)' : '(depuis 30 jours)'"></h3>
         <div class="stats shadow w-full">
             <div class="stat">
                 <div class="stat-title">Dérogations par catégories</div>

@@ -461,6 +461,18 @@ export interface ChangePasswordIn {
   new_password2: string;
 }
 
+/** CartsScoreSchema */
+export interface CartsScoreSchema {
+  /** Mp Nutrim Score  Avg */
+  mp_nutrim_score__avg?: number;
+  /** Mp Sanit Score  Avg */
+  mp_sanit_score__avg?: number;
+  /** Mp Eco Score  Avg */
+  mp_eco_score__avg?: number;
+  /** Mp Global Score  Avg */
+  mp_global_score__avg?: number;
+}
+
 /** EvolutionDatasetSchema */
 export interface EvolutionDatasetSchema {
   /**
@@ -528,6 +540,7 @@ export interface DispensationsStatsSchema {
 
 /** StatsSchema */
 export interface StatsSchema {
+  carts_scores: CartsScoreSchema;
   recalls: RecallsStatsSchema;
   dispensations: DispensationsStatsSchema;
 }
