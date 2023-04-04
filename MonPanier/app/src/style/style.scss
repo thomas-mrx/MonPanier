@@ -320,3 +320,7 @@ body {
 .hide-more > .badge-more:not(:last-child) {
   display: none;
 }
+
+.pb-env {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

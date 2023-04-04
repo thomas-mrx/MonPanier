@@ -36,8 +36,10 @@
                 </div>
             </div>
         </div>
-            <button class="btn mt-6" @click="$store.addProductToCartModal.toggle($store.productModal.product.ean)">
+        <div class="pb-env w-full">
+            <button class="btn mt-6 w-full" @click="$store.addProductToCartModal.toggle($store.productModal.product.ean)">
                 Ajouter à un panier
             </button>
+        </div>
     </div>
 </div>

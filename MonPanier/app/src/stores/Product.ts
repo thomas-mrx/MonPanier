@@ -10,7 +10,7 @@ const STORE_DATA: {
 
   updateProduct(product: ProductSchema) {
     this.product = product;
-    this.product.categories = (Object.values(this.product.categories) || []).filter((c: string) => !c.includes(':') && !c.includes('-'));
+    this.product.categories = (Object.values(this.product.categories) || []).filter((c: string) => !c.includes(':') && !c.includes('-') && c.toLowerCase() !== 'test');
   },
 };
 
