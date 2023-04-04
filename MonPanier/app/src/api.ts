@@ -896,6 +896,31 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags foods
+     * @name GetFoodByCode
+     * @summary Get By Code
+     * @request GET:/api/foods/code
+     * @secure
+     */
+    getFoodByCode: (
+      query: {
+        /** Code */
+        code: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<FoodSchema, any>({
+        path: `/api/foods/code`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags auth
      * @name Login
      * @summary Login

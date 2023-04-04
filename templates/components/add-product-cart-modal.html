@@ -9,7 +9,6 @@
             </label>
 
             <select class="select w-full max-w-xs" x-on:change="$store.addProductToCartModal.selectedCart = $el.value">
-                <option disabled selected>Choisissez votre panier</option>
                 <template x-for="cart in $store.cart.carts" x-key="cart.id">
 
                     <option x-text="cart.name" :value="cart.id"></option>

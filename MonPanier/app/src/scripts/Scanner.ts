@@ -43,16 +43,18 @@ class Scanner {
             codeDuplicateFilter: 1000,
           });
           this.picker.applyScanSettings(scanSettings);
+          this.picker.setCameraSwitcherEnabled(false);
+          this.picker.setTapToFocusEnabled(true);
           this.picker.on('scan', (scanResult) => {
             const barcode = scanResult.barcodes[0].data;
             if (barcode in this.lastProducts && this.lastProducts[barcode]) {
               ProductModalStore.update(this.lastProducts[barcode]);
               return;
             }
-            Backend.searchFoods({ query: barcode, offset: 0, limit: 1 }, Backend.params).then((result) => {
-              if (result.data && result.data.length > 0) {
-                this.lastProducts[barcode] = result.data.shift();
-                ProductModalStore.update(this.lastProducts[barcode]);
+            Backend.getFoodByCode({ code: barcode }, Backend.params).then((result) => {
+              if (result.data) {
+                this.lastProducts[barcode] = result.data;
+                ProductModalStore.update(result.data);
               }
             });
             /* Backend.getProduct(barcode, Backend.params).then((result) => {
