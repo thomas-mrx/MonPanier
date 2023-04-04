@@ -4,8 +4,6 @@ import Cart from './Cart';
 import Product from './Product';
 import Stats from '../scripts/Stats';
 
-import { ProductSchema } from '../api';
-
 import Scanner from '../scripts/Scanner';
 import Main from './Main';
 
@@ -44,7 +42,7 @@ const STORE_DATA: {
     },
     {
       icon: 'fa-shopping-cart',
-      name: 'Paniers',
+      name: 'Mes paniers',
       link: '/carts',
       routes: [{
         pattern: /^\/carts$/,

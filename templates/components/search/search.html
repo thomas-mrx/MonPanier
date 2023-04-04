@@ -27,7 +27,7 @@
                 <div class="flex flex-col justify-center px-2 py-1 w-full">
                     <div class="flex justify-between items-center ">
                         <div class="flex flex-col">
-                            <h2 class="font-medium text-gray-500" x-text="food.product_name"></h2>
+                            <h2 class="font-medium text-gray-500" x-text="food.product_name+(food.brands ? ' - '+food.brands.split(',')[0] : '')"></h2>
                         </div>
                     </div>
                     <div class="flex pt-2  text-sm text-gray-500">

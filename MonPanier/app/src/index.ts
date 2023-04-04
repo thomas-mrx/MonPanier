@@ -1,5 +1,6 @@
 import './style/style.scss';
 import Alpine from 'alpinejs';
+import Scanner from './scripts/Scanner';
 
 window.onload = async () => {
   await import('./stores/AddCartModal');
@@ -18,5 +19,13 @@ window.onload = async () => {
 
   window.onpopstate = () => {
     RoutesStore.loadRoute(window.location.pathname, false);
+  };
+
+  // restart scanner when app goes back to foreground if we are on the scan page
+  document.onvisibilitychange = () => {
+    const state = document.visibilityState;
+    if (state === 'visible' && RoutesStore.tabs[RoutesStore.activeTab].link === '/scan') {
+      Scanner.start();
+    }
   };
 };

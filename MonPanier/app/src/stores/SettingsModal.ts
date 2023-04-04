@@ -5,11 +5,15 @@ const STORE_NAME = 'settingsModal';
 const STORE_DATA: {
   on: boolean,
   text: string,
+  password1: string | undefined,
+  password2: string | undefined,
   toggle: () => void,
   logout: () => Promise<void>,
 } = {
   on: false,
   text: 'Paramètres',
+  password1: undefined,
+  password2: undefined,
 
   toggle() {
     this.on = !this.on;
