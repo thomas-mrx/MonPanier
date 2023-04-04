@@ -294,6 +294,13 @@ export interface CreateCartSchema {
    * @maxLength 255
    */
   name: string;
+}/** CreateCartSchema */
+export interface CreateCartSchema {
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
 }
 
 /** Error */

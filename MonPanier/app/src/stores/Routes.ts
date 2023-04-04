@@ -101,6 +101,14 @@ const STORE_DATA: {
         pattern: /^\/search$/,
         args: {},
         onInit() {
+          if (Cart.carts.length === 0) {
+            Backend.getCarts(Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCarts(result.data);
+              }
+            });
+          }
+
           setTimeout(() => {
             document.getElementById('default-search').focus();
           }, 100);

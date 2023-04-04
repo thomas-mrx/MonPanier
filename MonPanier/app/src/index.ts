@@ -3,6 +3,7 @@ import Alpine from 'alpinejs';
 
 window.onload = async () => {
   await import('./stores/AddCartModal');
+  await import('./stores/AddProductCartModal');
   await import('./stores/Cart');
   await import('./stores/SettingsModal');
   await import('./stores/ProductModal');
