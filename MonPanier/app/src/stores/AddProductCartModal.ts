@@ -6,29 +6,29 @@ import ProductModal from './ProductModal';
 const STORE_NAME = 'addProductToCartModal';
 const STORE_DATA: {
   on: boolean,
-  food: FoodSchema | undefined,
+  code: string | undefined,
   selectedCart: string | undefined,
-  toggle: (food : FoodSchema) => void,
+  toggle: (code : string) => void,
   addToCart: () => void,
 } = {
   on: false,
-  food: {} as FoodSchema,
+  code: undefined,
   selectedCart: undefined,
 
-  toggle(food : FoodSchema) {
-    this.food = food;
+  toggle(code : string | undefined = undefined) {
+    this.code = code;
     this.on = !this.on;
   },
 
   addToCart() {
-    Backend.getProduct(this.food.code, Backend.params).then((productResult) => {
+    Backend.getProduct(this.code, Backend.params).then((productResult) => {
       if (productResult.data) {
         Backend
           .addProductToCart(this.selectedCart, String(productResult.data.id), Backend.params)
           .then((result) => {
             if (result.status === 200) {
               this.toggle();
-              alert('Produit ajouté au panier');
+              alert('Produit ajouté au panier.');
               ProductModal.on = false;
             }
           }).catch((error) => {
