@@ -1,3 +1,4 @@
+{% load webpack_static from webpack_loader %}
 <div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <h1 class="text-xl font-medium my-2 text-gray-600">Explorer</h1>
     <div class="dropdown dropdown-end">
@@ -5,74 +6,102 @@
             <i class="fas fa-calendar-alt mr-2"></i>
             Filtrer
         </label>
-        <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-56 mt-4 bg-lime-30/80 backdrop-blur">
-        <li><a class="font-bold">Les 30 derniers jours</a></li>
-        <li><a>L'année dernière</a></li>
-      </ul>
+        <ul tabindex="0"
+            class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-56 mt-4 bg-lime-30/80 backdrop-blur">
+            <li><a class="font-bold">Les 30 derniers jours</a></li>
+            <li><a>L'année dernière</a></li>
+        </ul>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <div class="stats shadow w-full">
-
-      <div class="stat">
-        <div class="stat-figure text-lime-500">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <h2 class="text-lg font-medium my-2 text-gray-600">En bref (depuis 1 an)</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center">
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsEvolutionModal()">
+            <div class="stat">
+                <div class="stat-figure text-lime-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         class="inline-block w-8 h-8 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="stat-title">Nombre de produits rappelés</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.recalls.last_year"></div>
+            </div>
         </div>
-        <div class="stat-title">Downloads</div>
-        <div class="stat-value">31K</div>
-        <div class="stat-desc">Jan 1st - Feb 1st</div>
-      </div>
-
-    </div>
-    <div class="stats shadow w-full grid grid-cols-2 gap-4 place-content-center">
-
-      <div class="stat">
-        <div class="stat-figure text-lime-500">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
+            <div class="stat">
+                <div class="stat-figure text-lime-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         class="inline-block w-8 h-8 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="stat-title">Catégorie la plus rappelée</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
+            </div>
         </div>
-        <div class="stat-title">New Users</div>
-        <div class="stat-value">4,200</div>
-        <div class="stat-desc text-lime-600">↗︎ 400 (22%)</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-figure text-lime-500">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
+            <div class="stat">
+                <div class="stat-figure text-lime-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         class="inline-block w-8 h-8 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="stat-title">Nombre de dérogations</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.last_year"></div>
+            </div>
         </div>
-        <div class="stat-title">New Registers</div>
-        <div class="stat-value">1,200</div>
-        <div class="stat-desc text-red-600">↘︎ 90 (14%)</div>
-      </div>
+        <div class="stats shadow w-full cursor-pointer"  @click="$store.dashboard.toggleDispensationsCategoriesModal()">
+
+            <div class="stat">
+                <div class="stat-figure text-lime-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                         class="inline-block w-8 h-8 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="stat-title">Catégorie la plus déroguée</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="stats-container mx-4 w-auto mt-4">
+    <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers</h2>
+    <div class="grid grid-cols-2 gap-4">
+        <div class="stats shadow w-full">
+            <div class="stat">
+                <div class="stat-title">Score moyen</div>
+                <div class="stat-value">
+                    <img class="h-24" src="{% webpack_static 'score/flag-c.svg' %}" alt="flag c"/></div>
+            </div>
+        </div>
+        <div class="stats shadow w-full">
+            <div class="stat">
+                <div class="stat-title">Pilier à améliorer</div>
+                <div class="stat-value">
+                    <span class="text-lg"><i class="fa-solid fa-carrot"></i> Nutritionnel</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats shadow w-full">
+
+        <div class="stat">
+            <div class="stat-title">Mon alimentation</div>
+            <canvas id="bref-chart"></canvas>
+            <div class="stat-desc mt-2">*données exprimées en % sur une année glissante</div>
+        </div>
 
     </div>
 </div>
-<div class="stats-container mx-4 w-auto mt-4">
-<h2>En bref</h2>
-    <div class="stats shadow w-full">
 
-      <div class="stat">
-        <div class="stat-title">Mon alimentation</div>
-        <canvas id="bref-chart"></canvas>
-        <div class="stat-desc mt-2">*données exprimées en % sur une année glissante</div>
-      </div>
-
-    </div>
-</div>
-<div class="stats-container mx-4 w-auto mt-4">
-<h2>Nutrition</h2>
-    <div class="stats shadow w-full">
-        blabla
-    </div>
-</div>
-<div class="stats-container mx-4 w-auto mt-4">
-<h2>Provenance</h2>
-    <div class="stats shadow w-full">
-        blabla
-    </div>
-</div>
-<div class="stats-container mx-4 w-auto mt-4">
-<h2>Sanitaire</h2>
-    <div class="stats shadow w-full">
-        blabla
-    </div>
-</div>
+{% include "components/dashboard/recalls-evolution-modal.html" %}
+{% include "components/dashboard/recalls-categories-modal.html" %}
+{% include "components/dashboard/dispensations-evolution-modal.html" %}
+{% include "components/dashboard/dispensations-categories-modal.html" %}

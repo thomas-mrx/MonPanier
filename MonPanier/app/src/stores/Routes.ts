@@ -5,6 +5,7 @@ import Product from './Product';
 import Stats from '../scripts/Stats';
 
 import Scanner from '../scripts/Scanner';
+import Dashboard from './Dashboard';
 import Main from './Main';
 
 interface Route {
@@ -37,6 +38,8 @@ const STORE_DATA: {
         args: {},
         onInit() {
           Stats.getChartById('bref-chart').resize();
+          Stats.getChartById('recalls-evolution-chart').resize();
+          Dashboard.updateStats();
         },
       }],
     },
