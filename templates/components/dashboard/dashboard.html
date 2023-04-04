@@ -8,13 +8,15 @@
         </label>
         <ul tabindex="0"
             class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-56 mt-4 bg-lime-30/80 backdrop-blur">
-            <li><a class="font-bold">Les 30 derniers jours</a></li>
-            <li><a>L'année dernière</a></li>
+            <li><a :class="!$store.dashboard.isLastYearAnalysis && 'font-bold'"
+                   @click="$store.dashboard.toggleLastYearAnalysis(false)">Depuis 30 jours</a></li>
+            <li><a :class="$store.dashboard.isLastYearAnalysis && 'font-bold'"
+                   @click="$store.dashboard.toggleLastYearAnalysis(true)">Depuis 1 an</a></li>
         </ul>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600">En bref (depuis 1 an)</h2>
+    <h2 class="text-lg font-medium my-2 text-gray-600">En bref <span class="text-gray-500" x-text="$store.dashboard.isLastYearAnalysis ? '(depuis 1 an)' : '(depuis 30 jours)'"></span></h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center">
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsEvolutionModal()">
             <div class="stat">
@@ -26,7 +28,8 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de produits rappelés</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.recalls.last_year"></div>
+                <div class="stat-value"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.last_year : $store.dashboard.stats.recalls.last_month"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
@@ -39,7 +42,8 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
+                <div class="stat-value text-xl"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit : $store.dashboard.stats.recalls.categories.last_month_data[0].sous_categorie_de_produit"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
@@ -52,10 +56,10 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de dérogations</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.last_year"></div>
+                <div class="stat-value"  x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.last_year : $store.dashboard.stats.dispensations.last_month"></div>
             </div>
         </div>
-        <div class="stats shadow w-full cursor-pointer"  @click="$store.dashboard.toggleDispensationsCategoriesModal()">
+        <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsCategoriesModal()">
 
             <div class="stat">
                 <div class="stat-figure text-lime-500">
@@ -66,7 +70,8 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus déroguée</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
+                <div class="stat-value text-xl"
+                     x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon : $store.dashboard.stats.dispensations.categories.last_month_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>
     </div>

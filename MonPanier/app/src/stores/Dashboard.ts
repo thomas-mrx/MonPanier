@@ -14,19 +14,25 @@ const STORE_DATA: {
   recallsCategoriesModalOn: boolean,
   dispensationsEvolutionModalOn: boolean,
   dispensationsCategoriesModalOn: boolean,
+  isLastYearAnalysis: boolean,
 
   stats: StatsSchema | null,
   updateStats: () => void,
+  updateCharts: () => void,
+  getRecallsCurrentAnalysis: () => RecallCategoryDatasetSchema[],
+  getDispensationsCurrentAnalysis: () => DispensationCategoryDatasetSchema[],
 
   toggleRecallsEvolutionModal: () => void,
   toggleRecallsCategoriesModal: () => void,
   toggleDispensationsEvolutionModal: () => void,
   toggleDispensationsCategoriesModal: () => void,
+  toggleLastYearAnalysis: (value?: boolean) => void,
 } = {
   recallsEvolutionModalOn: false,
   recallsCategoriesModalOn: false,
   dispensationsEvolutionModalOn: false,
   dispensationsCategoriesModalOn: false,
+  isLastYearAnalysis: true,
   stats: {
     recalls: {
       data: [],
@@ -64,33 +70,50 @@ const STORE_DATA: {
     this.dispensationsCategoriesModalOn = !this.dispensationsCategoriesModalOn;
   },
 
+  toggleLastYearAnalysis(value:boolean = !this.isLastYearAnalysis) {
+    this.isLastYearAnalysis = value;
+    this.updateCharts();
+  },
+
+  getRecallsCurrentAnalysis(): RecallCategoryDatasetSchema[] {
+    return this.isLastYearAnalysis ? this.stats?.recalls.categories.last_year_data : this.stats?.recalls.categories.last_month_data;
+  },
+
+  getDispensationsCurrentAnalysis(): DispensationCategoryDatasetSchema[] {
+    return this.isLastYearAnalysis ? this.stats?.dispensations.categories.last_year_data : this.stats?.dispensations.categories.last_month_data;
+  },
+
   updateStats() {
     Backend.getStats(Backend.params).then((result) => {
       this.stats = result.data;
-      Stats.updateChartById(
-        'recalls-evolution-chart',
-        this.stats.recalls.data.map((stat: EvolutionDatasetSchema) => stat.month),
-        this.stats.recalls.data.map((stat: EvolutionDatasetSchema) => stat.total),
-      );
-      Stats.updateChartById(
-        'dispensations-evolution-chart',
-        this.stats.dispensations.data.map((stat: EvolutionDatasetSchema) => stat.month),
-        this.stats.dispensations.data.map((stat: EvolutionDatasetSchema) => stat.total),
-      );
-      Stats.updateChartById(
-        'recalls-categories-chart',
-        this.stats.recalls.categories.last_year_data.map((stat: RecallCategoryDatasetSchema) => stat.sous_categorie_de_produit).slice(0, 5),
-        this.stats.recalls.categories.last_year_data.map((stat: RecallCategoryDatasetSchema) => stat.total).slice(0, 5),
-      );
-      Stats.updateChartById(
-        'dispensations-categories-chart',
-        this.stats.dispensations.categories.last_year_data.map((stat: DispensationCategoryDatasetSchema) => stat.categorie_du_produit_rayon).slice(0, 5),
-        this.stats.dispensations.categories.last_year_data.map((stat: DispensationCategoryDatasetSchema) => stat.total).slice(0, 5),
-      );
-      // const statsMapped = JSON.parse(JSON.stringify(this.stats));
-      // console.log(statsMapped.recalls);
-      // console.log(statsMapped.recalls.data.map((stat: DatasetSchema) => stat.month));
+      this.updateCharts();
     });
+  },
+
+  updateCharts() {
+    const recallsCurrentAnalysis = this.getRecallsCurrentAnalysis();
+    const dispensationsCurrentAnalysis = this.getDispensationsCurrentAnalysis();
+
+    Stats.updateChartById(
+      'recalls-evolution-chart',
+      this.stats.recalls.data.map((stat: EvolutionDatasetSchema) => stat.month),
+      this.stats.recalls.data.map((stat: EvolutionDatasetSchema) => stat.total),
+    );
+    Stats.updateChartById(
+      'dispensations-evolution-chart',
+      this.stats.dispensations.data.map((stat: EvolutionDatasetSchema) => stat.month),
+      this.stats.dispensations.data.map((stat: EvolutionDatasetSchema) => stat.total),
+    );
+    Stats.updateChartById(
+      'recalls-categories-chart',
+      recallsCurrentAnalysis.map((stat: RecallCategoryDatasetSchema) => stat.sous_categorie_de_produit).slice(0, 5),
+      recallsCurrentAnalysis.map((stat: RecallCategoryDatasetSchema) => stat.total).slice(0, 5),
+    );
+    Stats.updateChartById(
+      'dispensations-categories-chart',
+      dispensationsCurrentAnalysis.map((stat: DispensationCategoryDatasetSchema) => stat.categorie_du_produit_rayon).slice(0, 5),
+      dispensationsCurrentAnalysis.map((stat: DispensationCategoryDatasetSchema) => stat.total).slice(0, 5),
+    );
   },
 
 };
