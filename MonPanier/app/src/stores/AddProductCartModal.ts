@@ -1,6 +1,7 @@
 import Store, { IStore } from '../scripts/Store';
 import { FoodSchema } from '../api';
 import Backend from '../scripts/Backend';
+import ProductModal from './ProductModal';
 
 const STORE_NAME = 'addProductToCartModal';
 const STORE_DATA: {
@@ -28,6 +29,7 @@ const STORE_DATA: {
             if (result.status === 200) {
               this.toggle();
               alert('Produit ajouté au panier');
+              ProductModal.on = false;
             }
           }).catch((error) => {
             alert('Erreur lors de l\'ajout du produit.');

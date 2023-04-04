@@ -39,7 +39,7 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
+                <div class="stat-value text-lg" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
@@ -65,8 +65,8 @@
                               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <div class="stat-title">Catégorie la plus déroguée</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
+                <div class="stat-title">Catégorie la plus dérogée</div>
+                <div class="stat-value text-lg" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>
     </div>
