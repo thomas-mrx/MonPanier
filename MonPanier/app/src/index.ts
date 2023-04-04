@@ -40,6 +40,12 @@ window.onload = async () => {
   RoutesStore.loadRoute(window.location.pathname);
   LoginModalStore.checkLogin();
 
+  window.screen.orientation.lock('portrait').then(() => {
+    console.log('Orientation locked');
+  }).catch((error) => {
+    console.warn(error);
+  });
+
   window.onpopstate = () => {
     RoutesStore.loadRoute(window.location.pathname, false);
   };

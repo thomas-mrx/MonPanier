@@ -8,14 +8,14 @@
                 <span class="label-text">Dans quel panier souhaitez vous ajouter l'article?</span>
             </label>
 
-            <select class="select w-full max-w-xs" x-on:change="$store.addProductToCartModal.selectedCart = $el.value">
+            <select class="select w-full max-w-xs" x-ref="select">
                 <template x-for="cart in $store.cart.carts" x-key="cart.id">
 
                     <option x-text="cart.name" :value="cart.id"></option>
 
                 </template>
             </select>
-            <button class="btn mt-4" @click="$store.addProductToCartModal.addToCart()">
+            <button class="btn mt-4" @click="$store.addProductToCartModal.selectedCart = $refs.select.value; $store.addProductToCartModal.addToCart()">
                 Ajouter au panier
             </button>
         </div>

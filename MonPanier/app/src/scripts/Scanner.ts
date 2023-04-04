@@ -3,10 +3,10 @@ import {
 } from 'scandit-sdk';
 import Backend from './Backend';
 import ProductModalStore from '../stores/ProductModal';
-import { FoodSchema } from '../api';
+import { ProductSchema } from '../api';
 
 class Scanner {
-  private lastProducts: { [code: string]: FoodSchema } = {};
+  private lastProducts: { [code: string]: ProductSchema } = {};
 
   private picker: BarcodePicker | undefined = undefined;
 
@@ -33,6 +33,8 @@ class Scanner {
           vibrateOnScan: true,
         }).then((barcodePicker) => {
           this.picker = barcodePicker;
+          this.picker.setCameraSwitcherEnabled(false);
+          this.picker.setTapToFocusEnabled(true);
           const scanSettings = new ScanSettings({
             enabledSymbologies: [
               Barcode.Symbology.EAN8,
@@ -43,8 +45,6 @@ class Scanner {
             codeDuplicateFilter: 1000,
           });
           this.picker.applyScanSettings(scanSettings);
-          this.picker.setCameraSwitcherEnabled(false);
-          this.picker.setTapToFocusEnabled(true);
           ProductModalStore.onOpen = this.pause.bind(this);
           ProductModalStore.onClose = this.resume.bind(this);
           this.picker.on('scan', (scanResult) => {
@@ -55,7 +55,16 @@ class Scanner {
               ProductModalStore.update(this.lastProducts[barcode]);
               return;
             }
-            Backend.getFoodByCode({ code: barcode }, Backend.params).then((result) => {
+            /* Backend.getFoodByCode({ code: barcode }, Backend.params).then((result) => {
+              if (result.data) {
+                this.lastProducts[barcode] = result.data;
+                ProductModalStore.update(result.data);
+              }
+            }).catch((error) => {
+              console.error(error);
+              this.resume();
+            }); */
+            Backend.getProduct(barcode, Backend.params).then((result) => {
               if (result.data) {
                 this.lastProducts[barcode] = result.data;
                 ProductModalStore.update(result.data);
@@ -64,12 +73,6 @@ class Scanner {
               console.error(error);
               this.resume();
             });
-            /* Backend.getProduct(barcode, Backend.params).then((result) => {
-              if (result.data) {
-                this.lastProducts[barcode] = result.data;
-                ProductModalStore.update(result.data);
-              }
-            }); */
           });
           resolve(true);
         }).catch((error) => {

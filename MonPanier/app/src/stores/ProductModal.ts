@@ -1,17 +1,17 @@
 import Store, { IStore } from '../scripts/Store';
-import { FoodSchema } from '../api';
+import { ProductSchema } from '../api';
 
 const STORE_NAME = 'productModal';
 const STORE_DATA: {
   on: boolean,
-  food: FoodSchema | undefined,
+  product: ProductSchema | undefined,
   toggle: (force?: boolean | undefined) => void,
-  update: (food: FoodSchema) => void,
+  update: (product: ProductSchema) => void,
   onOpen: () => void,
   onClose: () => void,
 } = {
   on: false,
-  food: {} as FoodSchema,
+  product: {} as ProductSchema,
   onOpen: () => {},
   onClose: () => {},
 
@@ -24,8 +24,8 @@ const STORE_DATA: {
     }
   },
 
-  update(food: FoodSchema) {
-    this.food = food;
+  update(product: ProductSchema) {
+    this.product = product;
     this.toggle(true);
   },
 };
