@@ -5,19 +5,28 @@ const STORE_NAME = 'productModal';
 const STORE_DATA: {
   on: boolean,
   food: FoodSchema | undefined,
-  toggle: () => void,
+  toggle: (force?: boolean | undefined) => void,
   update: (food: FoodSchema) => void,
+  onOpen: () => void,
+  onClose: () => void,
 } = {
   on: false,
   food: {} as FoodSchema,
+  onOpen: () => {},
+  onClose: () => {},
 
-  toggle() {
-    this.on = !this.on;
+  toggle(force:boolean | undefined = undefined) {
+    this.on = force === undefined ? !this.on : force;
+    if (this.on) {
+      this.onOpen();
+    } else {
+      this.onClose();
+    }
   },
 
   update(food: FoodSchema) {
     this.food = food;
-    this.on = true;
+    this.toggle(true);
   },
 };
 

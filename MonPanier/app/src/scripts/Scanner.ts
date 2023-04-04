@@ -45,7 +45,11 @@ class Scanner {
           this.picker.applyScanSettings(scanSettings);
           this.picker.setCameraSwitcherEnabled(false);
           this.picker.setTapToFocusEnabled(true);
+          ProductModalStore.onOpen = this.pause.bind(this);
+          ProductModalStore.onClose = this.resume.bind(this);
           this.picker.on('scan', (scanResult) => {
+            if (this.picker.isScanningPaused()) return;
+            this.pause();
             const barcode = scanResult.barcodes[0].data;
             if (barcode in this.lastProducts && this.lastProducts[barcode]) {
               ProductModalStore.update(this.lastProducts[barcode]);
@@ -56,6 +60,9 @@ class Scanner {
                 this.lastProducts[barcode] = result.data;
                 ProductModalStore.update(result.data);
               }
+            }).catch((error) => {
+              console.error(error);
+              this.resume();
             });
             /* Backend.getProduct(barcode, Backend.params).then((result) => {
               if (result.data) {
@@ -73,6 +80,18 @@ class Scanner {
         resolve(true);
       }
     });
+  }
+
+  public pause() {
+    if (this.picker) {
+      this.picker.pauseScanning();
+    }
+  }
+
+  public resume() {
+    if (this.picker && this.picker.isScanningPaused()) {
+      this.picker.resumeScanning();
+    }
   }
 
   public stop() {
