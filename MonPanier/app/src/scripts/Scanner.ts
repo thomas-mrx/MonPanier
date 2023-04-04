@@ -1,98 +1,83 @@
-import { Html5Qrcode, Html5QrcodeScannerState, Html5QrcodeSupportedFormats } from 'html5-qrcode';
+import {
+  Barcode, BarcodePicker, configure, ScanSettings,
+} from 'scandit-sdk';
 import Backend from './Backend';
 import ProductModalStore from '../stores/ProductModal';
-import { ProductSchema } from '../api';
+import { FoodSchema } from '../api';
 
 class Scanner {
-  private readonly scanner: Html5Qrcode;
+  private lastProducts: { [code: string]: FoodSchema } = {};
 
-  private lastDecodedText: string | undefined;
+  private picker: BarcodePicker | undefined = undefined;
 
-  private lastProduct: ProductSchema | undefined;
+  private ready: (value: (PromiseLike<unknown> | unknown)) => void;
 
-  private readonly beep: HTMLAudioElement;
-
-  private audioContext: AudioContext;
-
-  private camera: string | undefined;
+  private isReady = new Promise((resolve) => {
+    this.ready = resolve;
+  });
 
   constructor() {
-    this.scanner = new Html5Qrcode('reader', {
-      experimentalFeatures: undefined,
-      useBarCodeDetectorIfSupported: true,
-      verbose: false,
-      formatsToSupport: [
-        Html5QrcodeSupportedFormats.EAN_13,
-        Html5QrcodeSupportedFormats.EAN_8,
-        Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
-      ],
+    configure(process.env.SCANDIT_LICENSE_KEY, {
+      engineLocation: 'https://cdn.jsdelivr.net/npm/scandit-sdk/build',
+    }).then(() => {
+      this.ready(true);
     });
-    this.audioContext = new AudioContext();
-    this.beep = new Audio('/static/beep.mp3');
-    this.beep.preload = 'auto';
-    const audioSource = this.audioContext.createMediaElementSource(this.beep);
-    audioSource.connect(this.audioContext.destination);
   }
 
   public async start() {
-    this.audioContext.resume();
+    await this.isReady;
     return new Promise((resolve) => {
-      const state = this.scanner.getState();
-      if (state === Html5QrcodeScannerState.SCANNING) {
-        resolve(true);
-        return;
-      }
-      Html5Qrcode.getCameras().then((devices) => {
-        if (devices && devices.length) {
-          alert(`will be removed later, debug info: ${JSON.stringify(devices)}`);
-          this.camera = devices.find((d) => d.label === 'Caméra arrière' || d.label === 'Rear camera')?.id ?? devices[0].id;
-          this.scanner.start(
-            this.camera,
-            {
-              fps: 10,
-              qrbox: { width: 256, height: 128 },
-            },
-            this.onScanSuccess.bind(this),
-            () => {},
-          ).then(() => {
-            resolve(true);
-          }).catch((err) => {
-            console.warn(`Unable to start scanning, error = ${err}`);
-            resolve(false);
+      if (!this.picker) {
+        BarcodePicker.create(document.getElementById('reader'), {
+          playSoundOnScan: true,
+          vibrateOnScan: true,
+        }).then((barcodePicker) => {
+          this.picker = barcodePicker;
+          const scanSettings = new ScanSettings({
+            enabledSymbologies: [
+              Barcode.Symbology.EAN8,
+              Barcode.Symbology.EAN13,
+              Barcode.Symbology.UPCA,
+              Barcode.Symbology.UPCE,
+            ],
+            codeDuplicateFilter: 1000,
           });
-        } else {
+          this.picker.applyScanSettings(scanSettings);
+          this.picker.on('scan', (scanResult) => {
+            const barcode = scanResult.barcodes[0].data;
+            if (barcode in this.lastProducts && this.lastProducts[barcode]) {
+              ProductModalStore.update(this.lastProducts[barcode]);
+              return;
+            }
+            Backend.searchFoods({ query: barcode, offset: 0, limit: 1 }, Backend.params).then((result) => {
+              if (result.data && result.data.length > 0) {
+                this.lastProducts[barcode] = result.data.shift();
+                ProductModalStore.update(this.lastProducts[barcode]);
+              }
+            });
+            /* Backend.getProduct(barcode, Backend.params).then((result) => {
+              if (result.data) {
+                this.lastProducts[barcode] = result.data;
+                ProductModalStore.update(result.data);
+              }
+            }); */
+          });
+          resolve(true);
+        }).catch((error) => {
+          console.error(error);
           resolve(false);
-        }
-      }).catch((err) => {
-        console.warn(`Unable to query supported devices, error = ${err}`);
-        resolve(false);
-      });
+        });
+      } else {
+        resolve(true);
+      }
     });
   }
 
   public stop() {
-    const state = this.scanner.getState();
-    if (state === Html5QrcodeScannerState.SCANNING) {
-      this.scanner.stop();
+    if (this.picker) {
+      this.picker.destroy(true);
+      this.picker = undefined;
     }
-  }
-
-  private onScanSuccess(decodedText: string) {
-    this.audioContext.resume().then(() => {
-      this.beep.currentTime = 0;
-      this.beep.play();
-    });
-    if (this.lastDecodedText === decodedText && this.lastProduct) {
-      ProductModalStore.update(this.lastProduct);
-      return;
-    }
-    this.lastDecodedText = decodedText;
-    Backend.getProduct(decodedText, Backend.params).then((result) => {
-      if (result.data) {
-        this.lastProduct = result.data;
-        ProductModalStore.update(result.data);
-      }
-    });
   }
 }
 

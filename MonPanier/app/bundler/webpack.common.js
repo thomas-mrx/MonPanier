@@ -40,6 +40,7 @@ module.exports = {
             { from: '../assets' }
          ]
       }),
+      new webpack.EnvironmentPlugin(['SCANDIT_LICENSE_KEY']),
       new BundleTracker({filename: './webpack-stats.json'})
   ]
 }

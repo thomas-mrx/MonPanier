@@ -1,7 +1,6 @@
 import Store, { IStore } from '../scripts/Store';
 import { FoodSchema } from '../api';
 import Backend from '../scripts/Backend';
-import Cart from './Cart';
 
 const STORE_NAME = 'addProductToCartModal';
 const STORE_DATA: {
@@ -12,7 +11,7 @@ const STORE_DATA: {
   addToCart: () => void,
 } = {
   on: false,
-  food: undefined,
+  food: {} as FoodSchema,
   selectedCart: undefined,
 
   toggle(food : FoodSchema) {
