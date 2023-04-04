@@ -34,7 +34,10 @@ export interface DispensationSchema {
   modalites_d_information_des_consommateurs: string;
   /** Nature Du Decalage Entre Le Produit Et Son Etiquetage */
   nature_du_decalage_entre_le_produit_et_son_etiquetage: string;
-  /** Datedepot */
+  /**
+   * Datedepot
+   * @format date
+   */
   datedepot: string;
   /**
    * Created At
@@ -162,7 +165,7 @@ export interface RecallSchema {
   rappelguid?: string;
   /**
    * Date De Publication
-   * @maxLength 16
+   * @format date
    */
   date_de_publication?: string;
   /**
@@ -454,6 +457,77 @@ export interface ChangePasswordIn {
   new_password1: string;
   /** New Password2 */
   new_password2: string;
+}
+
+/** EvolutionDatasetSchema */
+export interface EvolutionDatasetSchema {
+  /**
+   * Month
+   * @format date
+   */
+  month: string;
+  /** Total */
+  total: number;
+}
+
+/** RecallCategoryDatasetSchema */
+export interface RecallCategoryDatasetSchema {
+  /** Sous Categorie De Produit */
+  sous_categorie_de_produit: string;
+  /** Total */
+  total: number;
+}
+
+/** RecallsCategoriesSchema */
+export interface RecallsCategoriesSchema {
+  /** Last Month Data */
+  last_month_data: RecallCategoryDatasetSchema[];
+  /** Last Year Data */
+  last_year_data: RecallCategoryDatasetSchema[];
+}
+
+/** RecallsStatsSchema */
+export interface RecallsStatsSchema {
+  /** Last Month */
+  last_month: number;
+  /** Last Year */
+  last_year: number;
+  /** Data */
+  data: EvolutionDatasetSchema[];
+  categories: RecallsCategoriesSchema;
+}
+
+/** DispensationCategoryDatasetSchema */
+export interface DispensationCategoryDatasetSchema {
+  /** Categorie Du Produit Rayon */
+  categorie_du_produit_rayon: string;
+  /** Total */
+  total: number;
+}
+
+/** DispensationsCategoriesSchema */
+export interface DispensationsCategoriesSchema {
+  /** Last Month Data */
+  last_month_data: DispensationCategoryDatasetSchema[];
+  /** Last Year Data */
+  last_year_data: DispensationCategoryDatasetSchema[];
+}
+
+/** DispensationsStatsSchema */
+export interface DispensationsStatsSchema {
+  /** Last Month */
+  last_month: number;
+  /** Last Year */
+  last_year: number;
+  /** Data */
+  data: EvolutionDatasetSchema[];
+  categories: DispensationsCategoriesSchema;
+}
+
+/** StatsSchema */
+export interface StatsSchema {
+  recalls: RecallsStatsSchema;
+  dispensations: DispensationsStatsSchema;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -954,6 +1028,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags stats
+     * @name GetStats
+     * @summary Get Stats
+     * @request GET:/api/stats/
+     * @secure
+     */
+    getStats: (params: RequestParams = {}) =>
+      this.request<StatsSchema, any>({
+        path: `/api/stats/`,
+        method: "GET",
+        secure: true,
+        format: "json",
         ...params,
       }),
   };

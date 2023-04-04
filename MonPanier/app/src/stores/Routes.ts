@@ -3,6 +3,7 @@ import Backend from '../scripts/Backend';
 import Cart from './Cart';
 import Stats from '../scripts/Stats';
 import Scanner from '../scripts/Scanner';
+import Dashboard from './Dashboard';
 
 interface Route {
   pattern: RegExp,
@@ -33,6 +34,7 @@ const STORE_DATA: {
         onInit() {
           Stats.getChartById('bref-chart').resize();
           Stats.getChartById('recalls-evolution-chart').resize();
+          Dashboard.updateStats();
         },
       }],
     },

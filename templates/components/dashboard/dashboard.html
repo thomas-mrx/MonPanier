@@ -14,7 +14,7 @@
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600">En bref (les 30 derniers jours)</h2>
+    <h2 class="text-lg font-medium my-2 text-gray-600">En bref (depuis 1 an)</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 place-content-center">
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsEvolutionModal()">
             <div class="stat">
@@ -26,7 +26,7 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de produits rappelés</div>
-                <div class="stat-value">350</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.recalls.last_year"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
@@ -39,7 +39,7 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
-                <div class="stat-value">Viandes <i class="fa-solid fa-drumstick-bite font-light"></i></div>
+                <div class="stat-value" x-text="$store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
@@ -52,10 +52,10 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de dérogations</div>
-                <div class="stat-value">150</div>
+                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.last_year"></div>
             </div>
         </div>
-        <div class="stats shadow w-full">
+        <div class="stats shadow w-full cursor-pointer"  @click="$store.dashboard.toggleDispensationsCategoriesModal()">
 
             <div class="stat">
                 <div class="stat-figure text-lime-500">
@@ -66,13 +66,13 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus déroguée</div>
-                <div class="stat-value">Snacks <i class="fa-solid fa-cookie-bite"></i></div>
+                <div class="stat-value" x-text="$store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers (30 derniers jours)</h2>
+    <h2 class="text-lg font-medium my-2 text-gray-600">Mes paniers</h2>
     <div class="grid grid-cols-2 gap-4">
         <div class="stats shadow w-full">
             <div class="stat">
@@ -104,21 +104,4 @@
 {% include "components/dashboard/recalls-evolution-modal.html" %}
 {% include "components/dashboard/recalls-categories-modal.html" %}
 {% include "components/dashboard/dispensations-evolution-modal.html" %}
-{#<div class="stats-container mx-4 w-auto mt-4">#}
-{#    <h2>Nutrition</h2>#}
-{#    <div class="stats shadow w-full">#}
-{#        blabla#}
-{#    </div>#}
-{#</div>#}
-{#<div class="stats-container mx-4 w-auto mt-4">#}
-{#    <h2>Provenance</h2>#}
-{#    <div class="stats shadow w-full">#}
-{#        blabla#}
-{#    </div>#}
-{#</div>#}
-{#<div class="stats-container mx-4 w-auto mt-4">#}
-{#    <h2>Sanitaire</h2>#}
-{#    <div class="stats shadow w-full">#}
-{#        blabla#}
-{#    </div>#}
-{#</div>#}
+{% include "components/dashboard/dispensations-categories-modal.html" %}
