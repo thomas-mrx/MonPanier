@@ -2,10 +2,38 @@
     <h1 class="text-xl font-medium my-2 text-gray-600">Scan de produits</h1>
 </div>
 <div id="reader"></div>
-<div class="modal modal-bottom"  :class="$store.productModal.on && 'modal-open'" >
+<div class="modal modal-bottom" :class="$store.productModal.on && 'modal-open'">
     <div class="modal-box flex flex-col">
-        <label @click="$store.productModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="far fa-times"></i></label>
-        <h1 class="w-auto mx-auto inline-block mb-6 font-bold text-2xl" x-text="$store.productModal.product.title"></h1>
-        <img class="w-1/2 mx-auto" :src="$store.productModal.product.image" alt="">
+        <label @click="$store.productModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="far fa-times"></i></label>
+        <div class="cart px-0 py-4">
+            <div class="px-4 flex">
+                <div class="w-16 h-24 rounded-full my-auto mr-2 flex justify-center align-middle">
+                    <img :src="$store.productModal.food ? $store.productModal.food.image_url : ''" class="max-h-full m-auto"/>
+                </div>
+                <div class="flex flex-col justify-center px-2 py-1 w-full">
+                    <div class="flex justify-between items-center ">
+                        <div class="flex flex-col">
+                            <h2 class="font-medium text-gray-500"
+                                x-text="$store.productModal.food ? ($store.productModal.food.product_name+($store.productModal.food.brands ? ' - '+$store.productModal.food.brands.split(',')[0] : '')) : ''"></h2>
+                        </div>
+                    </div>
+                    <div class="flex pt-2  text-sm text-gray-500">
+                        <div class="flex items-center text-gray-400 mr-auto">
+                            <i class="fa-regular fa-barcode mr-1"></i><span
+                                x-text="$store.productModal.food ? $store.productModal.food.code : ''"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="flex items-center">
+                    <button class="btn btn-sm  btn-circle btn-outline"
+                            x-on:click="$store.addProductToCartModal.toggle($store.productModal.food)">
+                        <i class="fa-solid fa-cart-plus mr-0.5"></i>
+                        <span class="sr-only">Ajouter à un panier</span></button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

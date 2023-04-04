@@ -33,6 +33,8 @@ jobs:
       with:
         node-version: 16
     - name: 🏗️ Build frontend
+      env:
+        SCANDIT_LICENSE_KEY: ${{ secrets.SCANDIT_LICENSE_KEY }}
       run: |
         cd MonPanier/app
         npm install

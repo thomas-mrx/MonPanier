@@ -47,8 +47,10 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
-                <div class="stat-value text-xl"
+
+                <div class="stat-value text-lg"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit : $store.dashboard.stats.recalls.categories.last_month_data[0].sous_categorie_de_produit"></div>
+
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsEvolutionModal()">
@@ -76,7 +78,7 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus dérogée</div>
-                <div class="stat-value text-xl"
+                <div class="stat-value text-lg"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon : $store.dashboard.stats.dispensations.categories.last_month_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>

@@ -158,4 +158,4 @@ def change_password(request, data: ChangePasswordIn):
         form.save()
         update_session_auth_hash(request, request.user)
         return 200
-    return 403, {'errors': dict(form.errors)}
+    return 403, {'errors': form.errors}

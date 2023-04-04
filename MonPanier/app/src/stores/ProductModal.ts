@@ -1,23 +1,32 @@
 import Store, { IStore } from '../scripts/Store';
-import { ProductSchema } from '../api';
+import { FoodSchema } from '../api';
 
 const STORE_NAME = 'productModal';
 const STORE_DATA: {
   on: boolean,
-  product: ProductSchema,
-  toggle: () => void,
-  update: (product: ProductSchema) => void,
+  food: FoodSchema | undefined,
+  toggle: (force?: boolean | undefined) => void,
+  update: (food: FoodSchema) => void,
+  onOpen: () => void,
+  onClose: () => void,
 } = {
   on: false,
-  product: {} as ProductSchema,
+  food: {} as FoodSchema,
+  onOpen: () => {},
+  onClose: () => {},
 
-  toggle() {
-    this.on = !this.on;
+  toggle(force:boolean | undefined = undefined) {
+    this.on = force === undefined ? !this.on : force;
+    if (this.on) {
+      this.onOpen();
+    } else {
+      this.onClose();
+    }
   },
 
-  update(product: ProductSchema) {
-    this.product = product;
-    this.on = true;
+  update(food: FoodSchema) {
+    this.food = food;
+    this.toggle(true);
   },
 };
 

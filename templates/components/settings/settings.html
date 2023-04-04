@@ -17,7 +17,27 @@
             Modifier mon mot de passe
           </div>
           <div class="collapse-content">
-            <p>Oh non... Cette fonctionnalité n'est pas encore disponible 😢.</p>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Renseignez votre mot de passe actuel:</span>
+                    </label>
+                    <input type="password" x-model="$store.settingsModal.old_password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Choisissez votre nouveau mot de passe:</span>
+                    </label>
+                    <input type="password" x-model="$store.settingsModal.password1"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                 <div class="form-control w-full max-w-xs">
+                    <label class="label">
+                        <span class="label-text">Confirmez votre nouveau mot de passe:</span>
+                    </label>
+                    <input type="password" x-model="$store.settingsModal.password2"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                </div>
+                <div class="modal-action">
+                    <button class="btn" @click="$store.settingsModal.changePassword()" :class="(!$store.settingsModal.old_password ||!$store.settingsModal.password1 || !$store.settingsModal.password2) && 'btn-disabled'">Modifier</button>
+                </div>
           </div>
         </div>
         <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-4">
