@@ -39,9 +39,9 @@
 
                 </div>
                 <div class="flex items-center">
-                    <btn class="btn btn-sm  btn-circle btn-outline" @click="$store.search.add(food)">
+                    <button class="btn btn-sm  btn-circle btn-outline" x-on:click="$store.addProductToCartModal.toggle(food)">
                         <i class="fa-solid fa-cart-plus mr-0.5"></i>
-                        <span class="sr-only">Ajouter à un panier</span></btn>
+                        <span class="sr-only">Ajouter à un panier</span></button>
                 </div>
             </div>
         </div>
@@ -63,3 +63,4 @@
 <div class="flex justify-center items-center mx-3" x-show="$store.search.noResults && !$store.search.isLoading">
     <p class="text-gray-500">Aucun résultat</p>
 </div>
+{% include "components/search/add-product-cart-modal.html" %}
