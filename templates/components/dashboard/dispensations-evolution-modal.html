@@ -1,0 +1,21 @@
+<div class="modal py-10" :class="$store.dashboard.dispensationsEvolutionModalOn && 'modal-open'">
+    <div class="modal-box relative">
+        <h3 class="font-bold text-lg">Dérogations</h3>
+        <h4 class="font-bold">Qu'est ce qu'une dérogation ?</h4>
+        <p class="my-1 mb-4">Face aux difficultés d’approvisionnements des industries alimentaires et cosmétiques, liées à la
+            crise en Ukraine, la DGCCRF a lancé un service permettant aux professionnels d’effectuer une demande de
+            modification temporaire de recettes et de dérogation d’étiquetage.</p>
+        <div class="stats shadow w-full">
+            <div class="stat">
+                <div class="stat-title">Évolution du nombre de dérogations</div>
+                <canvas id="dispensations-evolution-chart"></canvas>
+                <div class="stat-desc mt-2">Source: DérogConso</div>
+            </div>
+        </div>
+        <div class="modal-action">
+            <button class="btn" x-on:click="$store.dashboard.toggleDispensationsEvolutionModal()">
+                Retour
+            </button>
+        </div>
+    </div>
+</div>
