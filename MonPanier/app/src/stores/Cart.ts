@@ -1,4 +1,3 @@
-import * as moment from 'moment';
 import Store, { IStore } from '../scripts/Store';
 import { CartSchema, ProductSchema } from '../api';
 
@@ -10,8 +9,6 @@ const STORE_DATA: {
   updateCart: (cart: CartSchema) => void,
   prepend: (cart: CartSchema) => void,
   products: ProductSchema[],
-  getDate: (key: string, format: string, id?: string | undefined) => string,
-  getGradeFromScore: (score: number) => string,
   getProduct: (id: string) => ProductSchema | undefined,
 } = {
   carts: [] as CartSchema[],
@@ -29,28 +26,6 @@ const STORE_DATA: {
   updateCart(cart: CartSchema) {
     this.cart = cart;
     this.products = cart.products;
-  },
-
-  getDate(key: string, format: string, id: string | undefined = undefined) {
-    let { cart } = this;
-    if (id) {
-      cart = this.carts[id];
-    }
-    if (!cart || !(key in cart)) {
-      return '';
-    }
-    const date = moment(cart[key]);
-    if (!date.isValid()) {
-      return '';
-    }
-    return date.format(format);
-  },
-
-  getGradeFromScore(score: number) {
-    const maxScore = 100;
-    const grades = ['a', 'b', 'c', 'd', 'e'];
-    const s = Math.min(score, maxScore);
-    return s === 0 ? 'na' : grades[Math.floor(s / (maxScore / grades.length))];
   },
 
   getProduct(id: string) {

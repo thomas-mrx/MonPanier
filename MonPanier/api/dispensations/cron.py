@@ -58,8 +58,6 @@ class DispensationsUpdate(CronJobBase):
             for code in list(Dispensation.objects.all().filter(datedepot__range=[last_year, today]).values('code_barre_ean_gtin', 'categorie_du_produit_rayon', 'impact_allergenes').distinct()):
                 if code['code_barre_ean_gtin'] is not None:
                     ean_dict[code['code_barre_ean_gtin']] = {'category': code['categorie_du_produit_rayon'], 'allergens': code['impact_allergenes'] is not None,'food': None}
-                    if code['impact_allergenes'] is not None:
-                        total_dispensations_allergens += 1
             dispensations_to_create = []
             count_to_create = []
             count_to_update = []
@@ -111,6 +109,8 @@ class DispensationsUpdate(CronJobBase):
                     food = v["food"]
                 recall_category = v["category"]
                 recall_allergens = v["allergens"]
+                if recall_allergens:
+                    total_dispensations_allergens += 1
 
                 categories = [c.strip() for c in food.categories_tags.split(',')] if food.categories_tags is not None and food.categories_tags != '' else []
                 for c in categories:

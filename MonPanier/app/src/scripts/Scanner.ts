@@ -44,6 +44,7 @@ class Scanner {
       }
       Html5Qrcode.getCameras().then((devices) => {
         if (devices && devices.length) {
+          alert(`will be removed later, debug info: ${JSON.stringify(devices)}`);
           this.camera = devices.find((d) => d.label === 'Caméra arrière' || d.label === 'Rear camera')?.id ?? devices[0].id;
           this.scanner.start(
             this.camera,

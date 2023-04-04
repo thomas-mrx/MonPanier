@@ -1,6 +1,6 @@
 <div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <h1 class="text-xl font-medium my-2 text-gray-600">Mes paniers</h1>
-    <button class="btn btn-sm" x-on:click="$store.addCartModal.toggle()">
+    <button class="btn btn-sm" @click="$store.addCartModal.toggle()">
         <i class="fas fa-plus mr-2"></i>
         Ajouter
     </button>
@@ -9,22 +9,23 @@
     <template x-for="cart in $store.cart.carts" :key="cart.id">
         <div class="cart border-b border-gray-200 px-0 py-4 bg-white" @click="$store.routes.loadRoute('/carts/'+cart.id)">
             <div class="px-3 flex">
-                <div class="flex flex-col justify-center py-1 w-full">
+                <div class="flex flex-col justify-center py-1 w-full min-w-0">
                     <div class="flex justify-between items-center ">
-                        <div class="flex flex-col">
-                            <h2 class="font-bold text-gray-800 text-lg" x-text="cart.name"></h2>
+                        <div class="flex flex-col min-w-0">
+                            <h2 class="font-bold text-gray-800 text-lg whitespace-nowrap text-ellipsis overflow-hidden mr-2" x-text="cart.name"></h2>
                         </div>
-                        <div class="flex items-center text-gray-600 font-medium">
-                            <span class="mx-1" x-text="cart.products.length"></span>produit<span x-text="cart.products.length > 1 ? 's' : ''"></span>
+                        <div class="flex items-center text-gray-600">
+                            <span class="mx-1 font-bold" x-text="cart.products.length"></span>produit<span x-text="cart.products.length > 1 ? 's' : ''"></span>
                         </div>
                     </div>
-                    <div class="flex pt-2  text-sm text-gray-600 font-medium">
-                        <div class="flex items-center mr-auto">
-                            Score moyen
-                            {% include '../score.html' with score="$store.cart.getGradeFromScore(cart.mp_global_score)" class='w-16 h-8 mx-2' %}
+                    <div class="flex pt-2 text-sm">
+                        <div class="flex items-center mr-auto font-medium">
+                            Score
+                            {% include '../score.html' with score="$store.main.getGradeFromScore(cart.mp_global_score)" class='w-16 h-8 mx-2' %}
                         </div>
-                        <div class="flex items-center font-light text-gray-400">
-                            <i class="far fa-cart-arrow-down text-lg mr-2"></i><span class="mx-1" x-text="cart.updated_at.split('T')[0].split('-').reverse().join('/')"></span>
+                        <div class="flex items-center text-gray-400">
+                            <div><span class="mx-1" x-text="cart.created_at.split('T')[0].split('-').reverse().slice(0,2).join('/')"></span><i class="far fa-cart-plus text-lg ml-0.5 text-gray-600"></i></div>
+                            <div class="ml-2"><span class="mx-1" x-text="cart.updated_at.split('T')[0].split('-').reverse().slice(0,2).join('/')"></span><i class="far fa-cart-arrow-down text-lg ml-0.5 text-gray-600"></i></div>
                         </div>
                     </div>
                 </div>

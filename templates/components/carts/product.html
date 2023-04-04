@@ -1,14 +1,31 @@
 <div class="sticky-header flex items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <i class="fa fa-angle-left text-xl mr-4" @click="$store.routes.loadRoute('/carts/'+$store.cart.cart.id)"></i>
-    <h1 class="text-xl font-medium my-2 text-gray-600" x-text="$store.product.product.title"></h1>
+    <h1 class="text-xl font-medium my-2 text-gray-600 whitespace-nowrap text-ellipsis overflow-hidden" x-text="$store.product.product.title+($store.product.product.brands ? ' - '+$store.product.product.brands.split(',')[0] : '')"></h1>
 
 </div>
 
+<div class="shadow mx-6 rounded-md py-3 bg-lime-30 mt-6">
+    <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score du produit</h2>
+    <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
+        <div>
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+            {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_nutrim_score?.score ?? 0)" class='h-8 mx-auto' %}
+        </div>
+        <div>
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+            {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_sanit_score?.score ?? 0)" class='h-8 mx-auto' %}
+        </div>
+        <div>
+            <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+            {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_eco_score?.score ?? 0)" class='h-8 mx-auto' %}
+        </div>
+    </div>
+</div>
 <div class="card lg:card-side bg-white shadow-xl mt-6 ml-10 mr-10" x-data="$store.product">
     <figure><img :src="product.image"
                  /></figure>
     <div class="card-body">
-        <h2 class="card-title"><strong x-text="product.title"></strong></h2>
+        <h2 class="card-title"><strong x-text="product.title+(product.brands ? ' - '+product.brands.split(',')[0] : '')"></strong></h2>
         <p> Marque : <strong x-text="product.brands"></strong></p>
         <p> Code-barres: <strong x-text="product.ean"></strong> (EAN / EAN-13)  </p>
         <p> Catégories :  <template x-for="categorie in product.categories">

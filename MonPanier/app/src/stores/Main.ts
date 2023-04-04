@@ -7,6 +7,7 @@ const STORE_DATA: {
   update: () => void,
   initScroll: () => void,
   foodEmoji: () => string,
+  getGradeFromScore: (score: number) => string,
 } = {
   scrollView: document.querySelector('.scrollview') as HTMLElement,
   scrolled: false,
@@ -23,6 +24,13 @@ const STORE_DATA: {
   foodEmoji() {
     const emojis = ['🍔', '🍕', '🍟', '🍣', '🍱', '🍜', '🍝', '🍛', '🍲', '🥦', '🥬', '🍅', '🥒', '🍩', '🥕'];
     return emojis[Math.floor(Math.random() * emojis.length)];
+  },
+
+  getGradeFromScore(score: number) {
+    const maxScore = 100;
+    const grades = ['a', 'b', 'c', 'd', 'e'];
+    const s = Math.min(score, maxScore);
+    return s === 0 ? 'na' : grades[Math.floor(s / (maxScore / grades.length))];
   },
 };
 export default new Store(STORE_NAME, STORE_DATA) as IStore<typeof STORE_DATA>;
