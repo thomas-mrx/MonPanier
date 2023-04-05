@@ -58,6 +58,32 @@ body {
   @apply bg-white;
   height: calc(100% - 3.5rem - 4.75rem);
 }
+.loading {
+  .loadingscreen {
+    @apply flex;
+  }
+  .scrollview {
+    @apply blur-md;
+    @apply select-none;
+    @apply pointer-events-none;
+    @apply transition-all;
+  }
+}
+.loadingscreen {
+  @apply hidden;
+  @apply justify-center;
+  @apply items-center;
+  @apply h-full;
+  @apply w-full;
+  @apply absolute;
+  @apply top-0;
+  @apply left-0;
+  @apply bg-transparent;
+  @apply z-50;
+  @apply text-gray-500;
+  @apply text-2xl;
+  @apply font-bold;
+}
 
 .modal-login {
   .modal-box {
@@ -166,7 +192,7 @@ body {
     @apply backdrop-blur;
     @apply border-b;
     @apply border-gray-200;
-    @apply z-50;
+    @apply z-40;
     @apply shadow;
     @apply my-0;
   }
@@ -306,7 +332,7 @@ body {
   @apply rounded-lg;
   @apply -mb-4;
   @apply border-4;
-    @apply border-white;
+  @apply border-white;
   @apply shadow;
 }
 

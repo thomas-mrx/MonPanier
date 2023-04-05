@@ -6,12 +6,14 @@ import Scanner from '../scripts/Scanner';
 import Dashboard from './Dashboard';
 import Main from './Main';
 
+type Retry = boolean | undefined;
 interface Route {
   pattern: RegExp,
   args: { [key: string]: string },
   scrollTop?: number,
   scrollPersist?: boolean,
-  onInit?: () => void,
+  onInit?: () => Promise<Retry>,
+  onDestroy?: () => void,
 }
 
 interface Tab {
@@ -38,7 +40,19 @@ const STORE_DATA: {
         pattern: /^$|^\/$/,
         args: {},
         onInit() {
-          Dashboard.updateStats();
+          return new Promise((resolve, reject) => {
+            Backend.getStats(Backend.params).then((result) => {
+              if (result.data) {
+                Dashboard.stats = result.data;
+                Dashboard.updateCharts();
+                resolve(<Retry>false);
+              } else {
+                reject();
+              }
+            }).catch((err) => {
+              if (err.status === 500) resolve(<Retry>true);
+            });
+          });
         },
       }],
     },
@@ -51,10 +65,17 @@ const STORE_DATA: {
         args: {},
         scrollPersist: true,
         onInit() {
-          Backend.getCarts(Backend.params).then((result) => {
-            if (result.data) {
-              Cart.updateCarts(result.data);
-            }
+          return new Promise((resolve, reject) => {
+            Backend.getCarts(Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCarts(result.data);
+                resolve(<Retry>false);
+              } else {
+                reject();
+              }
+            }).catch((err) => {
+              if (err.status === 500) resolve(<Retry>true);
+            });
           });
         },
       },
@@ -63,10 +84,17 @@ const STORE_DATA: {
         args: { id: '' },
         scrollPersist: true,
         onInit() {
-          Backend.getCart(this.args.id, Backend.params).then((result) => {
-            if (result.data) {
-              Cart.updateCart(result.data);
-            }
+          return new Promise((resolve, reject) => {
+            Backend.getCart(this.args.id, Backend.params).then((result) => {
+              if (result.data) {
+                Cart.updateCart(result.data);
+                resolve(<Retry>false);
+              } else {
+                reject();
+              }
+            }).catch((err) => {
+              if (err.status === 500) resolve(<Retry>true);
+            });
           });
         },
       },
@@ -74,16 +102,24 @@ const STORE_DATA: {
         pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
         args: { id: '', product: '' },
         onInit() {
-          if (!('cart' in Cart) || !('products' in Cart.cart)) {
-            Backend.getCart(this.args.id, Backend.params).then((result) => {
-              if (result.data) {
-                Cart.updateCart(result.data);
-                Product.updateProduct(Cart.getProduct(this.args.product));
-              }
-            });
-          } else {
-            Product.updateProduct(Cart.getProduct(this.args.product));
-          }
+          return new Promise((resolve, reject) => {
+            if (!('cart' in Cart) || !('products' in Cart.cart)) {
+              Backend.getCart(this.args.id, Backend.params).then((result) => {
+                if (result.data) {
+                  Cart.updateCart(result.data);
+                  Product.updateProduct(Cart.getProduct(this.args.product));
+                  resolve(<Retry>false);
+                } else {
+                  reject();
+                }
+              }).catch((err) => {
+                if (err.status === 500) resolve(<Retry>true);
+              });
+            } else {
+              Product.updateProduct(Cart.getProduct(this.args.product));
+              resolve(<Retry>false);
+            }
+          });
         },
       }],
     },
@@ -95,18 +131,28 @@ const STORE_DATA: {
         pattern: /^\/scan$/,
         args: {},
         onInit() {
-          if (Cart.carts.length === 0) {
-            Backend.getCarts(Backend.params).then((result) => {
-              if (result.data) {
-                Cart.updateCarts(result.data);
-              }
-            });
-          }
-          Scanner.start().then((success) => {
-            if (!success) {
-              alert('Impossible de démarrer le scanner. Vérifiez que votre appareil est compatible et que vous autorisez l\'accès à la caméra.');
+          return new Promise((resolve, reject) => {
+            if (Cart.carts.length === 0) {
+              Backend.getCarts(Backend.params).then((result) => {
+                if (result.data) {
+                  Cart.updateCarts(result.data);
+                  Scanner.start().then((success) => {
+                    if (!success) {
+                      alert('Impossible de démarrer le scanner. Vérifiez que votre appareil est compatible et que vous autorisez l\'accès à la caméra.');
+                    }
+                  });
+                  resolve(<Retry>false);
+                } else {
+                  reject();
+                }
+              }).catch((err) => {
+                if (err.status === 500) resolve(<Retry>true);
+              });
             }
           });
+        },
+        onDestroy() {
+          Scanner.stop();
         },
       }],
     },
@@ -118,17 +164,23 @@ const STORE_DATA: {
         pattern: /^\/search$/,
         args: {},
         onInit() {
-          if (Cart.carts.length === 0) {
-            Backend.getCarts(Backend.params).then((result) => {
-              if (result.data) {
-                Cart.updateCarts(result.data);
-              }
-            });
-          }
-
           setTimeout(() => {
             document.getElementById('default-search').focus();
           }, 100);
+          return new Promise((resolve, reject) => {
+            if (Cart.carts.length === 0) {
+              Backend.getCarts(Backend.params).then((result) => {
+                if (result.data) {
+                  Cart.updateCarts(result.data);
+                  resolve(<Retry>false);
+                } else {
+                  reject();
+                }
+              }).catch((err) => {
+                if (err.status === 500) resolve(<Retry>true);
+              });
+            }
+          });
         },
       }],
     },
@@ -152,37 +204,61 @@ const STORE_DATA: {
     }
   },
 
-  loadRoute(url: string, updateHistory = true) {
+  async loadRoute(url: string, updateHistory = true) {
+    let activeTab = 0;
+    let activeRoute = 0;
     this.tabs.forEach((tab: Tab, index: number) => {
       tab.routes.forEach((route: Route, indexRoute: number) => {
         const match = route.pattern.exec(url);
         if (match) {
-          this.activeTab = index;
-          this.activeRoute = indexRoute;
+          activeTab = index;
+          activeRoute = indexRoute;
           Object.keys(route.args).forEach((key) => {
             Object.assign(route.args, { [key]: match.groups?.[key] || '' });
           });
-          route.onInit?.();
         }
       });
     });
-    if (this.tabs[this.activeTab].routes[this.activeRoute].pattern.exec(url) === null) {
-      this.loadRoute(this.tabs[0].link);
+    const initRoute = async (maxRetry: number = 10, sleep: number = 250) => {
+      if (maxRetry > 0) {
+        if ('onInit' in this.tabs[activeTab].routes[activeRoute]) {
+          try {
+            const needsRestart: Retry = await this.tabs[activeTab].routes[activeRoute].onInit();
+            if (needsRestart) {
+              await new Promise((resolve) => {
+                setTimeout(resolve, sleep);
+              });
+              await initRoute(maxRetry - 1);
+            }
+          } catch (error) {
+            alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
+          }
+        }
+      } else {
+        alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
+      }
+    };
+    const delayedLoading = setTimeout(() => {
+      document.body.classList.add('loading');
+    }, 100);
+    await initRoute();
+    if (this.activeTab !== activeTab || this.activeRoute !== activeRoute) {
+      this.tabs[this.activeTab].routes[this.activeRoute].onDestroy?.();
     }
-    if (this.tabs[this.activeTab].link !== '/scan') {
-      Scanner.stop();
-    }
+    this.activeTab = activeTab;
+    this.activeRoute = activeRoute;
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }
+    clearTimeout(delayedLoading);
     setTimeout(() => {
       Main.scrollView.scrollTo({
         top: this.tabs[this.activeTab].routes[this.activeRoute].scrollPersist
           ? this.tabs[this.activeTab].routes[this.activeRoute].scrollTop : 0,
         left: 0,
-        /* behavior: 'smooth', */
       });
-    }, 50);
+      document.body.classList.remove('loading');
+    }, 0);
   },
 };
 
