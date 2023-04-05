@@ -93,7 +93,7 @@
 <body>
 {% csrf_token %}
 <div class="flex h-full antialiased overflow-x-hidden text-base-content" x-data="{ activeTab:  0 }">
-    <div class="{% block page_wrapper_class %}h-full w-full overflow-hidden fixed{% endblock %}">
+    <div class="{% block page_wrapper_class %}h-full w-full overflow-hidden fixed{% endblock %}" :class="$store.loginModal.on && 'login'">
         {% block content %}{% endblock %}
     </div>
 </div>
