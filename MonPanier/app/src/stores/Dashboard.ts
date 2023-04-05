@@ -1,5 +1,4 @@
 import Store from '../scripts/Store';
-import Backend from '../scripts/Backend';
 import {
   DispensationCategoryDatasetSchema,
   EvolutionDatasetSchema,
@@ -17,7 +16,6 @@ const STORE_DATA: {
   isLastYearAnalysis: boolean,
 
   stats: StatsSchema | null,
-  updateStats: () => void,
   updateCharts: () => void,
   getRecallsTrend: () => string,
   getRecallsCurrentAnalysis: () => RecallCategoryDatasetSchema[],
@@ -88,13 +86,6 @@ const STORE_DATA: {
 
   getDispensationsCurrentAnalysis(): DispensationCategoryDatasetSchema[] {
     return this.isLastYearAnalysis ? this.stats?.dispensations.categories.last_year_data : this.stats?.dispensations.categories.last_month_data;
-  },
-
-  updateStats() {
-    Backend.getStats(Backend.params).then((result) => {
-      this.stats = result.data;
-      this.updateCharts();
-    });
   },
 
   getRecallsTrend(): string {
