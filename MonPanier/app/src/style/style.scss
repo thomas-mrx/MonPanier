@@ -61,7 +61,10 @@ body {
 
 .loading {
   .loadingscreen {
-    @apply flex;
+    @apply opacity-100;
+    @apply transition-all;
+    @apply duration-200;
+    @apply delay-100;
   }
 
   .scrollview {
@@ -73,7 +76,10 @@ body {
 }
 
 .loadingscreen {
-  @apply hidden;
+  @apply flex;
+  @apply select-none;
+  @apply pointer-events-none;
+  @apply opacity-0;
   @apply justify-center;
   @apply items-center;
   @apply h-full;

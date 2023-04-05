@@ -1,5 +1,6 @@
 import Store, { IStore } from '../scripts/Store';
 import { ProductSchema } from '../api';
+import Cart from './Cart';
 
 const STORE_NAME = 'product';
 const STORE_DATA: {
@@ -9,6 +10,9 @@ const STORE_DATA: {
   product: {} as ProductSchema,
 
   updateProduct(product: ProductSchema) {
+    if (!Cart.productsExtended.find((p: ProductSchema) => p.id === product.id)) {
+      Cart.productsExtended.push(product);
+    }
     this.product = product;
     this.product.categories = (Object.values(this.product.categories) || []).filter((c: string) => !c.includes(':') && !c.includes('-') && c.toLowerCase() !== 'test');
   },
