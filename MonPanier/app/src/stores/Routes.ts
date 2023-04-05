@@ -144,6 +144,7 @@ const STORE_DATA: {
       });
       this.loadRoute(window.location.pathname, false);
       Main.scrollView.addEventListener('scroll', () => {
+        Main.update();
         if (this.tabs[this.activeTab].routes[this.activeRoute].scrollPersist) {
           this.tabs[this.activeTab].routes[this.activeRoute].scrollTop = Main.scrollView.scrollTop;
         }

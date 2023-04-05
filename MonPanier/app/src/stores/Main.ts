@@ -5,7 +5,6 @@ const STORE_DATA: {
   scrollView: HTMLElement,
   scrolled: boolean,
   update: () => void,
-  initScroll: () => void,
   foodEmoji: () => string,
   getGradeFromScore: (score: number) => string,
 } = {
@@ -14,11 +13,6 @@ const STORE_DATA: {
 
   update() {
     this.scrolled = this.scrollView.scrollTop > 24;
-  },
-
-  initScroll() {
-    this.scrollView.addEventListener('scroll', this.update.bind(this));
-    this.update();
   },
 
   foodEmoji() {
