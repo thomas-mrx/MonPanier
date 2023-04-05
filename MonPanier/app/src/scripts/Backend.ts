@@ -1,5 +1,5 @@
+import Alpine from 'alpinejs';
 import { Api } from '../api';
-import * as all from '../api';
 
 const getCookie = (name: string) => {
   let cookieValue = null;
@@ -20,14 +20,18 @@ const getCookie = (name: string) => {
 const { api } = new Api();
 type ApiType = typeof api;
 interface IBackend extends ApiType {
-  params: { headers: { [key: string]: string } };
+  params: { headers: { [key: string]: string }, credentials: RequestCredentials };
 }
 class Backend {
-  params: IBackend['params'] = { headers: {} };
+  params: IBackend['params'] = { headers: {}, credentials: 'include' };
 
   constructor() {
-    this.params.headers['X-CSRFToken'] = getCookie('csrftoken');
     Object.assign(this, api);
+    Object.defineProperty(this, 'params', {
+      get() {
+        return { headers: { 'X-CSRFToken': getCookie('csrftoken') }, credentials: 'include' };
+      },
+    });
   }
 }
 export default new Backend() as IBackend;

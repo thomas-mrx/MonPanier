@@ -79,7 +79,6 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "https://monpanier.datavores.fr"
 ]
-
 CORS_URLS_REGEX = r'^/api/.*$'
 
 ROOT_URLCONF = 'MonPanier.urls'
