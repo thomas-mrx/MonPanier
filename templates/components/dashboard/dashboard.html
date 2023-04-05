@@ -6,12 +6,12 @@
             <i class="fas fa-calendar-alt mr-2"></i>
             Filtrer
         </label>
-        <ul tabindex="0"
+        <ul tabindex="0" x-ref="filter"
             class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-56 mt-4 bg-lime-30/80 backdrop-blur">
             <li><a :class="!$store.dashboard.isLastYearAnalysis && 'font-bold'"
-                   @click="$store.dashboard.toggleLastYearAnalysis(false)">Depuis 30 jours</a></li>
+                   @click="$store.dashboard.toggleLastYearAnalysis(false); $refs.filter.blur();">Depuis 30 jours</a></li>
             <li><a :class="$store.dashboard.isLastYearAnalysis && 'font-bold'"
-                   @click="$store.dashboard.toggleLastYearAnalysis(true)">Depuis 1 an</a></li>
+                   @click="$store.dashboard.toggleLastYearAnalysis(true); $refs.filter.blur();">Depuis 1 an</a></li>
         </ul>
     </div>
 </div>

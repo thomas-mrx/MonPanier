@@ -60,10 +60,17 @@ const STORE_DATA: {
       email: this.email,
     }, Backend.params).then((result) => {
       if (result.status === 201 && result.data) {
+        Backend.createAntiInflation(result.data.id, Backend.params).catch((error) => {
+          console.log(error);
+        });
         alert('Compte créé, vérifiez vos emails pour l\'activer.');
       }
     }).catch((error) => {
-      alert('Erreur lors de la création du compte.');
+      let err = Object.values(error.error.errors).map((e: any) => e[0]).join('\r- ');
+      if (err.length === 0) {
+        err = 'Adresse email déjà utilisée ou invalide.';
+      }
+      alert(`Erreur lors de la création du compte. Veuillez porter attention aux points suivants:\r- ${err}`);
       console.log(error);
     });
   },

@@ -55,22 +55,17 @@ class Scanner {
               ProductModalStore.update(this.lastProducts[barcode]);
               return;
             }
-            /* Backend.getFoodByCode({ code: barcode }, Backend.params).then((result) => {
-              if (result.data) {
-                this.lastProducts[barcode] = result.data;
-                ProductModalStore.update(result.data);
-              }
-            }).catch((error) => {
-              console.error(error);
-              this.resume();
-            }); */
             Backend.getProduct(barcode, Backend.params).then((result) => {
               if (result.data) {
                 this.lastProducts[barcode] = result.data;
                 ProductModalStore.update(result.data);
+              } else {
+                alert('Le produit n\'a pas été trouvé.');
+                this.resume();
               }
             }).catch((error) => {
               console.error(error);
+              alert('Le produit n\'a pas été trouvé.');
               this.resume();
             });
           });

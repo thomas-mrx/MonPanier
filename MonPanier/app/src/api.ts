@@ -809,6 +809,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags carts
+     * @name CreateAntiInflation
+     * @summary Carts Anti Inflation
+     * @request POST:/api/carts/init/{user_id}
+     */
+    createAntiInflation: (userId: number, params: RequestParams = {}) =>
+      this.request<void, Error>({
+        path: `/api/carts/init/${userId}`,
+        method: "POST",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags carts
      * @name GetCart
      * @summary Get Cart
      * @request GET:/api/carts/{cart_id}

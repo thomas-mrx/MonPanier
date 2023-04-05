@@ -1,12 +1,7 @@
-import os
 import re
-import csv
-from urllib import request
 
-from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -15,8 +10,6 @@ from django.conf import settings
 from ninja.security import django_auth
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
-
-from MonPanier.api.products.api import get_product
 
 from django.contrib.auth.forms import (
     PasswordResetForm,
@@ -39,42 +32,9 @@ from .schema import (
     ChangePasswordIn,
     ErrorsOut,
 )
-from ..carts.models import Cart
 
 router = Router()
 _LOGIN_BACKEND = 'django.contrib.auth.backends.ModelBackend'
-
-
-def CreateCartAntiInflation(user_object, cart_name, path_name):
-    cart = Cart.objects.create(user=user_object, name=cart_name)
-
-    # Open the CSV file
-    with open(path_name, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        ean_index = 0
-
-        next(reader)
-        products_to_add = []
-
-        for row in reader:
-            product = get_product(request, str(row[ean_index]))
-
-            # Add to the queue
-            if type(product) is dict and product['title'] and product['image']:
-                products_to_add.append(product['id'])
-
-        cart.products.add(*products_to_add)
-        cart.save()
-
-@router.get('/test', operation_id="Test script", response={200: None, 403: None})
-def testFunction(request):
-    CreateCartAntiInflation(request.user, "Panier Anti-Inflation Carrefour",
-                            "datasets/PANIERS_ANTI_INFLATION_Carrefour.csv")
-    CreateCartAntiInflation(request.user, "Panier Anti-Inflation Intermarche",
-                            "datasets/PANIERS_ANTI_INFLATION_Intermarche.csv")
-    CreateCartAntiInflation(request.user, "Panier Anti-Inflation SuperU",
-                            "datasets/PANIERS_ANTI_INFLATION_SuperU.csv")
-    return 200, None
 
 
 @router.post('/', operation_id="login", tags=['auth'], response={200: UserOut, 403: None}, auth=None)
@@ -125,12 +85,6 @@ def register(request, data: RegisterIn):
             "main_url": "https://{}".format(get_current_site(request).domain),
         }
         msg.send()
-        CreateCartAntiInflation(user, "Panier Anti-inflation Carrefour",
-                                "datasets/PANIERS_ANTI_INFLATION_Carrefour.csv")
-        CreateCartAntiInflation(user, "Panier Anti-inflation Intermarche",
-                                "datasets/PANIERS_ANTI_INFLATION_Intermarche.csv")
-        CreateCartAntiInflation(user, "Panier Anti-inflation SuperU",
-                                "datasets/PANIERS_ANTI_INFLATION_SuperU.csv")
         return 201, user
     else:
         return 400, {'errors': form.errors}

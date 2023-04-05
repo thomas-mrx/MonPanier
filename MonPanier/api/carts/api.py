@@ -1,10 +1,12 @@
+import csv
 from typing import List
 
+from django.contrib.auth.models import User
 from ninja import Router
 
 from MonPanier.api.carts.models import Cart
 from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema
-from MonPanier.api.carts.service import calculate_cart_scores
+from MonPanier.api.carts.service import calculate_cart_scores, create_cart_anti_inflation
 from MonPanier.api.error import Error
 
 router = Router(tags=["carts"])
@@ -15,6 +17,20 @@ def list_carts(request):
     user = request.user
     qs = Cart.objects.filter(user=user).order_by('-updated_at').all()
     return qs
+
+@router.post("/init/{user_id}", operation_id="createAntiInflation", response={200: None, 401: Error}, auth=None)
+def carts_anti_inflation(request, user_id: int):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return 401, {"message": "Forbidden"}
+    if Cart.objects.filter(user=user).filter(name__startswith="Anti-inflation").exists():
+        return 200, None
+
+    create_cart_anti_inflation(request, user, "Anti-inflation Système U", "datasets/PANIERS_ANTI_INFLATION_SuperU.csv")
+    create_cart_anti_inflation(request, user, "Anti-inflation Carrefour", "datasets/PANIERS_ANTI_INFLATION_Carrefour.csv")
+    create_cart_anti_inflation(request, user, "Anti-inflation Intermarché", "datasets/PANIERS_ANTI_INFLATION_Intermarche.csv")
+    return 200, None
 
 
 @router.get("/{cart_id}", operation_id="getCart", response={
