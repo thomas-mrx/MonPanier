@@ -5,9 +5,14 @@ from ninja import ModelSchema
 from MonPanier.api.carts.models import Cart
 from MonPanier.api.products.schemas import ProductSchema
 
+class CartSchemaExtended(ModelSchema):
+    products: List[ProductSchema] = []
+
+    class Config:
+        model = Cart
+        model_fields = "__all__"
 
 class CartSchema(ModelSchema):
-    products: List[ProductSchema] = []
 
     class Config:
         model = Cart

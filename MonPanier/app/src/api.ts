@@ -9,6 +9,54 @@
  * ---------------------------------------------------------------
  */
 
+/** CartSchema */
+export interface CartSchema {
+  /** Id */
+  id?: number;
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+  /**
+   * Created At
+   * @format date-time
+   */
+  created_at: string;
+  /**
+   * Updated At
+   * @format date-time
+   */
+  updated_at: string;
+  /** User */
+  user: number;
+  /** Mp Nutrim Score */
+  mp_nutrim_score?: number;
+  /** Mp Sanit Score */
+  mp_sanit_score?: number;
+  /** Mp Eco Score */
+  mp_eco_score?: number;
+  /** Mp Global Score */
+  mp_global_score?: number;
+  /** Products */
+  products: number[];
+}
+
+/** CreateCartSchema */
+export interface CreateCartSchema {
+  /**
+   * Name
+   * @maxLength 255
+   */
+  name: string;
+}
+
+/** Error */
+export interface Error {
+  /** Message */
+  message: string;
+}
+
 /** DispensationSchema */
 export interface DispensationSchema {
   /**
@@ -256,8 +304,8 @@ export interface ProductSchema {
   recalls?: RecallSchema[];
 }
 
-/** CartSchema */
-export interface CartSchema {
+/** CartSchemaExtended */
+export interface CartSchemaExtended {
   /** Id */
   id?: number;
   /**
@@ -290,21 +338,6 @@ export interface CartSchema {
    * @default []
    */
   products?: ProductSchema[];
-}
-
-/** CreateCartSchema */
-export interface CreateCartSchema {
-  /**
-   * Name
-   * @maxLength 255
-   */
-  name: string;
-}
-
-/** Error */
-export interface Error {
-  /** Message */
-  message: string;
 }
 
 /** FoodSchema */
@@ -830,7 +863,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     getCart: (cartId: string, params: RequestParams = {}) =>
-      this.request<CartSchema, Error>({
+      this.request<CartSchemaExtended, Error>({
         path: `/api/carts/${cartId}`,
         method: "GET",
         secure: true,
@@ -860,14 +893,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags products
-     * @name GetProducts
-     * @summary List Products
-     * @request GET:/api/products/
+     * @name GetProductById
+     * @summary Get Product By Id
+     * @request GET:/api/products/id/{product_id}
      * @secure
      */
-    getProducts: (params: RequestParams = {}) =>
-      this.request<ProductSchema[], any>({
-        path: `/api/products/`,
+    getProductById: (productId: number, params: RequestParams = {}) =>
+      this.request<ProductSchema, Error>({
+        path: `/api/products/id/${productId}`,
         method: "GET",
         secure: true,
         format: "json",

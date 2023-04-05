@@ -38,7 +38,6 @@ ALLOWED_HOSTS = [
     gethostbyname(gethostname()),
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [

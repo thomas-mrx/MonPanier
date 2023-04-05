@@ -1,19 +1,23 @@
 import Store, { IStore } from '../scripts/Store';
-import { CartSchema, ProductSchema } from '../api';
+import { CartSchema, CartSchemaExtended, ProductSchema } from '../api';
 
 const STORE_NAME = 'cart';
 const STORE_DATA: {
   carts: CartSchema[],
-  cart: CartSchema,
+  cartsExtended: CartSchemaExtended[],
+  cart: CartSchemaExtended,
   updateCarts: (carts: CartSchema[]) => void,
-  updateCart: (cart: CartSchema) => void,
+  updateCart: (cart: CartSchemaExtended) => void,
   prepend: (cart: CartSchema) => void,
   products: ProductSchema[],
+  productsExtended: ProductSchema[],
   getProduct: (id: string) => ProductSchema | undefined,
 } = {
   carts: [] as CartSchema[],
-  cart: {} as CartSchema,
+  cartsExtended: [] as CartSchemaExtended[],
+  cart: {} as CartSchemaExtended,
   products: [] as ProductSchema[],
+  productsExtended: [] as ProductSchema[],
 
   updateCarts(carts: CartSchema[]) {
     this.carts = carts;
@@ -23,7 +27,10 @@ const STORE_DATA: {
     this.carts.unshift(cart);
   },
 
-  updateCart(cart: CartSchema) {
+  updateCart(cart: CartSchemaExtended) {
+    if (!this.cartsExtended.find((c: CartSchemaExtended) => c.id === cart.id)) {
+      this.cartsExtended.push(cart);
+    }
     this.cart = cart;
     this.products = cart.products;
   },

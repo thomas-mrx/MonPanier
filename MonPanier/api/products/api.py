@@ -17,10 +17,19 @@ from MonPanier.api.recalls.models import Recall
 router = Router(tags=["products"])
 
 
-@router.get("/", operation_id="getProducts", response=List[ProductSchema])
-def list_products(request):
-    qs = Product.objects.all()
-    return qs
+@router.get("/id/{product_id}", operation_id="getProductById", response={200: ProductSchema, 404: Error})
+def get_product_by_id(request, product_id: int):
+    try:
+        product = Product.objects.get(id=product_id)
+        today = datetime.date.today()
+        last_year = today - datetime.timedelta(days=365.24)
+        p = product.__dict__
+        p["recalls"] = list(Recall.objects.filter(ean=p['ean'],date_de_publication__range=[last_year, today]))
+        p["dispensations_allergens"] = list(Dispensation.objects.filter(code_barre_ean_gtin=p['ean'], datedepot__range=[last_year, today], impact_allergenes__isnull=False))
+        p["dispensations_others"] = list(Dispensation.objects.filter(code_barre_ean_gtin=p['ean'], datedepot__range=[last_year, today], impact_allergenes__isnull=True))
+        return p
+    except Product.DoesNotExist:
+        return 404, {"message": "No Result"}
 
 
 @router.get("/{product_ean}", operation_id="getProduct", response={200: ProductSchema, 404: Error})

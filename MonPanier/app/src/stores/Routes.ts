@@ -93,33 +93,12 @@ const STORE_DATA: {
         scrollPersist: true,
         onInit() {
           return new Promise((resolve, reject) => {
-            Backend.getCart(this.args.id, Backend.params).then((result) => {
-              if (result.data) {
-                Cart.updateCart(result.data);
-                resolve(<Retry>false);
-              } else {
-                reject();
-              }
-            }).catch((err) => {
-              if (err.status === 500) {
-                resolve(<Retry>true);
-              } else {
-                resolve(<Retry>false);
-              }
-            });
-          });
-        },
-      },
-      {
-        pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
-        args: { id: '', product: '' },
-        onInit() {
-          return new Promise((resolve, reject) => {
-            if (!('cart' in Cart) || !('products' in Cart.cart)) {
+            const cart = Cart.cartsExtended.length
+              ? Cart.cartsExtended.find((c) => c.id === parseInt(this.args.id, 10)) : null;
+            if (!cart) {
               Backend.getCart(this.args.id, Backend.params).then((result) => {
                 if (result.data) {
                   Cart.updateCart(result.data);
-                  Product.updateProduct(Cart.getProduct(this.args.product));
                   resolve(<Retry>false);
                 } else {
                   reject();
@@ -132,8 +111,79 @@ const STORE_DATA: {
                 }
               });
             } else {
-              Product.updateProduct(Cart.getProduct(this.args.product));
+              Cart.updateCart(cart);
               resolve(<Retry>false);
+            }
+          });
+        },
+      },
+      {
+        pattern: /^\/carts\/(?<id>[0-9]+)\/(?<product>[0-9]+)$/,
+        args: { id: '', product: '' },
+        onInit() {
+          return new Promise((resolve, reject) => {
+            const cart = Cart.cartsExtended.length
+              ? Cart.cartsExtended.find((c) => c.id === parseInt(this.args.id, 10)) : null;
+            if (!cart) {
+              Backend.getCart(this.args.id, Backend.params).then((result) => {
+                if (result.data) {
+                  Cart.updateCart(result.data);
+                  const product = Cart.productsExtended.length
+                    ? Cart.productsExtended.find((p) => p.id === parseInt(this.args.product, 10))
+                    : null;
+                  if (!product) {
+                    Backend.getProductById(this.args.product, Backend.params).then((r) => {
+                      if (r.data) {
+                        Product.updateProduct(r.data);
+                        resolve(<Retry>false);
+                      } else {
+                        reject();
+                      }
+                    }).catch((err) => {
+                      if (err.status === 500) {
+                        resolve(<Retry>true);
+                      } else {
+                        resolve(<Retry>false);
+                      }
+                    });
+                  } else {
+                    Product.updateProduct(product);
+                    resolve(<Retry>false);
+                  }
+                } else {
+                  reject();
+                }
+              }).catch((err) => {
+                if (err.status === 500) {
+                  resolve(<Retry>true);
+                } else {
+                  resolve(<Retry>false);
+                }
+              });
+            } else {
+              Cart.updateCart(cart);
+              const product = Cart.productsExtended.length
+                ? Cart.productsExtended.find((p) => p.id === parseInt(this.args.product, 10))
+                : null;
+              if (!product) {
+                Backend.getProductById(this.args.product, Backend.params).then((r) => {
+                  if (r.data) {
+                    Product.updateProduct(r.data);
+                    resolve(<Retry>false);
+                  } else {
+                    reject();
+                  }
+                }).catch((err) => {
+                  if (err.status === 500) {
+                    resolve(<Retry>true);
+                  } else {
+                    resolve(<Retry>false);
+                  }
+                });
+              } else {
+                Product.updateProduct(product);
+                resolve(<Retry>false);
+              }
             }
           });
         },

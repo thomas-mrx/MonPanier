@@ -2,6 +2,7 @@ import Store, { IStore } from '../scripts/Store';
 import { FoodSchema } from '../api';
 import Backend from '../scripts/Backend';
 import ProductModal from './ProductModal';
+import Cart from './Cart';
 
 const STORE_NAME = 'addProductToCartModal';
 const STORE_DATA: {
@@ -29,6 +30,9 @@ const STORE_DATA: {
             if (result.status === 200) {
               this.toggle();
               alert('Produit ajouté au panier.');
+              Cart.cartsExtended = Cart.cartsExtended.filter(
+                (cart) => cart.id !== this.selectedCart,
+              );
               ProductModal.toggle(false);
             }
           }).catch((error) => {

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from ninja import Router
 
 from MonPanier.api.carts.models import Cart
-from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema
+from MonPanier.api.carts.schemas import CartSchema, CreateCartSchema, CartSchemaExtended
 from MonPanier.api.carts.service import calculate_cart_scores, create_cart_anti_inflation
 from MonPanier.api.error import Error
 
@@ -34,7 +34,7 @@ def carts_anti_inflation(request, user_id: int):
 
 
 @router.get("/{cart_id}", operation_id="getCart", response={
-    200: CartSchema, 404: Error})
+    200: CartSchemaExtended, 404: Error})
 def get_cart(request, cart_id):
     try:
         user = request.user
