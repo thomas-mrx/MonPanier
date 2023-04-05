@@ -2,7 +2,7 @@
     <div class="modal-box">
         <label @click="$store.recallInfoModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
                 class="far fa-times"></i></label>
-        <h3 class="font-bold text-lg">Info Rappel</h3>
+        <h3 class="font-bold text-lg">Derniers rappels</h3>
         <div>
             <template x-for="recall in $store.product.getLastYearRecalls()" :key="recall.reference_fiche">
                 <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
@@ -14,8 +14,8 @@
                         <p x-text="recall.motif_du_rappel"></p>
                         <strong> Risques encourus par le consommateur : </strong>
                         <p x-text="recall.risques_encourus_par_le_consommateur"></p>
-                        <strong> Préconisations sanitaires : </strong>
-                        <p x-text="recall.preconisations_sanitaires"></p>
+                        <strong x-show="recall.preconisations_sanitaires"> Préconisations sanitaires : </strong>
+                        <p x-show="recall.preconisations_sanitaires" x-text="recall.preconisations_sanitaires"></p>
                     </div>
                 </div>
             </template>

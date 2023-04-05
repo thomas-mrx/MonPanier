@@ -25,12 +25,19 @@ const STORE_DATA: {
   },
 
   getLastYearDispensations(): DispensationSchema[] {
-    return this.product.dispensations_allergens.filter((d: DispensationSchema) => {
+    const others = this.product.dispensations_others.filter((d: DispensationSchema) => {
       const dispensationDate = new Date(d.datedepot);
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
       return dispensationDate >= oneYearAgo;
     }) || [];
+    const allergens = this.product.dispensations_allergens.filter((d: DispensationSchema) => {
+      const dispensationDate = new Date(d.datedepot);
+      const oneYearAgo = new Date();
+      oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+      return dispensationDate >= oneYearAgo;
+    }) || [];
+    return others.concat(allergens);
   },
 };
 
