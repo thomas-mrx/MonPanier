@@ -265,6 +265,13 @@ const STORE_DATA: {
     }
     if (this.activeTab !== activeTab || this.activeRoute !== activeRoute) {
       this.tabs[this.activeTab].routes[this.activeRoute].onDestroy?.();
+      const currentRoute = this.tabs[this.activeTab].routes[this.activeRoute];
+      const nextRoute = this.tabs[activeTab].routes[activeRoute];
+      // quick fix to reinit the scroll when switching from carts to cart details
+      // --> can't use onInit because needed when coming back from product details
+      if (currentRoute.scrollPersist && nextRoute.scrollPersist) {
+        nextRoute.scrollTop = 0;
+      }
     }
     this.activeTab = activeTab;
     this.activeRoute = activeRoute;
