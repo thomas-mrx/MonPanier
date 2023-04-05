@@ -10,12 +10,15 @@
                     <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication">
                     </div>
                     <div class="collapse-content">
-                        <strong> Motif du rappel : </strong>
+                        <strong> Motif du rappel&nbsp;: </strong>
                         <p x-text="recall.motif_du_rappel"></p>
-                        <strong> Risques encourus par le consommateur : </strong>
+                        <strong> Risques encourus par le consommateur&nbsp;: </strong>
                         <p x-text="recall.risques_encourus_par_le_consommateur"></p>
-                        <strong x-show="recall.preconisations_sanitaires"> Préconisations sanitaires : </strong>
+                        <strong x-show="recall.preconisations_sanitaires"> Préconisations sanitaires&nbsp;: </strong>
                         <p x-show="recall.preconisations_sanitaires" x-text="recall.preconisations_sanitaires"></p>
+                        <strong>Source&nbsp;:</strong>
+                        <p><a class="link" target="_blank"
+                              x-bind:href="recall.lien_vers_la_fiche_rappel">RappelConso</a></p>
                     </div>
                 </div>
             </template>
