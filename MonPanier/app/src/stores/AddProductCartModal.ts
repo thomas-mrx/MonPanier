@@ -35,7 +35,7 @@ const STORE_DATA: {
               this.toggle();
               alert('Produit ajouté au panier.');
               Cart.cartsExtended = Cart.cartsExtended.filter(
-                (cart) => cart.id !== this.selectedCart,
+                (cart) => cart.id !== parseInt(this.selectedCart, 10),
               );
               ProductModal.toggle(false);
             }
