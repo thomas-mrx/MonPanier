@@ -21,7 +21,7 @@ class Stats {
         'Décembre',
       ],
       datasets: [{
-        label: 'Recalls',
+        label: 'Rappels',
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: '#84cc16',
         hoverOffset: 4,
@@ -73,7 +73,7 @@ class Stats {
         'Décembre',
       ],
       datasets: [{
-        label: 'Dispensations',
+        label: 'Dérogations',
         data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         backgroundColor: '#84cc16',
         hoverOffset: 4,
