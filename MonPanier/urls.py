@@ -15,19 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
+from MonPanier import app
 from MonPanier.api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', api.urls),
-    path('', TemplateView.as_view(template_name="app.html")),
-    path('carts', TemplateView.as_view(template_name="app.html")),
-    re_path(r'^carts/(?P<id>\d+)$', TemplateView.as_view(template_name="app.html")),
-    re_path(r'^carts/(?P<id>\d+)/(?P<product>\d+)$', TemplateView.as_view(template_name="app.html")),
-    path('scan', TemplateView.as_view(template_name="app.html")),
-    path('search', TemplateView.as_view(template_name="app.html")),
+    path('', app.app),
+    path('carts', app.app),
+    re_path(r'^carts/(?P<id>\d+)$', app.app),
+    re_path(r'^carts/(?P<id>\d+)/(?P<product>\d+)$', app.app),
+    path('scan', app.app),
+    path('search', app.app),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

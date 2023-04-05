@@ -9,11 +9,13 @@ const STORE_DATA: {
   on: boolean,
   code: string | undefined,
   selectedCart: string | undefined,
+  isLoading: boolean,
   toggle: (code : string) => void,
   addToCart: () => void,
 } = {
   on: false,
   code: undefined,
+  isLoading: false,
   selectedCart: undefined,
 
   toggle(code : string | undefined = undefined) {
@@ -22,20 +24,23 @@ const STORE_DATA: {
   },
 
   addToCart() {
+    this.isLoading = true;
     Backend.getProduct(this.code, Backend.params).then((productResult) => {
       if (productResult.data) {
         Backend
           .addProductToCart(this.selectedCart, String(productResult.data.id), Backend.params)
           .then((result) => {
+            this.isLoading = false;
             if (result.status === 200) {
               this.toggle();
               alert('Produit ajouté au panier.');
               Cart.cartsExtended = Cart.cartsExtended.filter(
-                (cart) => cart.id !== this.selectedCart,
+                (cart) => cart.id !== parseInt(this.selectedCart, 10),
               );
               ProductModal.toggle(false);
             }
           }).catch((error) => {
+            this.isLoading = false;
             alert('Erreur lors de l\'ajout du produit.');
             console.error(error);
           });

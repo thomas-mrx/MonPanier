@@ -15,7 +15,9 @@
 
                 </template>
             </select>
-            <button class="btn mt-4" @click="$store.addProductToCartModal.selectedCart = $refs.select.value; $store.addProductToCartModal.addToCart()">
+            <button class="btn mt-4"
+                    :class="($store.addProductToCartModal.isLoading) && 'btn-disabled'"
+                    @click="$store.addProductToCartModal.selectedCart = $refs.select.value; $store.addProductToCartModal.addToCart()">
                 Ajouter au panier
             </button>
         </div>
