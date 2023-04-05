@@ -4,6 +4,37 @@
         x-text="$store.product.product.title+($store.product.product.brands ? ' - '+$store.product.product.brands.split(',')[0] : '')"></h1>
 
 </div>
+
+<div class="mx-2 my-2" x-show="$store.product.getRecalls().length > 0">
+    <div class="alert alert-error flex-row shadow text-sm">
+        <div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <h3 class="font-bold"><span x-text="$store.product.getRecalls().length"></span>
+                    rappel(s)</h3>
+            </div>
+        </div>
+        <div style="margin: 0 !important;">
+            <button class="btn btn-sm" x-on:click="$store.recallInfoModal.toggle()">En savoir plus</button>
+        </div>
+    </div>
+</div>
+
+<div class="mx-2 my-2" x-show="$store.product.getDispensations().length > 0">
+    <div class="alert alert-warning flex-row shadow text-sm">
+        <div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <h3 class="font-bold"><span x-text="$store.product.getDispensations().length"></span>
+                    dérogation(s)</h3>
+            </div>
+        </div>
+        <div style="margin: 0 !important;">
+            <button class="btn btn-sm" x-on:click="$store.dispensationInfoModal.toggle()">En savoir plus</button>
+        </div>
+    </div>
+</div>
+
 <div x-data="$store.product" class="mx-6">
 
     <div class="w-full h-36 flex flex-col items-end relative rounded-xl shadow mt-6">
@@ -21,7 +52,8 @@
     </div>
     <div class="text-center" x-data="{hide: true}" :class="hide && 'hide-more'">
         <template x-for="(categorie, i) in product.categories">
-            <span class="badge mx-1" x-text="categorie" :class="i >= 4 && product.categories.length > 5 ? 'badge-more' : ''"></span>
+            <span class="badge mx-1" x-text="categorie"
+                  :class="i >= 4 && product.categories.length > 5 ? 'badge-more' : ''"></span>
         </template>
         <template x-if="product.categories && product.categories.length > 5">
             <span class="badge mx-1 badge-more bg-lime-500 border-lime-500"
@@ -133,3 +165,5 @@
         </div>
     </template>
 </div>
+{% include "components/carts/recall-info-modal.html" %}
+{% include "components/carts/dispensation-info-modal.html" %}

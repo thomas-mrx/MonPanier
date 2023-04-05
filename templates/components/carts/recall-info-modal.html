@@ -1,0 +1,28 @@
+<div class="modal" :class="$store.recallInfoModal?.on && 'modal-open'">
+    <div class="modal-box">
+        <label @click="$store.recallInfoModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="far fa-times"></i></label>
+        <h3 class="font-bold text-lg">Derniers rappels</h3>
+        <div>
+            <template x-for="recall in $store.product.getRecalls()" :key="recall.reference_fiche">
+                <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
+                    <input type="checkbox"/>
+                    <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication">
+                    </div>
+                    <div class="collapse-content">
+                        <strong> Motif du rappel&nbsp;: </strong>
+                        <p x-text="recall.motif_du_rappel"></p>
+                        <strong> Risques encourus par le consommateur&nbsp;: </strong>
+                        <p x-text="recall.risques_encourus_par_le_consommateur"></p>
+                        <strong x-show="recall.preconisations_sanitaires"> Préconisations sanitaires&nbsp;: </strong>
+                        <p x-show="recall.preconisations_sanitaires" x-text="recall.preconisations_sanitaires"></p>
+                        <strong>Source&nbsp;:</strong>
+                        <p><a class="link" target="_blank"
+                              x-bind:href="recall.lien_vers_la_fiche_rappel">RappelConso</a></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+    </div>
+</div>

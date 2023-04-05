@@ -1,0 +1,30 @@
+<div class="modal" :class="$store.dispensationInfoModal?.on && 'modal-open'">
+    <div class="modal-box">
+        <label @click="$store.dispensationInfoModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="far fa-times"></i></label>
+        <h3 class="font-bold text-lg">Dernières dérogations</h3>
+        <div>
+            <template x-for="dispensation in $store.product.getDispensations()" :key="dispensation.hash">
+                <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
+                    <input type="checkbox"/>
+                    <div class="collapse-title text-xl font-medium" x-text="dispensation.datedepot">
+                    </div>
+                    <div class="collapse-content">
+                        <strong>Cause de la dérogation&nbsp;: </strong>
+                        <p x-text="dispensation.cause_de_la_demande_de_derogation"></p>
+                        <strong x-show="dispensation.impact_allergenes"> Impact allergènes&nbsp;: </strong>
+                        <p x-show="dispensation.impact_allergenes" x-text="dispensation.impact_allergenes"></p>
+                        <strong> Nature du décalage entre le produit et son etiquetage&nbsp;: </strong>
+                        <p x-text="dispensation.nature_du_decalage_entre_le_produit_et_son_etiquetage"></p>
+                        <strong> Modalités d'information&nbsp;: </strong>
+                        <p x-text="dispensation.modalites_d_information_des_consommateurs"></p>
+                        <strong>Source&nbsp;:</strong>
+                        <p>
+                            <a x-bind:href="'https://www.economie.gouv.fr/dgccrf/rechercher-produit-recette-temporairement-modifiee?q=' + dispensation.code_barre_ean_gtin"
+                               target="_blank" class="link">DérogConso</a></p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>

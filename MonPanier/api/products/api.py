@@ -32,6 +32,7 @@ def get_product_by_id(request, product_id: int):
         return 404, {"message": "No Result"}
 
 
+
 @router.get("/{product_ean}", operation_id="getProduct", response={200: ProductSchema, 404: Error})
 def get_product(request, product_ean: str):
     try:
