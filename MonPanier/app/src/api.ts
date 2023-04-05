@@ -506,6 +506,8 @@ export interface RecallsStatsSchema {
   last_month: number;
   /** Last Year */
   last_year: number;
+  /** Before Last Month */
+  before_last_month: number;
   /** Data */
   data: EvolutionDatasetSchema[];
   categories: RecallsCategoriesSchema;
@@ -531,6 +533,8 @@ export interface DispensationsCategoriesSchema {
 export interface DispensationsStatsSchema {
   /** Last Month */
   last_month: number;
+  /** Before Last Month */
+  before_last_month: number;
   /** Last Year */
   last_year: number;
   /** Data */
