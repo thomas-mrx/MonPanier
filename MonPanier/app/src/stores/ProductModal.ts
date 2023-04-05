@@ -1,5 +1,5 @@
 import Store, { IStore } from '../scripts/Store';
-import { ProductSchema } from '../api';
+import { DispensationSchema, ProductSchema, RecallSchema } from '../api';
 
 const STORE_NAME = 'productModal';
 const STORE_DATA: {
@@ -9,6 +9,8 @@ const STORE_DATA: {
   update: (product: ProductSchema) => void,
   onOpen: () => void,
   onClose: () => void,
+  getRecalls: () => RecallSchema[],
+  getDispensations: () => DispensationSchema[],
 } = {
   on: false,
   product: {} as ProductSchema,
@@ -27,6 +29,16 @@ const STORE_DATA: {
   update(product: ProductSchema) {
     this.product = product;
     this.toggle(true);
+  },
+
+  getRecalls(): RecallSchema[] {
+    return this.product.recalls || [];
+  },
+
+  getDispensations(): DispensationSchema[] {
+    const others = this.product.dispensations_others || [];
+    const allergens = this.product.dispensations_allergens || [];
+    return others.concat(allergens);
   },
 };
 

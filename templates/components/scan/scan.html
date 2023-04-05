@@ -6,6 +6,38 @@
     <div class="modal-box flex flex-col">
         <label @click="$store.productModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
                 class="far fa-times"></i></label>
+
+        <div class="mx-0 mt-6" x-show="$store.productModal.getRecalls().length > 0">
+            <div class="alert alert-error flex-row shadow text-sm px-4 py-2">
+                <div>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div>
+                        <h3 class="font-bold"><span x-text="$store.productModal.getRecalls().length"></span>
+                            rappel<span x-text="$store.productModal.getRecalls().length > 1 ? 's' : ''"></span> conso.</h3>
+                    </div>
+                </div>
+                <div style="margin: 0 !important;">
+                    <button class="btn btn-sm" x-on:click="$store.recallInfoModal.toggle()">En savoir plus</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="mx-0 mt-6" x-show="$store.productModal.getDispensations().length > 0" :class="$store.productModal.getRecalls().length > 0 && 'mt-2'">
+            <div class="alert alert-warning flex-row shadow text-sm px-4 py-2">
+                <div>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div>
+                        <h3 class="font-bold"><span x-text="$store.productModal.getDispensations().length"></span>
+                            dérogation<span x-text="$store.productModal.getDispensations().length > 1 ? 's' : ''"></span>
+                            conso.</h3>
+                    </div>
+                </div>
+                <div style="margin: 0 !important;">
+                    <button class="btn btn-sm" x-on:click="$store.dispensationInfoModal.toggle()">En savoir plus
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="w-full h-36 flex flex-col items-end relative rounded-xl shadow mt-6">
             <div class="blurred-image">
                 <div :style="{'background-image': 'url('+$store.productModal.product.image+')'}"></div>
@@ -37,7 +69,8 @@
             </div>
         </div>
         <div class="pb-env w-full">
-            <button class="btn mt-6 w-full" @click="$store.addProductToCartModal.toggle($store.productModal.product.ean)">
+            <button class="btn mt-6 w-full"
+                    @click="$store.addProductToCartModal.toggle($store.productModal.product.ean)">
                 Ajouter à un panier
             </button>
         </div>

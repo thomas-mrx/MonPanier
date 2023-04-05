@@ -4,10 +4,10 @@
                 class="far fa-times"></i></label>
         <h3 class="font-bold text-lg">Derniers rappels</h3>
         <div>
-            <template x-for="recall in $store.product.getRecalls()" :key="recall.reference_fiche">
+            <template x-for="recall in ($store.productModal.on ? $store.productModal.getRecalls() : $store.product.getRecalls())" :key="recall.reference_fiche">
                 <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
                     <input type="checkbox"/>
-                    <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication">
+                    <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication.split('-').reverse().join('/')">
                     </div>
                     <div class="collapse-content">
                         <strong> Motif du rappel&nbsp;: </strong>
