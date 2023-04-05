@@ -2,8 +2,6 @@ import Store, { IStore } from '../scripts/Store';
 import Backend from '../scripts/Backend';
 import Cart from './Cart';
 import Product from './Product';
-import Stats from '../scripts/Stats';
-
 import Scanner from '../scripts/Scanner';
 import Dashboard from './Dashboard';
 import Main from './Main';
@@ -11,6 +9,8 @@ import Main from './Main';
 interface Route {
   pattern: RegExp,
   args: { [key: string]: string },
+  scrollTop?: number,
+  scrollPersist?: boolean,
   onInit?: () => void,
 }
 
@@ -26,6 +26,7 @@ const STORE_DATA: {
   tabs: Tab[],
   activeTab: number,
   activeRoute: number,
+  init: () => void,
   loadRoute: (url: string, updateHistory?: boolean) => void,
 } = {
   tabs: [
@@ -48,6 +49,7 @@ const STORE_DATA: {
       routes: [{
         pattern: /^\/carts$/,
         args: {},
+        scrollPersist: true,
         onInit() {
           Backend.getCarts(Backend.params).then((result) => {
             if (result.data) {
@@ -59,6 +61,7 @@ const STORE_DATA: {
       {
         pattern: /^\/carts\/(?<id>[0-9]+)$/,
         args: { id: '' },
+        scrollPersist: true,
         onInit() {
           Backend.getCart(this.args.id, Backend.params).then((result) => {
             if (result.data) {
@@ -133,6 +136,21 @@ const STORE_DATA: {
   activeTab: 0,
   activeRoute: 0,
 
+  init() {
+    if (!this.isInit) {
+      this.isInit = true;
+      window.addEventListener('popstate', () => {
+        this.loadRoute(window.location.pathname, false);
+      });
+      this.loadRoute(window.location.pathname, false);
+      Main.scrollView.addEventListener('scroll', () => {
+        if (this.tabs[this.activeTab].routes[this.activeRoute].scrollPersist) {
+          this.tabs[this.activeTab].routes[this.activeRoute].scrollTop = Main.scrollView.scrollTop;
+        }
+      });
+    }
+  },
+
   loadRoute(url: string, updateHistory = true) {
     this.tabs.forEach((tab: Tab, index: number) => {
       tab.routes.forEach((route: Route, indexRoute: number) => {
@@ -156,11 +174,14 @@ const STORE_DATA: {
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }
-    Main.scrollView.scrollTo({
-      top: 0,
-      left: 0,
-      /* behavior: 'smooth', */
-    });
+    setTimeout(() => {
+      Main.scrollView.scrollTo({
+        top: this.tabs[this.activeTab].routes[this.activeRoute].scrollPersist
+          ? this.tabs[this.activeTab].routes[this.activeRoute].scrollTop : 0,
+        left: 0,
+        /* behavior: 'smooth', */
+      });
+    }, 50);
   },
 };
 

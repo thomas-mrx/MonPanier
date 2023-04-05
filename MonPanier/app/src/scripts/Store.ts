@@ -1,7 +1,7 @@
-import Alpine from 'alpinejs';
+import Alpine, { AlpineComponent } from 'alpinejs';
 
 export default class Store {
-  constructor(name: string, store: {}) {
+  constructor(name: string, store: {}, callback?: (...initialStateArgs: unknown[]) => AlpineComponent | undefined) {
     Alpine.store(name, store);
     Object.keys(Alpine.store(name)).forEach((key:string) => {
       Object.defineProperty(this, key, {
@@ -13,6 +13,9 @@ export default class Store {
         },
       });
     });
+    if (callback !== undefined) {
+      Alpine.data(name, callback);
+    }
   }
 }
 
