@@ -59,22 +59,6 @@ body {
   height: calc(100% - 3.5rem - 4.75rem);
 }
 
-.loading {
-  .loadingscreen {
-    @apply opacity-100;
-    @apply transition-all;
-    @apply duration-200;
-    @apply delay-100;
-  }
-
-  .scrollview {
-    @apply blur-md;
-    @apply select-none;
-    @apply pointer-events-none;
-    @apply transition-all;
-  }
-}
-
 .loadingscreen {
   @apply flex;
   @apply select-none;
@@ -92,6 +76,24 @@ body {
   @apply text-gray-500;
   @apply text-2xl;
   @apply font-bold;
+}
+
+.loading {
+  .loadingscreen {
+    @apply select-auto;
+    @apply pointer-events-auto;
+    @apply opacity-100;
+    @apply transition-all;
+    @apply duration-200;
+    @apply delay-100;
+  }
+
+  .scrollview {
+    @apply blur-md;
+    @apply select-none;
+    @apply pointer-events-none;
+    @apply transition-all;
+  }
 }
 
 .login {
