@@ -219,6 +219,7 @@ const STORE_DATA: {
         }
       });
     });
+    let succeeded: boolean = false;
     const initRoute = async (maxRetry: number = 10, sleep: number = 250) => {
       if (maxRetry > 0) {
         if ('onInit' in this.tabs[activeTab].routes[activeRoute]) {
@@ -229,19 +230,28 @@ const STORE_DATA: {
                 setTimeout(resolve, sleep);
               });
               await initRoute(maxRetry - 1);
+            } else {
+              succeeded = true;
             }
           } catch (error) {
             alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
+            succeeded = false;
           }
         }
       } else {
         alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
+        succeeded = false;
       }
     };
     const delayedLoading = setTimeout(() => {
       document.body.classList.add('loading');
-    }, 100);
+    }, 250);
     await initRoute();
+    clearTimeout(delayedLoading);
+    if (!succeeded) {
+      document.body.classList.remove('loading');
+      return;
+    }
     if (this.activeTab !== activeTab || this.activeRoute !== activeRoute) {
       this.tabs[this.activeTab].routes[this.activeRoute].onDestroy?.();
     }
@@ -250,7 +260,6 @@ const STORE_DATA: {
     if (updateHistory) {
       window.history.pushState({}, '', url);
     }
-    clearTimeout(delayedLoading);
     setTimeout(() => {
       Main.scrollView.scrollTo({
         top: this.tabs[this.activeTab].routes[this.activeRoute].scrollPersist
