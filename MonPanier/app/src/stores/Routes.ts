@@ -50,7 +50,11 @@ const STORE_DATA: {
                 reject();
               }
             }).catch((err) => {
-              if (err.status === 500) resolve(<Retry>true);
+              if (err.status === 500) {
+                resolve(<Retry>true);
+              } else {
+                resolve(<Retry>false);
+              }
             });
           });
         },
@@ -74,7 +78,11 @@ const STORE_DATA: {
                 reject();
               }
             }).catch((err) => {
-              if (err.status === 500) resolve(<Retry>true);
+              if (err.status === 500) {
+                resolve(<Retry>true);
+              } else {
+                resolve(<Retry>false);
+              }
             });
           });
         },
@@ -93,7 +101,11 @@ const STORE_DATA: {
                 reject();
               }
             }).catch((err) => {
-              if (err.status === 500) resolve(<Retry>true);
+              if (err.status === 500) {
+                resolve(<Retry>true);
+              } else {
+                resolve(<Retry>false);
+              }
             });
           });
         },
@@ -113,7 +125,11 @@ const STORE_DATA: {
                   reject();
                 }
               }).catch((err) => {
-                if (err.status === 500) resolve(<Retry>true);
+                if (err.status === 500) {
+                  resolve(<Retry>true);
+                } else {
+                  resolve(<Retry>false);
+                }
               });
             } else {
               Product.updateProduct(Cart.getProduct(this.args.product));
@@ -146,7 +162,11 @@ const STORE_DATA: {
                   reject();
                 }
               }).catch((err) => {
-                if (err.status === 500) resolve(<Retry>true);
+                if (err.status === 500) {
+                  resolve(<Retry>true);
+                } else {
+                  resolve(<Retry>false);
+                }
               });
             } else {
               Scanner.start().then((success) => {
@@ -184,7 +204,11 @@ const STORE_DATA: {
                   reject();
                 }
               }).catch((err) => {
-                if (err.status === 500) resolve(<Retry>true);
+                if (err.status === 500) {
+                  resolve(<Retry>true);
+                } else {
+                  resolve(<Retry>false);
+                }
               });
             } else {
               resolve(<Retry>false);

@@ -72,7 +72,7 @@ class RecallsUpdate(CronJobBase):
                 if i % 1000 == 0:
                     print("[RecallsUpdate] {} lines processed.".format(i))
                 r = None
-                if recall['categorie_de_produit'] == 'Alimentation' and recall['zone_geographique_de_vente'] == 'France entière':
+                if recall['categorie_de_produit'] == 'Alimentation':
                     ean = re.findall(r'^(\d{8,14})', recall['identification_des_produits'])
                     recall['ean'] = ean[0] if len(ean) > 0 else None
                     if recall['ean'] is None:

@@ -32,10 +32,11 @@
                               d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <div class="stat-title">Nombre de produits rappelés</div>
-                <div class="stat-value"
+                <div class="stat-title">Nombre de rappels</div>
+                <div class="stat-value text-3xl"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.last_year : $store.dashboard.stats.recalls.last_month"></div>
-                <div x-show="!$store.dashboard.isLastYearAnalysis" class="stat-desc" x-text="$store.dashboard.getRecallsTrend()"></div>
+                <div x-show="!$store.dashboard.isLastYearAnalysis" class="stat-desc"
+                     x-text="$store.dashboard.getRecallsTrend()"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleRecallsCategoriesModal()">
@@ -49,7 +50,7 @@
                 </div>
                 <div class="stat-title">Catégorie la plus rappelée</div>
 
-                <div class="stat-value text-lg"
+                <div class="stat-value text-lg text-ellipsis overflow-hidden whitespace-nowrap"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.recalls.categories.last_year_data[0].sous_categorie_de_produit : $store.dashboard.stats.recalls.categories.last_month_data[0].sous_categorie_de_produit"></div>
 
             </div>
@@ -64,9 +65,10 @@
                     </svg>
                 </div>
                 <div class="stat-title">Nombre de dérogations</div>
-                <div class="stat-value"
+                <div class="stat-value text-3xl"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.last_year : $store.dashboard.stats.dispensations.last_month"></div>
-                <div x-show="!$store.dashboard.isLastYearAnalysis" class="stat-desc" x-text="$store.dashboard.getDispensationsTrend()"></div>
+                <div x-show="!$store.dashboard.isLastYearAnalysis" class="stat-desc"
+                     x-text="$store.dashboard.getDispensationsTrend()"></div>
             </div>
         </div>
         <div class="stats shadow w-full cursor-pointer" @click="$store.dashboard.toggleDispensationsCategoriesModal()">
@@ -80,35 +82,35 @@
                     </svg>
                 </div>
                 <div class="stat-title">Catégorie la plus dérogée</div>
-                <div class="stat-value text-lg"
+                <div class="stat-value text-lg text-ellipsis overflow-hidden whitespace-nowrap"
                      x-text="$store.dashboard.isLastYearAnalysis ? $store.dashboard.stats.dispensations.categories.last_year_data[0].categorie_du_produit_rayon : $store.dashboard.stats.dispensations.categories.last_month_data[0].categorie_du_produit_rayon"></div>
             </div>
         </div>
     </div>
 </div>
 <div class="stats-container mx-4 w-auto mt-4">
-    <h2 class="text-lg font-medium my-2 text-gray-600 pb-2">Mes paniers</h2>
-        <div class="stats shadow w-full cursor-pointer">
+    <h2 class="text-lg font-medium my-2 text-gray-600 pb-2">Mes paniers  <span class="text-gray-500">(depuis le <span x-text="$store.loginModal.user ? $store.loginModal.user.date_joined.split('T')[0].slice(2,10).split('-').reverse().join('/') : ''"></span>)</span></h2>
+    <div class="stats shadow w-full cursor-pointer">
 
-            <div class="stat">
-                <div class="stat-title">Nombre de paniers</div>
-                <div class="stat-value" x-text="$store.dashboard.stats.carts_count"></div>
-            </div>
+        <div class="stat">
+            <div class="stat-title">Nombre de paniers</div>
+            <div class="stat-value text-3xl" x-text="$store.dashboard.stats.carts_count"></div>
         </div>
+    </div>
     <div class="shadow rounded-md py-3 bg-lime-30 mt-2">
-        <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score des paniers</h2>
-        {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_global_score__avg)" class='h-16 mx-auto' %}
+        <h2 class="mx-auto text-center !mb-0 !text-base font-bold">Score des paniers</h2>
+        {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_global_score__avg)" class='h-12 mx-auto' %}
         <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+                <h2 class="mx-auto text-center !mb-0 !text-sm font-bold text-center">Nutritionnel</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_nutrim_score__avg)" class='h-8 mx-auto' %}
             </div>
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+                <h2 class="mx-auto text-center !mb-0 !text-sm font-bold">Sanitaire</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_sanit_score__avg)" class='h-8 mx-auto' %}
             </div>
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+                <h2 class="mx-auto text-center !mb-0 !text-sm font-bold">Écologique</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.dashboard.stats.carts_scores.mp_eco_score__avg)" class='h-8 mx-auto' %}
             </div>
         </div>
@@ -134,13 +136,17 @@
             <div
                     x-ref="tab"
                     :style="handleToggle()"
-                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all px-3 text-gray-900"
             >
-                <p class="p-3 text-gray-900">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat.</p>
+                <p>
+                    L'indicateur nutritionnel <span class="font-medium">MonPanier</span> est calculé à partir des
+                    données du Nutri-Score et de la classification Nova à part égale (50/50) et rapporté sur une échelle de A à E.
                 </p>
+                <h5 class="mx-4 font-bold mt-2">Nutri-Score</h5>
+                <p>La note Nutri-Score est déterminée par la quantité de nutriments bons et mauvais pour la santé (Source: <a class="link" href="https://fr.openfoodfacts.org/nutriscore">Open Food Facts</a>).</p>
+                <h5 class="mx-4 font-bold mt-2">Classification Nova</h5>
+                <p class="mb-4">Une classification en 4 groupes pour mettre en évidence le degré de transformation des aliments
+                    (Source: <a class="link" href="https://fr.openfoodfacts.org/nova">Open Food Facts</a>).</p>
             </div>
         </li>
         <li class="bg-white my-2 shadow rounded-md" x-data="accordion(2)">
@@ -160,13 +166,18 @@
             <div
                     x-ref="tab"
                     :style="handleToggle()"
-                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all px-3"
             >
-                <p class="p-3 text-gray-900">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat.</p>
+                <p>
+                    L'indicateur sanitaire <span class="font-medium">MonPanier</span> est calculé à partir de la présence d'allergènes, des dérogations de la DGCCRF et de la liste des produits rappelés. Le calcul se divise en deux parts de 10% pour les allergènes (part de la population française touchée par les allergies alimentaires) et les dérogations associées, 90% pour les rappels et est rapporté sur une échelle de A à E (Source allergies alimentaires: <a href="https://www.francetvinfo.fr/sante/environnement-et-sante/le-boom-des-allergies-alimentaires-en-france_2163280.html" class="link">franceinfo:</a>).
                 </p>
+                <h5 class="mx-4 font-bold mt-2">Open Food Facts</h5>
+                <p class="mb-4">L'aspect allergène représente 10% de l'indicateur et la note maximale est attribuée en cas de présence d'allergènes dans le produit (Source de composition des produits: <a class="link" href="https://fr.openfoodfacts.org">Open Food Facts</a>).</p>
+                <h5 class="mx-4 font-bold mt-2">Dérogations Conso.</h5>
+                <p class="mb-4">Les dérogations utilisées sont celles ajoutant un ou plusieurs allergènes à la composition du produit. L'ajout d'un ou plusieurs allergène(s) suite à une dérogation entraine l'attribution de la note maximale sur la part allergène de l'indicateur (Source des données brutes: <a class="link" href="https://www.economie.gouv.fr/dgccrf/rechercher-produit-recette-temporairement-modifiee?q=*">DGCCRF DerogConso</a>).</p>
+                <h5 class="mx-4 font-bold mt-2">Rappels Conso.</h5>
+                <p class="mb-4">Les rappels représentent 90% de l'indicateur sanitaire. Dans le cas où est produit a eu un ou plusieurs rappels sur l'année glissante, il est considéré comme "à risque" et possède alors la note maximale. Sinon, la note est calculée par rapport à la similitude du produit aux catégories de produits habituellement rappelées (Source des données brutes: <a class="link" href="https://rappel.conso.gouv.fr/categorie/1">RappelConso</a>).
+                    </p>
             </div>
         </li>
         <li class="bg-white my-2 shadow rounded-md" x-data="accordion(3)">
@@ -186,12 +197,14 @@
             <div
                     x-ref="tab"
                     :style="handleToggle()"
-                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all"
+                    class="border-l-2 border-lime-600 overflow-hidden max-h-0 duration-500 transition-all px-3"
             >
-                <p class="p-3 text-gray-900">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                    aliquip ex ea commodo consequat.</p>
+                <p>
+                    L'indicateur écologique <span class="font-medium">MonPanier</span> est calculé à partir de l'Eco-score du produit lorsque que celui-ci est disponible. Le score est rapporté sur une échelle de A à E.
+                </p>
+                <h5 class="mx-4 font-bold mt-2">Eco-score</h5>
+                <p>
+                    L'impact environnemental tient compte de plusieurs facteurs sur la pollution de l'air, des eaux, des océans, du sol, ainsi que les impacts sur la biosphère. Ces impacts sont étudiés tout au long du cycle de vie du produit (Source: <a href="https://docs.score-environnemental.com/" class="link">Eco-score</a>).
                 </p>
             </div>
         </li>

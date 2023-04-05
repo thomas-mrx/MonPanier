@@ -1,6 +1,7 @@
 import Store, { IStore } from '../scripts/Store';
 import Backend from '../scripts/Backend';
 import { User4 } from '../api';
+import Routes from './Routes';
 
 const STORE_NAME = 'loginModal';
 const STORE_DATA: {
@@ -38,9 +39,9 @@ const STORE_DATA: {
       password: this.password,
     }, Backend.params).then((result) => {
       if (result.status === 200 && result.data) {
+        this.user = result.data;
         this.toggle();
-        // @ts-ignore
-        Alpine.store('routes').detectActiveTab();
+        Routes.loadRoute(window.location.pathname, false);
       }
     }).catch((error) => {
       if (error.status === 403) {

@@ -58,10 +58,12 @@ body {
   @apply bg-white;
   height: calc(100% - 3.5rem - 4.75rem);
 }
+
 .loading {
   .loadingscreen {
     @apply flex;
   }
+
   .scrollview {
     @apply blur-md;
     @apply select-none;
@@ -69,6 +71,7 @@ body {
     @apply transition-all;
   }
 }
+
 .loadingscreen {
   @apply hidden;
   @apply justify-center;
@@ -83,6 +86,15 @@ body {
   @apply text-gray-500;
   @apply text-2xl;
   @apply font-bold;
+}
+
+.login {
+  .scrollview, .navbar {
+    @apply blur-md;
+    @apply select-none;
+    @apply pointer-events-none;
+    @apply transition-all;
+  }
 }
 
 .modal-login {

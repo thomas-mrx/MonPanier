@@ -30,18 +30,18 @@
         </template>
     </div>
     <div class="shadow mx-auto rounded-md py-3 bg-lime-30 mt-6">
-        <h2 class="mx-auto text-center mb-2 text-xl font-bold">Score du produit</h2>
+        <h2 class="mx-auto text-center mb-2 !text-base font-bold">Score du produit</h2>
         <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
+                <h2 class="mx-auto text-center mb-2 !text-sm font-bold text-center">Nutritionnel</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_nutrim_score?.score ?? 0)" class='h-8 mx-auto' %}
             </div>
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
+                <h2 class="mx-auto text-center mb-2 !text-sm font-bold">Sanitaire</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_sanit_score?.score ?? 0)" class='h-8 mx-auto' %}
             </div>
             <div>
-                <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
+                <h2 class="mx-auto text-center mb-2 !text-sm font-bold">Écologique</h2>
                 {% include '../score.html' with score="$store.main.getGradeFromScore($store.product.product.mp_eco_score?.score ?? 0)" class='h-8 mx-auto' %}
             </div>
         </div>
