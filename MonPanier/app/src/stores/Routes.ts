@@ -340,7 +340,8 @@ const STORE_DATA: {
       const nextRoute = this.tabs[activeTab].routes[activeRoute];
       // quick fix to reinit the scroll when switching from carts to cart details
       // --> can't use onInit because needed when coming back from product details
-      if (currentRoute.scrollPersist && nextRoute.scrollPersist) {
+      if (currentRoute.scrollPersist
+          && Object.keys(currentRoute.args).length === 0 && nextRoute.scrollPersist) {
         nextRoute.scrollTop = 0;
       }
     }
