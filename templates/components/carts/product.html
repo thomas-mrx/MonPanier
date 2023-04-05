@@ -5,21 +5,33 @@
 
 </div>
 
-<div x-show="$store.product.getLastYearRecalls().length > 0">
-    <div class="alert alert-error shadow-lg">
-        <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
-                x-text="$store.product.getLastYearRecalls().length"></strong>
-            rappel(s) depuis un an.</strong>
-        <button class="btn" x-on:click="$store.recallInfoModal.toggle()">En savoir plus</button>
+<div class="mx-2 my-2" x-show="$store.product.getLastYearRecalls().length > 0">
+    <div class="alert alert-error flex-row shadow text-sm">
+        <div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <h3 class="font-bold"><span x-text="$store.product.getLastYearRecalls().length"></span>
+                    rappel(s)</h3>
+            </div>
+        </div>
+        <div style="margin: 0 !important;">
+            <button class="btn btn-sm" x-on:click="$store.recallInfoModal.toggle()">En savoir plus</button>
+        </div>
     </div>
 </div>
 
-<div x-show="$store.product.getLastYearDispensations().length > 0">
-    <div class="alert alert-warning shadow-lg">
-        <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
-                x-text="$store.product.getLastYearDispensations().length"></strong>
-            dérogation(s) depuis un an.</strong>
-        <button class="btn" x-on:click="$store.dispensationInfoModal.toggle()">En savoir plus</button>
+<div class="mx-2 my-2" x-show="$store.product.getLastYearDispensations().length > 0">
+    <div class="alert alert-warning flex-row shadow text-sm">
+        <div>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <h3 class="font-bold"><span x-text="$store.product.getLastYearDispensations().length"></span>
+                    dérogation(s)</h3>
+            </div>
+        </div>
+        <div style="margin: 0 !important;">
+            <button class="btn btn-sm" x-on:click="$store.dispensationInfoModal.toggle()">En savoir plus</button>
+        </div>
     </div>
 </div>
 
