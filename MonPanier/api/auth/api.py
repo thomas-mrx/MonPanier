@@ -1,7 +1,10 @@
 import os
 import re
+import csv
+from urllib import request
 
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage, send_mail
 from django.shortcuts import redirect
@@ -12,6 +15,8 @@ from django.conf import settings
 from ninja.security import django_auth
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.contrib.auth.tokens import default_token_generator
+
+from MonPanier.api.products.api import get_product
 
 from django.contrib.auth.forms import (
     PasswordResetForm,
@@ -34,10 +39,42 @@ from .schema import (
     ChangePasswordIn,
     ErrorsOut,
 )
+from ..carts.models import Cart
 
 router = Router()
 _LOGIN_BACKEND = 'django.contrib.auth.backends.ModelBackend'
 
+
+def CreateCartAntiInflation(user_object, cart_name, path_name):
+    cart = Cart.objects.create(user=user_object, name=cart_name)
+
+    # Open the CSV file
+    with open(path_name, 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        ean_index = 0
+
+        next(reader)
+        products_to_add = []
+
+        for row in reader:
+            product = get_product(request, str(row[ean_index]))
+
+            # Add to the queue
+            if type(product) is dict and product['title'] and product['image']:
+                products_to_add.append(product['id'])
+
+        cart.products.add(*products_to_add)
+        cart.save()
+
+@router.get('/test', operation_id="Test script", response={200: None, 403: None})
+def testFunction(request):
+    CreateCartAntiInflation(request.user, "Panier Anti-Inflation Carrefour",
+                            "datasets/PANIERS_ANTI_INFLATION_Carrefour.csv")
+    CreateCartAntiInflation(request.user, "Panier Anti-Inflation Intermarche",
+                            "datasets/PANIERS_ANTI_INFLATION_Intermarche.csv")
+    CreateCartAntiInflation(request.user, "Panier Anti-Inflation SuperU",
+                            "datasets/PANIERS_ANTI_INFLATION_SuperU.csv")
+    return 200, None
 
 
 @router.post('/', operation_id="login", tags=['auth'], response={200: UserOut, 403: None}, auth=None)
@@ -54,10 +91,13 @@ def logout(request):
     django_logout(request)
     return 204, None
 
-def validate_email_address(email_address):
-   return re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email_address)
 
-@router.post('/register', operation_id="register", tags=['auth'], response={201: UserOut, 403: None, 400: ErrorsOut, 500: None}, auth=None)
+def validate_email_address(email_address):
+    return re.search(r"^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$", email_address)
+
+
+@router.post('/register', operation_id="register", tags=['auth'],
+             response={201: UserOut, 403: None, 400: ErrorsOut, 500: None}, auth=None)
 def register(request, data: RegisterIn):
     if request.user.is_authenticated:
         return 403, None
@@ -85,6 +125,12 @@ def register(request, data: RegisterIn):
             "main_url": "https://{}".format(get_current_site(request).domain),
         }
         msg.send()
+        CreateCartAntiInflation(user, "Panier Anti-inflation Carrefour",
+                                "datasets/PANIERS_ANTI_INFLATION_Carrefour.csv")
+        CreateCartAntiInflation(user, "Panier Anti-inflation Intermarche",
+                                "datasets/PANIERS_ANTI_INFLATION_Intermarche.csv")
+        CreateCartAntiInflation(user, "Panier Anti-inflation SuperU",
+                                "datasets/PANIERS_ANTI_INFLATION_SuperU.csv")
         return 201, user
     else:
         return 400, {'errors': form.errors}
@@ -94,8 +140,9 @@ def register(request, data: RegisterIn):
 def me(request):
     return request.user
 
-@router.get('/activate/{uid}/{token}', operation_id="activate", tags=['auth'], response={200:None}, auth=None)
-def activate(request, uid:str, token:str):
+
+@router.get('/activate/{uid}/{token}', operation_id="activate", tags=['auth'], response={200: None}, auth=None)
+def activate(request, uid: str, token: str):
     if request.user and request.user.is_authenticated:
         return redirect('/')
     User = get_user_model()
@@ -109,6 +156,7 @@ def activate(request, uid:str, token:str):
         user.save()
         django_login(request, user, backend=_LOGIN_BACKEND)
     return redirect('/')
+
 
 @router.post('/request_password_reset', operation_id="requestPasswordReset",
              tags=['auth'],
