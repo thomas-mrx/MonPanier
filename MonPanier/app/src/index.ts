@@ -11,6 +11,8 @@ window.onload = async () => {
   await import('./stores/Dashboard');
   await import('./stores/Accordion');
   await import('./stores/Main');
+  await import('./stores/RecallInfoModal');
+  await import('./stores/DispensationInfoModal');
   const RoutesStore = (await import('./stores/Routes')).default;
   const LoginModalStore = (await import('./stores/LoginModal')).default;
 

@@ -4,6 +4,42 @@
         x-text="$store.product.product.title+($store.product.product.brands ? ' - '+$store.product.product.brands.split(',')[0] : '')"></h1>
 
 </div>
+
+<template x-if="$store.product.product.recalls?.length > 0" x-data="{ nbRecalls: 0 }">
+    <div class="alert alert-error shadow-lg" x-init="nbRecalls = $store.product.product.recalls.filter(recall => {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const recallDate = new Date(recall.date_de_publication);
+        return recallDate >= oneYearAgo;
+    }).length;">
+        <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
+                x-text="nbRecalls"></strong>
+            rappels depuis 1an.</strong>
+        <button class="btn" x-on:click="$store.RecallInfoModal.toggle()">En savoir plus</button>
+    </div>
+</template>
+
+<template
+        x-if="$store.product.product.dispensations_others?.length > 0 || $store.product.product.dispensations_allergens?.length > 0"
+        x-data="{ nbDispensations: 0 }">
+    <div class="alert alert-warning shadow-lg" x-init="
+        nbDispensations = $store.product.product.dispensations_others.filter(dispensation => {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const dispensationDate = new Date(dispensation.datedepot);
+        return dispensationDate >= oneYearAgo;
+    }).length + $store.product.product.dispensations_allergens.filter(dispensation => {
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const dispensationDate = new Date(dispensation.datedepot);
+        return dispensationDate >= oneYearAgo;
+    }).length">
+        <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
+                x-text="nbDispensations"></strong> dérogation(s) depuis 1an.</strong>
+        <button class="btn" x-on:click="$store.DispensationInfoModal.toggle()">En savoir plus</button>
+    </div>
+</template>
+
 <div x-data="$store.product" class="mx-6">
 
     <div class="w-full h-36 flex flex-col items-end relative rounded-xl shadow mt-6">
@@ -21,7 +57,8 @@
     </div>
     <div class="text-center" x-data="{hide: true}" :class="hide && 'hide-more'">
         <template x-for="(categorie, i) in product.categories">
-            <span class="badge mx-1" x-text="categorie" :class="i >= 4 && product.categories.length > 5 ? 'badge-more' : ''"></span>
+            <span class="badge mx-1" x-text="categorie"
+                  :class="i >= 4 && product.categories.length > 5 ? 'badge-more' : ''"></span>
         </template>
         <template x-if="product.categories && product.categories.length > 5">
             <span class="badge mx-1 badge-more bg-lime-500 border-lime-500"
@@ -133,3 +170,5 @@
         </div>
     </template>
 </div>
+{% include "components/carts/recall-info-modal.html" %}
+{% include "components/carts/dispensation-info-modal.html" %}

@@ -1,6 +1,6 @@
 <div class="sticky-header flex justify-between items-center mx-3" :class="$store.main.scrolled && 'scrolled'">
     <h1 class="text-xl font-medium my-2 text-gray-600">Mes paniers</h1>
-    <button class="btn btn-sm" @click="$store.addCartModal.toggle()">
+    <button class="btn btn-sm" @click="$store.addCartModal?.toggle()">
         <i class="fas fa-plus mr-2"></i>
         Ajouter
     </button>

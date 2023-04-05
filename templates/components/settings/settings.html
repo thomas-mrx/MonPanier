@@ -1,53 +1,64 @@
 <div class="modal" x-data :class="$store.settingsModal.on && 'modal-open'">
     <div class="modal-box">
-        <label @click="$store.settingsModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i class="far fa-times"></i></label>
+        <label @click="$store.settingsModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="far fa-times"></i></label>
         <h3 class="font-bold text-lg" x-text="$store.settingsModal.text"></h3>
         <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
-            <input type="checkbox" checked="checked" />
-          <div class="collapse-title text-xl font-medium">
-            Mes informations
-          </div>
-          <div class="collapse-content">
-            <p>Connecté en tant que <b x-text="$store.loginModal.getUsername()"></b> avec l'adresse email <b x-text="$store.loginModal.getEmail()"></b>.</p>
-          </div>
+            <input type="checkbox" checked="checked"/>
+            <div class="collapse-title text-xl font-medium">
+                Mes informations
+            </div>
+            <div class="collapse-content">
+                <p>Connecté en tant que <b x-text="$store.loginModal.getUsername()"></b> avec l'adresse email <b
+                        x-text="$store.loginModal.getEmail()"></b>.</p>
+            </div>
         </div>
         <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-4">
-            <input type="checkbox" />
-          <div class="collapse-title text-xl font-medium">
-            Modifier mon mot de passe
-          </div>
-          <div class="collapse-content">
-                 <div class="form-control w-full max-w-xs">
+            <input type="checkbox"/>
+            <div class="collapse-title text-xl font-medium">
+                Modifier mon mot de passe
+            </div>
+            <div class="collapse-content">
+                <div class="form-control w-full max-w-xs">
                     <label class="label">
                         <span class="label-text">Renseignez votre mot de passe actuel:</span>
                     </label>
-                    <input type="password" x-model="$store.settingsModal.old_password"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                    <input type="password" x-model="$store.settingsModal.old_password" placeholder="Tapez ici"
+                           class="input input-bordered w-full max-w-xs"/>
                 </div>
-                 <div class="form-control w-full max-w-xs">
+                <div class="form-control w-full max-w-xs">
                     <label class="label">
                         <span class="label-text">Choisissez votre nouveau mot de passe:</span>
                     </label>
-                    <input type="password" x-model="$store.settingsModal.password1"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                    <input type="password" x-model="$store.settingsModal.password1" placeholder="Tapez ici"
+                           class="input input-bordered w-full max-w-xs"/>
                 </div>
-                 <div class="form-control w-full max-w-xs">
+                <div class="form-control w-full max-w-xs">
                     <label class="label">
                         <span class="label-text">Confirmez votre nouveau mot de passe:</span>
                     </label>
-                    <input type="password" x-model="$store.settingsModal.password2"  placeholder="Tapez ici" class="input input-bordered w-full max-w-xs"/>
+                    <input type="password" x-model="$store.settingsModal.password2" placeholder="Tapez ici"
+                           class="input input-bordered w-full max-w-xs"/>
                 </div>
                 <div class="modal-action">
-                    <button class="btn" @click="$store.settingsModal.changePassword()" :class="(!$store.settingsModal.old_password ||!$store.settingsModal.password1 || !$store.settingsModal.password2) && 'btn-disabled'">Modifier</button>
+                    <button class="btn" @click="$store.settingsModal.changePassword()"
+                            :class="(!$store.settingsModal.old_password ||!$store.settingsModal.password1 || !$store.settingsModal.password2) && 'btn-disabled'">
+                        Modifier
+                    </button>
                 </div>
-          </div>
+            </div>
         </div>
         <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-4">
-            <input type="checkbox" />
-          <div class="collapse-title text-xl font-medium">
-            À propos
-          </div>
-          <div class="collapse-content">
-              <p><b>MonPanier</b> a été réalisée par des étudiants de l'EPITA dans le cadre de leur projet de fin d'études et vise à apporter plus de transparence vis-à-vis de l'industrie agro-alimentaire. <br><b>Crédits:</b> Thomas MOREAUX CHASSÉ, Romain GAUVREAU, Victor TRUONG, César MILESI. <br><b>Remerciements:</b> Merci à Laurent BRUN et Claire LEROUX pour leur suivi et accompagnement tout au long de ce projet.</p>
-          </div>
+            <input type="checkbox"/>
+            <div class="collapse-title text-xl font-medium">
+                À propos
+            </div>
+            <div class="collapse-content">
+                <p><b>MonPanier</b> a été réalisée par des étudiants de l'EPITA dans le cadre de leur projet de fin
+                    d'études et vise à apporter plus de transparence vis-à-vis de l'industrie agro-alimentaire. <br><b>Crédits:</b>
+                    Thomas MOREAUX CHASSÉ, Romain GAUVREAU, Victor TRUONG, César MILESI. <br><b>Remerciements:</b> Merci
+                    à Laurent BRUN et Claire LEROUX pour leur suivi et accompagnement tout au long de ce projet.</p>
+            </div>
         </div>
         <div class="modal-action">
             <button class="btn btn-error" @click="$store.settingsModal.logout()">Se déconnecter</button>
