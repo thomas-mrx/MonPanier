@@ -1,25 +1,25 @@
-<div class="modal" :class="$store.RecallInfoModal?.on && 'modal-open'">
-    <div class="modal-box" x-data="$store.product.product.recalls">
-        <label @click="$store.RecallInfoModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+<div class="modal" :class="$store.recallInfoModal?.on && 'modal-open'">
+    <div class="modal-box">
+        <label @click="$store.recallInfoModal.toggle()" class="btn btn-sm btn-circle absolute right-2 top-2"><i
                 class="far fa-times"></i></label>
         <h3 class="font-bold text-lg">Info Rappel</h3>
-        <template x-for="recall in $store.product.product.recalls" x-effect="console.log($store.product.product.recalls)" :key="recall.id">
-            <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
-                <input type="checkbox"/>
-                <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication">
-
+        <div>
+            <template x-for="recall in $store.product.getLastYearRecalls()" :key="recall.reference_fiche">
+                <div class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mt-6">
+                    <input type="checkbox"/>
+                    <div class="collapse-title text-xl font-medium" x-text="recall.date_de_publication">
+                    </div>
+                    <div class="collapse-content">
+                        <strong> Motif du rappel : </strong>
+                        <p x-text="recall.motif_du_rappel"></p>
+                        <strong> Risques encourus par le consommateur : </strong>
+                        <p x-text="recall.risques_encourus_par_le_consommateur"></p>
+                        <strong> Préconisations sanitaires : </strong>
+                        <p x-text="recall.preconisations_sanitaires"></p>
+                    </div>
                 </div>
-                <div class="collapse-content">
-                    <strong> Motif du rappel : </strong>
-                    <p x-text="recall.motif_du_rappel"></p>
-                    <strong> Risques encourus par le consommateur : </strong>
-                    <p x-text="recall.risques_encourus_par_le_consommateur"></p>
-                    <strong> Préconisations sanitaires : </strong>
-                    <p x-text="recall.preconisations_sanitaires"></p>
+            </template>
+        </div>
 
-                </div>
-
-            </div>
-        </template>
     </div>
 </div>

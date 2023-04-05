@@ -1,6 +1,6 @@
 import Store, { IStore } from '../scripts/Store';
 
-const STORE_NAME = 'RecallInfoModal';
+const STORE_NAME = 'recallInfoModal';
 const STORE_DATA: {
   on: boolean,
   toggle: (code : string) => void,

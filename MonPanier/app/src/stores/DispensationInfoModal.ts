@@ -1,6 +1,6 @@
 import Store, { IStore } from '../scripts/Store';
 
-const STORE_NAME = 'DispensationInfoModal';
+const STORE_NAME = 'dispensationInfoModal';
 const STORE_DATA: {
   on: boolean,
   toggle: (code : string) => void,

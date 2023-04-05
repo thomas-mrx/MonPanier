@@ -5,40 +5,23 @@
 
 </div>
 
-<template x-if="$store.product.product.recalls?.length > 0" x-data="{ nbRecalls: 0 }">
-    <div class="alert alert-error shadow-lg" x-init="nbRecalls = $store.product.product.recalls.filter(recall => {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const recallDate = new Date(recall.date_de_publication);
-        return recallDate >= oneYearAgo;
-    }).length;">
+<div x-show="$store.product.getLastYearRecalls().length > 0">
+    <div class="alert alert-error shadow-lg">
         <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
-                x-text="nbRecalls"></strong>
-            rappels depuis 1an.</strong>
-        <button class="btn" x-on:click="$store.RecallInfoModal.toggle()">En savoir plus</button>
+                x-text="$store.product.getLastYearRecalls().length"></strong>
+            rappel(s) depuis un an.</strong>
+        <button class="btn" x-on:click="$store.recallInfoModal.toggle()">En savoir plus</button>
     </div>
-</template>
+</div>
 
-<template
-        x-if="$store.product.product.dispensations_others?.length > 0 || $store.product.product.dispensations_allergens?.length > 0"
-        x-data="{ nbDispensations: 0 }">
-    <div class="alert alert-warning shadow-lg" x-init="
-        nbDispensations = $store.product.product.dispensations_others.filter(dispensation => {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const dispensationDate = new Date(dispensation.datedepot);
-        return dispensationDate >= oneYearAgo;
-    }).length + $store.product.product.dispensations_allergens.filter(dispensation => {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        const dispensationDate = new Date(dispensation.datedepot);
-        return dispensationDate >= oneYearAgo;
-    }).length">
+<div x-show="$store.product.getLastYearDispensations().length > 0">
+    <div class="alert alert-warning shadow-lg">
         <strong> <i class="fa-regular fa-triangle-exclamation"></i> Ce produit a été concerné par <strong
-                x-text="nbDispensations"></strong> dérogation(s) depuis 1an.</strong>
-        <button class="btn" x-on:click="$store.DispensationInfoModal.toggle()">En savoir plus</button>
+                x-text="$store.product.getLastYearDispensations().length"></strong>
+            dérogation(s) depuis un an.</strong>
+        <button class="btn" x-on:click="$store.dispensationInfoModal.toggle()">En savoir plus</button>
     </div>
-</template>
+</div>
 
 <div x-data="$store.product" class="mx-6">
 
