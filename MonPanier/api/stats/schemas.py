@@ -51,6 +51,7 @@ class CartsScoreSchema(Schema):
 
 
 class StatsSchema(Schema):
+    carts_count: int
     carts_scores: CartsScoreSchema
     recalls: RecallsStatsSchema
     dispensations: DispensationsStatsSchema

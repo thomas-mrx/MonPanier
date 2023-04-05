@@ -20,11 +20,13 @@ def get_stats(request):
     dispensations = Dispensation.objects.filter(Q(datedepot__gte=timezone.now() - timedelta(days=30)) | Q(
         datedepot__gte=timezone.now() - timedelta(days=365)))
 
+    carts_count = Cart.objects.filter(user=request.user).count()
     carts_averages = Cart.objects.filter(user=request.user).aggregate(Avg('mp_nutrim_score'), Avg('mp_sanit_score'),
                                                                       Avg('mp_eco_score'), Avg('mp_global_score'))
 
     response = {
         "carts_scores": carts_averages,
+        "carts_count": carts_count,
         "recalls": {
             "last_month": recalls.filter(date_de_publication__gte=timezone.now() - timedelta(days=30)).count(),
             "last_year": recalls.filter(date_de_publication__gte=timezone.now() - timedelta(days=365)).count(),

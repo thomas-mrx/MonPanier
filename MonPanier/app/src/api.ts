@@ -540,6 +540,8 @@ export interface DispensationsStatsSchema {
 
 /** StatsSchema */
 export interface StatsSchema {
+  /** Carts Count */
+  carts_count: number;
   carts_scores: CartsScoreSchema;
   recalls: RecallsStatsSchema;
   dispensations: DispensationsStatsSchema;
