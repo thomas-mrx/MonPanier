@@ -17,8 +17,10 @@ const STORE_DATA: {
 
   stats: StatsSchema | null,
   updateCharts: () => void,
+  getRecallsTrend: () => string,
   getRecallsCurrentAnalysis: () => RecallCategoryDatasetSchema[],
   getDispensationsCurrentAnalysis: () => DispensationCategoryDatasetSchema[],
+  getDispensationsTrend: () => string,
 
   toggleRecallsEvolutionModal: () => void,
   toggleRecallsCategoriesModal: () => void,
@@ -32,11 +34,13 @@ const STORE_DATA: {
   dispensationsCategoriesModalOn: false,
   isLastYearAnalysis: true,
   stats: {
+    carts_count: 0,
     carts_scores: {
     },
     recalls: {
       data: [],
       last_month: 0,
+      before_last_month: 0,
       last_year: 0,
       categories: {
         last_month_data: [{ sous_categorie_de_produit: '', total: 0 }],
@@ -47,6 +51,7 @@ const STORE_DATA: {
       data: [],
       last_month: 0,
       last_year: 0,
+      before_last_month: 0,
       categories: {
         last_month_data: [{ categorie_du_produit_rayon: '', total: 0 }],
         last_year_data: [{ categorie_du_produit_rayon: '', total: 0 }],
@@ -81,6 +86,24 @@ const STORE_DATA: {
 
   getDispensationsCurrentAnalysis(): DispensationCategoryDatasetSchema[] {
     return this.isLastYearAnalysis ? this.stats?.dispensations.categories.last_year_data : this.stats?.dispensations.categories.last_month_data;
+  },
+
+  getRecallsTrend(): string {
+    const trend = this.stats.recalls.last_month < this.stats.recalls.before_last_month ? '↘' : '↗';
+    const percentage = Math.round((this.stats.recalls.last_month / this.stats.recalls.before_last_month - 1) * 100);
+    const percentageString = percentage > 0 ? `+${percentage}%` : `${percentage}%`;
+    const number = this.stats.recalls.last_month - this.stats.recalls.before_last_month;
+    const numberString = number > 0 ? `+${number}` : `${number}`;
+    return `${trend} ${percentageString} (${numberString})`;
+  },
+
+  getDispensationsTrend(): string {
+    const trend = this.stats.dispensations.last_month < this.stats.dispensations.before_last_month ? '↘' : '↗';
+    const percentage = Math.round((this.stats.dispensations.last_month / this.stats.dispensations.before_last_month - 1) * 100);
+    const percentageString = percentage > 0 ? `+${percentage}%` : `${percentage}%`;
+    const number = this.stats.dispensations.last_month - this.stats.dispensations.before_last_month;
+    const numberString = number > 0 ? `+${number}` : `${number}`;
+    return `${trend} ${percentageString} (${numberString})`;
   },
 
   updateCharts() {

@@ -32,12 +32,14 @@ class DispensationsCategoriesSchema(Schema):
 class RecallsStatsSchema(Schema):
     last_month: int
     last_year: int
+    before_last_month: int
     data: List[EvolutionDatasetSchema]
     categories: RecallsCategoriesSchema
 
 
 class DispensationsStatsSchema(Schema):
     last_month: int
+    before_last_month: int
     last_year: int
     data: List[EvolutionDatasetSchema]
     categories: DispensationsCategoriesSchema
@@ -51,6 +53,7 @@ class CartsScoreSchema(Schema):
 
 
 class StatsSchema(Schema):
+    carts_count: int
     carts_scores: CartsScoreSchema
     recalls: RecallsStatsSchema
     dispensations: DispensationsStatsSchema
