@@ -29,7 +29,7 @@ const STORE_DATA: {
             if (result.status === 200) {
               this.toggle();
               alert('Produit ajouté au panier.');
-              ProductModal.on = false;
+              ProductModal.toggle(false);
             }
           }).catch((error) => {
             alert('Erreur lors de l\'ajout du produit.');
