@@ -148,6 +148,13 @@ const STORE_DATA: {
               }).catch((err) => {
                 if (err.status === 500) resolve(<Retry>true);
               });
+            } else {
+              Scanner.start().then((success) => {
+                if (!success) {
+                  alert('Impossible de démarrer le scanner. Vérifiez que votre appareil est compatible et que vous autorisez l\'accès à la caméra.');
+                }
+              });
+              resolve(<Retry>false);
             }
           });
         },
@@ -179,6 +186,8 @@ const STORE_DATA: {
               }).catch((err) => {
                 if (err.status === 500) resolve(<Retry>true);
               });
+            } else {
+              resolve(<Retry>false);
             }
           });
         },
@@ -222,7 +231,7 @@ const STORE_DATA: {
     let succeeded: boolean = false;
     const initRoute = async (maxRetry: number = 10, sleep: number = 250) => {
       if (maxRetry > 0) {
-        if ('onInit' in this.tabs[activeTab].routes[activeRoute]) {
+        if ('onInit' in this.tabs[activeTab].routes[activeRoute] && typeof this.tabs[activeTab].routes[activeRoute].onInit === 'function') {
           try {
             const needsRestart: Retry = await this.tabs[activeTab].routes[activeRoute].onInit();
             if (needsRestart) {
@@ -237,6 +246,8 @@ const STORE_DATA: {
             alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
             succeeded = false;
           }
+        } else {
+          succeeded = true;
         }
       } else {
         alert('Une erreur inattendue est survenue lors du chargement de la page. Veuillez réessayer.');
