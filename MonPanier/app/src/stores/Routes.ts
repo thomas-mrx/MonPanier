@@ -357,7 +357,7 @@ const STORE_DATA: {
         left: 0,
       });
       document.body.classList.remove('loading');
-    }, 0);
+    }, 5);
   },
 };
 
