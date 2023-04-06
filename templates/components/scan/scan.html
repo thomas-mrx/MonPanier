@@ -56,15 +56,15 @@
             <div class="w-auto grid grid-cols-3 gap-0 place-content-center mx-3">
                 <div>
                     <h2 class="mx-auto text-center mb-2 text-lg font-bold text-center">Nutritionnel</h2>
-                    {% include '../score.html' with score="$store.main.getGradeFromScore($store.productModal.product.mp_nutrim_score?.score ?? 0)" class='h-8 mx-auto' %}
+                    {% include '../score.html' with score="$store.productModal.product.mp_nutrim_score?.grade ?? 'na'" class='h-8 mx-auto' %}
                 </div>
                 <div>
                     <h2 class="mx-auto text-center mb-2 text-lg font-bold">Sanitaire</h2>
-                    {% include '../score.html' with score="$store.main.getGradeFromScore($store.productModal.product.mp_sanit_score?.score ?? 0)" class='h-8 mx-auto' %}
+                    {% include '../score.html' with score="$store.productModal.product.mp_sanit_score?.grade ?? 'na'" class='h-8 mx-auto' %}
                 </div>
                 <div>
                     <h2 class="mx-auto text-center mb-2 text-lg font-bold">Écologique</h2>
-                    {% include '../score.html' with score="$store.main.getGradeFromScore($store.productModal.product.mp_eco_score?.score ?? 0)" class='h-8 mx-auto' %}
+                    {% include '../score.html' with score="$store.productModal.product.mp_eco_score?.grade ?? 'na'" class='h-8 mx-auto' %}
                 </div>
             </div>
         </div>
